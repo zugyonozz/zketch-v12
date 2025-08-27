@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "inputmanager.h"
+#include "win32errorhelper.h"
 
 namespace zketch {
 
@@ -39,8 +40,11 @@ namespace zketch {
 				this
 			) ;
 
-			if (!hwnd_)
-				throw  std::runtime_error("error to create window") ;
+            if (hwnd_ == nullptr) {
+                DWORD error_code = GetLastError() ;
+                std::string error_msg = "Gagal membuat window! Win32 Error (" + std::to_string(error_code) + "): " + GetWin32ErrorAsString(error_code) ;
+                throw std::runtime_error(error_msg) ;
+            }
 		}
 
 		~Window() noexcept = default ;
@@ -57,13 +61,10 @@ namespace zketch {
 		}
 
 		LRESULT HandleMessage(UINT msg, WPARAM wp, LPARAM lp) {
-            
-            switch (msg) {
-                case WM_DESTROY:
-                    PostQuitMessage(0);
-                    return 0;
-            }
-            
+            if (msg == WM_DESTROY) { 
+				PostQuitMessage(0) ; 
+				return 0 ; 
+			}
             return DefWindowProcA(hwnd_, msg, wp, lp);
         }		
 	
@@ -85,8 +86,11 @@ namespace zketch {
             wc.hCursor = LoadCursor(nullptr, IDC_ARROW) ;
             // ... (set icon, background, dll.) ... next improvements
 
-            if (!RegisterClassExA(&wc)) 
-                throw std::runtime_error("Gagal mendaftarkan window class!");
+            if (!RegisterClassExA(&wc)) {
+                DWORD error_code = GetLastError() ;
+                std::string error_msg = "Gagal mendaftarkan window class! Win32 Error (" + std::to_string(error_code) + "): " + GetWin32ErrorAsString(error_code) ;
+                throw std::runtime_error(error_msg) ;
+            }
         }
 
         static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept {
@@ -112,6 +116,11 @@ namespace zketch {
 
     public:
         Application() : h_instance_(GetModuleHandleA(nullptr)) {
+			if (h_instance_ == nullptr) {
+                DWORD error_code = GetLastError();
+                std::string error_msg = "Gagal mendapatkan module handle! Win32 Error (" + std::to_string(error_code) + "): " + GetWin32ErrorAsString(error_code);
+                throw std::runtime_error(error_msg);
+            }
             RegisterWindowClass() ;
         }
 
@@ -124,34 +133,37 @@ namespace zketch {
         }
 
         // Main loop aplikasi.
-        int Run() {
-			auto main_window = CreateNewWindow("Zketch Test", 800, 600) ;
-			main_window->Show() ;
-            EventTranslator translator ;
-			MSG msg = {} ;
+        void Run() {
+            auto main_window = CreateNewWindow("Zketch v1.2", 800, 600);
+            main_window->Show();
 
-			while(IS_RUNNING) {
-				input_manager_.PrepareForNewFrame() ;
-				while (GetMessageA(&msg, nullptr, 0, 0) > 0) {
-					if (msg.message == WM_QUIT) {
-						IS_RUNNING = false ;
-						break ;
-					}
-					TranslateMessage(&msg) ;
-					DispatchMessageA(&msg) ;
+            EventTranslator translator;
+            
+            while (IS_RUNNING) {
+                input_manager_.PrepareForNewFrame();
 
-					Event current_event = translator(msg.hwnd, msg.message, msg.wParam, msg.lParam) ;
-					input_manager_.ProcessEvent(current_event) ;
-				}
+                MSG msg = {};
+                while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
+                    if (msg.message == WM_QUIT) {
+                        IS_RUNNING = false;
+                        break;
+                    }
+                    TranslateMessage(&msg);
+                    DispatchMessageA(&msg);
+                    
+                    Event current_event = translator(msg.hwnd, msg.message, msg.wParam, msg.lParam);
+                    input_manager_.ProcessEvent(current_event);
+                }
 
-				if(!IS_RUNNING)
-					break ;
+                if (!IS_RUNNING) break;
 
-				if (input_manager_.WasKeyPressed(KeyCode::Esc)) ;
-					IS_RUNNING = false ;
-
-				if (input_manager_.IsKeyHeld(KeyCode::W)) ;
-			}
+                if (input_manager_.WasKeyPressed(KeyCode::Esc)) {
+                    IS_RUNNING = false;
+                }
+                if (input_manager_.IsKeyHeld(KeyCode::W)) {
+                    // Bergerak maju...
+                }
+            }
         }
     };
 

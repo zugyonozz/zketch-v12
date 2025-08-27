@@ -7,3 +7,15 @@
 14	4571	7779763197728088	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
 4571	4897	7779763243291530	libzketch.a	782c918f9dfc5fd
 4897	5444	7779763246551843	zketch_app.exe	578a5adceea0b3ad
+7	2322	7779767936925581	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
+13	2336	7779767936988359	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+2323	2455	7779767960073575	libzketch.a	782c918f9dfc5fd
+2456	2610	7779767961411977	zketch_app.exe	578a5adceea0b3ad
+13	2573	7779771147245111	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+7	2582	7779771147189646	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
+2582	2687	7779771172938649	libzketch.a	782c918f9dfc5fd
+2687	2832	7779771173985343	zketch_app.exe	578a5adceea0b3ad
+9	2793	7779809694407260	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
+15	2807	7779809694407260	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+2795	3037	7779809722265999	libzketch.a	782c918f9dfc5fd
+3037	3196	7779809724682541	zketch_app.exe	578a5adceea0b3ad
