@@ -5,16 +5,13 @@
 #endif
 
 #include <stdexcept>
+#include <memory>
 
 #include "inputmanager.h"
 
 namespace zketch {
 
-	class Window ;
-
-	static inline fastmap<HWND, Window*> window_map_ ;
-
-	static inline uint64_t counter_ = 0 ;
+	static inline bool IS_RUNNING = true ;
 
 	class Application ;
 
@@ -46,9 +43,7 @@ namespace zketch {
 				throw  std::runtime_error("error to create window") ;
 		}
 
-		~Window() noexcept {
-
-		}
+		~Window() noexcept = default ;
 
 		void Show() const noexcept {
 			if (!hwnd_) {
@@ -94,7 +89,7 @@ namespace zketch {
                 throw std::runtime_error("Gagal mendaftarkan window class!");
         }
 
-        static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+        static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept {
             Window* window = reinterpret_cast<Window*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA)) ;
 
             if (window) 
@@ -103,7 +98,7 @@ namespace zketch {
             return DefWindowProcA(hwnd, msg, wp, lp) ;
         }
 
-        static LRESULT CALLBACK WindowProcedureSetup(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+        static LRESULT CALLBACK WindowProcedureSetup(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept {
             if (msg == WM_NCCREATE) {
                 const CREATESTRUCTA* const p_create = reinterpret_cast<CREATESTRUCTA*>(lp) ;
                 Window* const window = static_cast<Window*>(p_create->lpCreateParams) ;
@@ -124,22 +119,39 @@ namespace zketch {
             UnregisterClassA(window_class_name_, h_instance_) ;
         }
 
-        Window CreateNewWindow(const char* title, int width, int height) {
-            return Window(title, width, height, window_class_name_, h_instance_) ;
+        std::unique_ptr<Window> CreateNewWindow(const char* title, int width, int height) {
+            return std::make_unique<Window>(title, width, height, window_class_name_, h_instance_) ;
         }
 
         // Main loop aplikasi.
         int Run() {
-            MSG msg = {};
+			auto main_window = CreateNewWindow("Zketch Test", 800, 600) ;
+			main_window->Show() ;
             EventTranslator translator ;
+			MSG msg = {} ;
 
-            while (GetMessageA(&msg, nullptr, 0, 0) > 0) {
-                Event current_event = translator(msg.hwnd, msg.message, msg.wParam, msg.lParam) ;
-                TranslateMessage(&msg) ;
-                DispatchMessageA(&msg) ;
-            }
+			while(IS_RUNNING) {
+				input_manager_.PrepareForNewFrame() ;
+				while (GetMessageA(&msg, nullptr, 0, 0) > 0) {
+					if (msg.message == WM_QUIT) {
+						IS_RUNNING = false ;
+						break ;
+					}
+					TranslateMessage(&msg) ;
+					DispatchMessageA(&msg) ;
 
-            return static_cast<int>(msg.wParam) ;
+					Event current_event = translator(msg.hwnd, msg.message, msg.wParam, msg.lParam) ;
+					input_manager_.ProcessEvent(current_event) ;
+				}
+
+				if(!IS_RUNNING)
+					break ;
+
+				if (input_manager_.WasKeyPressed(KeyCode::Esc)) ;
+					IS_RUNNING = false ;
+
+				if (input_manager_.IsKeyHeld(KeyCode::W)) ;
+			}
         }
     };
 

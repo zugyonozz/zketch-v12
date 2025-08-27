@@ -3,8 +3,6 @@
 #include <bitset>
 #include "event.h"
 
-#include "KeyCode.h"
-
 namespace zketch {
 
     class InputManager {
@@ -105,6 +103,16 @@ namespace zketch {
 
         bool IsAltHeld() const noexcept {
             return IsKeyHeld(KeyCode::LeftAlt) || IsKeyHeld(KeyCode::RightAlt) ;
+        }
+
+		void ProcessEvent(const Event& event) noexcept {
+            if (auto keyEvent = event.AsKeyEvent()) {
+                if (event.type_ == EventType::KeyDown) {
+                    keys_held_[static_cast<size_t>(keyEvent->sym)] = true ;
+                } else if (event.type_ == EventType::KeyUp) {
+                    keys_held_[static_cast<size_t>(keyEvent->sym)] = false; 
+                }
+            }
         }
     };
 
