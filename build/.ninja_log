@@ -1,0 +1,5 @@
+# ninja log v7
+7	3815	7775678278666689	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
+13	3804	7775678278734675	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+3815	3957	7775678316748930	libzketch.a	782c918f9dfc5fd
+3957	4136	7775678318170117	zketch_app.exe	578a5adceea0b3ad
