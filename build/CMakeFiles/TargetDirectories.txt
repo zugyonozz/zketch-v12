@@ -1,4 +1,3 @@
-D:/Project/zketch-v12/build/CMakeFiles/zketch.dir
 D:/Project/zketch-v12/build/CMakeFiles/zketch_app.dir
 D:/Project/zketch-v12/build/CMakeFiles/edit_cache.dir
 D:/Project/zketch-v12/build/CMakeFiles/rebuild_cache.dir

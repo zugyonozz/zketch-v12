@@ -10,31 +10,61 @@ namespace zketch {
 
     public:
         void update() noexcept {
-            input_.update() ;
+            input_.PrepareForNewFrame() ;
         }
 
         void handleEvent(const Event& e) noexcept {
             switch (e.type_) {
             case EventType::KeyDown:
-                input_.setKeyDown(e.data_.key_.keyCode) ;
+                if (auto keyCode = e.getKeyCode()) {
+                    input_.SetKeyDown(*keyCode);
+                }
                 break ;
 
             case EventType::KeyUp:
-                input_.setKeyUp(e.data_.key_.keyCode) ;
+                if (auto keyCode = e.getKeyCode()) {
+                    input_.SetKeyUp(*keyCode);
+                }
                 break ;
 
             case EventType::MouseDown:
-                input_.setMouseDown(e.data_.mouse_.button) ;
-                input_.setMousePos(e.data_.mouse_.pos) ;
+                if (auto pos = e.getMousePos()) {
+                    input_.SetMousePosition(*pos);
+                }
+                // Extract button from mouse event
+                if (e.isMouseEvent()) {
+                    // We need to get the button from the event data
+                    // This assumes the button is stored correctly in the event
+                    if (e.isMouse(MouseButton::Left)) {
+                        input_.SetMouseDown(static_cast<int>(MouseButton::Left));
+                    } else if (e.isMouse(MouseButton::Right)) {
+                        input_.SetMouseDown(static_cast<int>(MouseButton::Right));
+                    } else if (e.isMouse(MouseButton::Middle)) {
+                        input_.SetMouseDown(static_cast<int>(MouseButton::Middle));
+                    }
+                }
                 break ;
 
             case EventType::MouseUp:
-                input_.setMouseUp(e.data_.mouse_.button) ;
-                input_.setMousePos(e.data_.mouse_.pos) ;
+                if (auto pos = e.getMousePos()) {
+                    input_.SetMousePosition(*pos);
+                }
+                // Extract button from mouse event
+                if (e.isMouseEvent()) {
+                    if (e.isMouse(MouseButton::Left)) {
+                        input_.SetMouseUp(static_cast<int>(MouseButton::Left));
+                    } else if (e.isMouse(MouseButton::Right)) {
+                        input_.SetMouseUp(static_cast<int>(MouseButton::Right));
+                    } else if (e.isMouse(MouseButton::Middle)) {
+                        input_.SetMouseUp(static_cast<int>(MouseButton::Middle));
+                    }
+                }
                 break ;
 
             case EventType::MouseMove:
-                input_.setMousePos(e.data_.mouse_.pos) ;
+                if (auto pos = e.getMousePos()) {
+                    input_.SetMousePosition(*pos);
+                }
                 break ;
 
             case EventType::Resize:

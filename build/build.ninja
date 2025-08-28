@@ -41,47 +41,13 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = D$:/Project/zketch-v12/build/
 # =============================================================================
-# Object build statements for STATIC_LIBRARY target zketch
-
-
-#############################################
-# Order-only phony target for zketch
-
-build cmake_object_order_depends_target_zketch: phony || .
-
-build CMakeFiles/zketch.dir/src/main.cpp.obj: CXX_COMPILER__zketch_unscanned_Debug D$:/Project/zketch-v12/src/main.cpp || cmake_object_order_depends_target_zketch
-  CONFIG = Debug
-  DEP_FILE = CMakeFiles\zketch.dir\src\main.cpp.obj.d
-  FLAGS = -g -std=gnu++20
-  INCLUDES = -ID:/Project/zketch-v12/include
-  OBJECT_DIR = CMakeFiles\zketch.dir
-  OBJECT_FILE_DIR = CMakeFiles\zketch.dir\src
-
-
-# =============================================================================
-# Link build statements for STATIC_LIBRARY target zketch
-
-
-#############################################
-# Link the static library libzketch.a
-
-build libzketch.a: CXX_STATIC_LIBRARY_LINKER__zketch_Debug CMakeFiles/zketch.dir/src/main.cpp.obj
-  CONFIG = Debug
-  LANGUAGE_COMPILE_FLAGS = -g
-  OBJECT_DIR = CMakeFiles\zketch.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  TARGET_FILE = libzketch.a
-  TARGET_PDB = zketch.a.dbg
-
-# =============================================================================
 # Object build statements for EXECUTABLE target zketch_app
 
 
 #############################################
 # Order-only phony target for zketch_app
 
-build cmake_object_order_depends_target_zketch_app: phony || cmake_object_order_depends_target_zketch
+build cmake_object_order_depends_target_zketch_app: phony || .
 
 build CMakeFiles/zketch_app.dir/src/main.cpp.obj: CXX_COMPILER__zketch_app_unscanned_Debug D$:/Project/zketch-v12/src/main.cpp || cmake_object_order_depends_target_zketch_app
   CONFIG = Debug
@@ -99,10 +65,10 @@ build CMakeFiles/zketch_app.dir/src/main.cpp.obj: CXX_COMPILER__zketch_app_unsca
 #############################################
 # Link the executable zketch_app.exe
 
-build zketch_app.exe: CXX_EXECUTABLE_LINKER__zketch_app_Debug CMakeFiles/zketch_app.dir/src/main.cpp.obj | libzketch.a || libzketch.a
+build zketch_app.exe: CXX_EXECUTABLE_LINKER__zketch_app_Debug CMakeFiles/zketch_app.dir/src/main.cpp.obj
   CONFIG = Debug
   FLAGS = -g
-  LINK_LIBRARIES = libzketch.a  -lgdiplus  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = -lgdiplus  -luser32  -lgdi32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\zketch_app.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -136,8 +102,6 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build zketch: phony libzketch.a
-
 build zketch_app: phony zketch_app.exe
 
 # =============================================================================
@@ -148,7 +112,7 @@ build zketch_app: phony zketch_app.exe
 #############################################
 # Folder: D:/Project/zketch-v12/build
 
-build all: phony libzketch.a zketch_app.exe
+build all: phony zketch_app.exe
 
 # =============================================================================
 # Built-in targets

@@ -1,21 +1,7 @@
 # ninja log v7
-7	3815	7775678278666689	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
-13	3804	7775678278734675	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-3815	3957	7775678316748930	libzketch.a	782c918f9dfc5fd
-3957	4136	7775678318170117	zketch_app.exe	578a5adceea0b3ad
-108	4569	7779763198662725	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-14	4571	7779763197728088	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
-4571	4897	7779763243291530	libzketch.a	782c918f9dfc5fd
-4897	5444	7779763246551843	zketch_app.exe	578a5adceea0b3ad
-7	2322	7779767936925581	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
-13	2336	7779767936988359	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-2323	2455	7779767960073575	libzketch.a	782c918f9dfc5fd
-2456	2610	7779767961411977	zketch_app.exe	578a5adceea0b3ad
-13	2573	7779771147245111	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-7	2582	7779771147189646	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
-2582	2687	7779771172938649	libzketch.a	782c918f9dfc5fd
-2687	2832	7779771173985343	zketch_app.exe	578a5adceea0b3ad
-9	2793	7779809694407260	CMakeFiles/zketch.dir/src/main.cpp.obj	ed48a0662d7b1aa1
-15	2807	7779809694407260	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-2795	3037	7779809722265999	libzketch.a	782c918f9dfc5fd
-3037	3196	7779809724682541	zketch_app.exe	578a5adceea0b3ad
+30	2285	7779848440212073	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+2285	2435	7779848462769415	zketch_app.exe	aca48c9817e7a09d
+58	4675	7780907203984483	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+4676	5063	7780907250161055	zketch_app.exe	aca48c9817e7a09d
+6	2473	7780923603523576	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
+2474	2656	7780923628203724	zketch_app.exe	aca48c9817e7a09d

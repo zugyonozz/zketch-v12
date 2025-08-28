@@ -1,12 +1,18 @@
-#include "window.h"
+#include "window_.h"
+
+void Handler(const zketch::Event& e) {
+	if (e == zketch::EventType::Quit)
+		zketch::IS_RUNNING = false ;
+	if (e == zketch::EventType::KeyDown)
+		if (e.keyCode() == 'A')
+			zketch::logger::info("A Pressed!\n") ;
+}
 
 int main() {
-    try {
-        zketch::Application app;
-        app.Run();
-    } catch (const std::exception& e) {
-        MessageBoxA(nullptr, e.what(), "Error Kritis!", MB_OK | MB_ICONERROR);
-        return -1;
-    }
-    return 0;
+	zketch::Application app ;
+	HWND w1 = app.createNewWindow("Demo", 900, 800) ;
+	app.AddHandler(w1, Handler) ;
+	return app.Run() ;
+
+	return 0 ;
 }

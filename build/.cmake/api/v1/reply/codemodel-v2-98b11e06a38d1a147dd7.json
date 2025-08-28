@@ -15,8 +15,7 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -31,8 +30,7 @@
 					"name" : "zketch_v12",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -40,15 +38,8 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "zketch::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-zketch-Debug-718361a06410fcce55c0.json",
-					"name" : "zketch",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
 					"id" : "zketch_app::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-zketch_app-Debug-6201ce14b54460c2c463.json",
+					"jsonFile" : "target-zketch_app-Debug-5b5515ed30d4a8e85f9f.json",
 					"name" : "zketch_app",
 					"projectIndex" : 0
 				}
