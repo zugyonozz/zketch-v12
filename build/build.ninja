@@ -41,40 +41,48 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = D$:/Project/zketch-v12/build/
 # =============================================================================
-# Object build statements for EXECUTABLE target zketch_app
+# Object build statements for EXECUTABLE target zketch_v12
 
 
 #############################################
-# Order-only phony target for zketch_app
+# Order-only phony target for zketch_v12
 
-build cmake_object_order_depends_target_zketch_app: phony || .
+build cmake_object_order_depends_target_zketch_v12: phony || .
 
-build CMakeFiles/zketch_app.dir/src/main.cpp.obj: CXX_COMPILER__zketch_app_unscanned_Debug D$:/Project/zketch-v12/src/main.cpp || cmake_object_order_depends_target_zketch_app
+build CMakeFiles/zketch_v12.dir/src/main.cpp.obj: CXX_COMPILER__zketch_v12_unscanned_Debug D$:/Project/zketch-v12/src/main.cpp || cmake_object_order_depends_target_zketch_v12
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\zketch_app.dir\src\main.cpp.obj.d
-  FLAGS = -g -std=gnu++20
+  DEP_FILE = CMakeFiles\zketch_v12.dir\src\main.cpp.obj.d
+  FLAGS = -g -std=gnu++20 -Wall -Wextra -Wpedantic -Werror -O3 -march=native -DNDEBUG -mwindows
   INCLUDES = -ID:/Project/zketch-v12/include
-  OBJECT_DIR = CMakeFiles\zketch_app.dir
-  OBJECT_FILE_DIR = CMakeFiles\zketch_app.dir\src
+  OBJECT_DIR = CMakeFiles\zketch_v12.dir
+  OBJECT_FILE_DIR = CMakeFiles\zketch_v12.dir\src
+
+build CMakeFiles/zketch_v12.dir/version.rc.obj: RC_COMPILER__zketch_v12_unscanned_Debug D$:/Project/zketch-v12/version.rc || cmake_object_order_depends_target_zketch_v12
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\zketch_v12.dir\version.rc.obj.d
+  FLAGS = -DNDEBUG
+  INCLUDES = -I D:/Project/zketch-v12/include -I C:/msys64/mingw64/include -I C:/msys64/mingw64/include/c++/15.2.0 -I C:/msys64/mingw64/include/c++/15.2.0/x86_64-w64-mingw32
+  OBJECT_DIR = CMakeFiles\zketch_v12.dir
+  OBJECT_FILE_DIR = CMakeFiles\zketch_v12.dir
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target zketch_app
+# Link build statements for EXECUTABLE target zketch_v12
 
 
 #############################################
-# Link the executable zketch_app.exe
+# Link the executable zketch_v12.exe
 
-build zketch_app.exe: CXX_EXECUTABLE_LINKER__zketch_app_Debug CMakeFiles/zketch_app.dir/src/main.cpp.obj
+build zketch_v12.exe: CXX_EXECUTABLE_LINKER__zketch_v12_Debug CMakeFiles/zketch_v12.dir/src/main.cpp.obj CMakeFiles/zketch_v12.dir/version.rc.obj
   CONFIG = Debug
   FLAGS = -g
-  LINK_LIBRARIES = -lgdiplus  -luser32  -lgdi32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
-  OBJECT_DIR = CMakeFiles\zketch_app.dir
+  LINK_LIBRARIES = -lgdiplus  -lgdi32  -luser32  -lole32  -loleaut32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  OBJECT_DIR = CMakeFiles\zketch_v12.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = zketch_app.exe
-  TARGET_IMPLIB = libzketch_app.dll.a
-  TARGET_PDB = zketch_app.exe.dbg
+  TARGET_FILE = zketch_v12.exe
+  TARGET_IMPLIB = libzketch_v12.dll.a
+  TARGET_PDB = zketch_v12.exe.dbg
 
 
 #############################################
@@ -102,7 +110,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build zketch_app: phony zketch_app.exe
+build zketch_v12: phony zketch_v12.exe
 
 # =============================================================================
 # Folder targets.
@@ -112,7 +120,7 @@ build zketch_app: phony zketch_app.exe
 #############################################
 # Folder: D:/Project/zketch-v12/build
 
-build all: phony zketch_app.exe
+build all: phony zketch_v12.exe
 
 # =============================================================================
 # Built-in targets

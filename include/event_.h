@@ -164,7 +164,7 @@ namespace zketch {
 			return type_ ;
 		}
 
-		const HWND getHandle() const noexcept {
+		HWND getHandle() const noexcept {
 			return hwnd_ ;
 		}
 	} ;

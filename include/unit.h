@@ -137,8 +137,8 @@
 		return (a << 24) | (b << 16) | (g << 8) | r ;
 	}
 
-	inline constexpr uint32_t rgba(uint8_t r, uint8_t g, uint8_t b, float a) noexcept {
-		return rgba(r, g, b, static_cast<uint8_t>(255 * std::clamp(a, 0.0f, 1.0f))) ;
+	inline constexpr uint32_t rgba(uint8_t r, uint8_t g, uint8_t b, double a) noexcept {
+		return (static_cast<uint8_t>(255 * std::clamp(a, 0.0, 1.0)) << 24) | (b << 16) | (g << 8) | r ;
 	}
 
 	inline constexpr uint32_t rgb(uint8_t r, uint8_t g, uint8_t b) noexcept {

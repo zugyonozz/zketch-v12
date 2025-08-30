@@ -1,7 +1,6 @@
 # ninja log v7
-30	2285	7779848440212073	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-2285	2435	7779848462769415	zketch_app.exe	aca48c9817e7a09d
-58	4675	7780907203984483	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-4676	5063	7780907250161055	zketch_app.exe	aca48c9817e7a09d
-6	2473	7780923603523576	CMakeFiles/zketch_app.dir/src/main.cpp.obj	e3997180e96c6342
-2474	2656	7780923628203724	zketch_app.exe	aca48c9817e7a09d
+29	5006	7782291924736871	CMakeFiles/zketch_v12.dir/src/main.cpp.obj	b78ca71ff8b0faa9
+74	154	7782291924772395	CMakeFiles/zketch_v12.dir/version.rc.obj	b9cf48cce54b0d3f
+5007	5166	7782291974134945	zketch_v12.exe	eb5d5978b74f5b4f
+21	97	7782296570990852	CMakeFiles/zketch_v12.dir/version.rc.obj	b9cf48cce54b0d3f
+98	245	7782296571761004	zketch_v12.exe	eb5d5978b74f5b4f

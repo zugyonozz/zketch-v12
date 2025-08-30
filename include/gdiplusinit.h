@@ -3,8 +3,6 @@
 #include <objidl.h>
 #include <gdiplus.h>
 
-#pragma comment(lib, "gdiplus.lib")
-
 // initialize GDI+
 
 namespace zketch {
