@@ -1,14 +1,8 @@
 [
 {
   "directory": "D:/Project/zketch-v12/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -ID:/Project/zketch-v12/include -g -std=gnu++20 -Wall -Wextra -Wpedantic -Werror -O3 -march=native -DNDEBUG -mwindows -o CMakeFiles\\zketch_v12.dir\\src\\main.cpp.obj -c D:\\Project\\zketch-v12\\src\\main.cpp",
-  "file": "D:/Project/zketch-v12/src/main.cpp",
-  "output": "D:/Project/zketch-v12/build/CMakeFiles/zketch_v12.dir/src/main.cpp.obj"
-},
-{
-  "directory": "D:/Project/zketch-v12/build",
-  "command": "C:\\msys64\\mingw64\\bin\\windres.exe -O coff -I D:/Project/zketch-v12/include -I C:/msys64/mingw64/include -I C:/msys64/mingw64/include/c++/15.2.0 -I C:/msys64/mingw64/include/c++/15.2.0/x86_64-w64-mingw32 -DNDEBUG D:\\Project\\zketch-v12\\version.rc CMakeFiles\\zketch_v12.dir\\version.rc.obj",
-  "file": "D:/Project/zketch-v12/version.rc",
-  "output": "D:/Project/zketch-v12/build/CMakeFiles/zketch_v12.dir/version.rc.obj"
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -ID:/Project/zketch-v12/include -g -std=c++20 -o CMakeFiles\\Win32TestProject.dir\\src\\test9.cpp.obj -c D:\\Project\\zketch-v12\\src\\test9.cpp",
+  "file": "D:/Project/zketch-v12/src/test9.cpp",
+  "output": "D:/Project/zketch-v12/build/CMakeFiles/Win32TestProject.dir/src/test9.cpp.obj"
 }
 ]

@@ -11,14 +11,14 @@
 # =============================================================================
 
 # =============================================================================
-# Project: zketch_v12
+# Project: Win32TestProject
 # Configurations: Debug
 # =============================================================================
 
 #############################################
 # Minimal version of Ninja required by this file
 
-ninja_required_version = 1.5
+ninja_required_version = 1.8
 
 
 #############################################
@@ -41,48 +41,40 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = D$:/Project/zketch-v12/build/
 # =============================================================================
-# Object build statements for EXECUTABLE target zketch_v12
+# Object build statements for EXECUTABLE target Win32TestProject
 
 
 #############################################
-# Order-only phony target for zketch_v12
+# Order-only phony target for Win32TestProject
 
-build cmake_object_order_depends_target_zketch_v12: phony || .
+build cmake_object_order_depends_target_Win32TestProject: phony || .
 
-build CMakeFiles/zketch_v12.dir/src/main.cpp.obj: CXX_COMPILER__zketch_v12_unscanned_Debug D$:/Project/zketch-v12/src/main.cpp || cmake_object_order_depends_target_zketch_v12
+build CMakeFiles/Win32TestProject.dir/src/test9.cpp.obj: CXX_COMPILER__Win32TestProject_unscanned_Debug D$:/Project/zketch-v12/src/test9.cpp || cmake_object_order_depends_target_Win32TestProject
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\zketch_v12.dir\src\main.cpp.obj.d
-  FLAGS = -g -std=gnu++20 -Wall -Wextra -Wpedantic -Werror -O3 -march=native -DNDEBUG -mwindows
+  DEP_FILE = CMakeFiles\Win32TestProject.dir\src\test9.cpp.obj.d
+  FLAGS = -g -std=c++20
   INCLUDES = -ID:/Project/zketch-v12/include
-  OBJECT_DIR = CMakeFiles\zketch_v12.dir
-  OBJECT_FILE_DIR = CMakeFiles\zketch_v12.dir\src
-
-build CMakeFiles/zketch_v12.dir/version.rc.obj: RC_COMPILER__zketch_v12_unscanned_Debug D$:/Project/zketch-v12/version.rc || cmake_object_order_depends_target_zketch_v12
-  CONFIG = Debug
-  DEP_FILE = CMakeFiles\zketch_v12.dir\version.rc.obj.d
-  FLAGS = -DNDEBUG
-  INCLUDES = -I D:/Project/zketch-v12/include -I C:/msys64/mingw64/include -I C:/msys64/mingw64/include/c++/15.2.0 -I C:/msys64/mingw64/include/c++/15.2.0/x86_64-w64-mingw32
-  OBJECT_DIR = CMakeFiles\zketch_v12.dir
-  OBJECT_FILE_DIR = CMakeFiles\zketch_v12.dir
+  OBJECT_DIR = CMakeFiles\Win32TestProject.dir
+  OBJECT_FILE_DIR = CMakeFiles\Win32TestProject.dir\src
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target zketch_v12
+# Link build statements for EXECUTABLE target Win32TestProject
 
 
 #############################################
-# Link the executable zketch_v12.exe
+# Link the executable D:\Project\zketch-v12\bin\Win32TestProject.exe
 
-build zketch_v12.exe: CXX_EXECUTABLE_LINKER__zketch_v12_Debug CMakeFiles/zketch_v12.dir/src/main.cpp.obj CMakeFiles/zketch_v12.dir/version.rc.obj
+build D$:/Project/zketch-v12/bin/Win32TestProject.exe: CXX_EXECUTABLE_LINKER__Win32TestProject_Debug CMakeFiles/Win32TestProject.dir/src/test9.cpp.obj
   CONFIG = Debug
   FLAGS = -g
-  LINK_LIBRARIES = -lgdiplus  -lgdi32  -luser32  -lole32  -loleaut32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
-  OBJECT_DIR = CMakeFiles\zketch_v12.dir
+  LINK_LIBRARIES = -luser32  -lgdi32  -lgdiplus  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  OBJECT_DIR = CMakeFiles\Win32TestProject.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = zketch_v12.exe
-  TARGET_IMPLIB = libzketch_v12.dll.a
-  TARGET_PDB = zketch_v12.exe.dbg
+  TARGET_FILE = D:\Project\zketch-v12\bin\Win32TestProject.exe
+  TARGET_IMPLIB = libWin32TestProject.dll.a
+  TARGET_PDB = Win32TestProject.exe.dbg
 
 
 #############################################
@@ -110,7 +102,9 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build zketch_v12: phony zketch_v12.exe
+build Win32TestProject: phony D$:/Project/zketch-v12/bin/Win32TestProject.exe
+
+build Win32TestProject.exe: phony D$:/Project/zketch-v12/bin/Win32TestProject.exe
 
 # =============================================================================
 # Folder targets.
@@ -120,23 +114,37 @@ build zketch_v12: phony zketch_v12.exe
 #############################################
 # Folder: D:/Project/zketch-v12/build
 
-build all: phony zketch_v12.exe
+build all: phony D$:/Project/zketch-v12/bin/Win32TestProject.exe
 
 # =============================================================================
 # Built-in targets
 
 
 #############################################
+# Phony target to force glob verification run.
+
+build D$:/Project/zketch-v12/build/CMakeFiles/VerifyGlobs.cmake_force: phony
+
+
+#############################################
+# Re-run CMake to check if globbed directories changed.
+
+build D$:/Project/zketch-v12/build/CMakeFiles/cmake.verify_globs: VERIFY_GLOBS | D$:/Project/zketch-v12/build/CMakeFiles/VerifyGlobs.cmake_force
+  pool = console
+  restat = 1
+
+
+#############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja D$:/Project/zketch-v12/build/cmake_install.cmake: RERUN_CMAKE | C$:/msys64/mingw64/share/cmake/Modules/CMakeCXXInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeCommonLanguageInclude.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeGenericSystem.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeInitializeConfigs.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeLanguageInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeRCInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-Initialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-windres.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/WindowsPaths.cmake CMakeCache.txt CMakeFiles/4.1.0/CMakeCXXCompiler.cmake CMakeFiles/4.1.0/CMakeRCCompiler.cmake CMakeFiles/4.1.0/CMakeSystem.cmake D$:/Project/zketch-v12/CMakeLists.txt
+build build.ninja D$:/Project/zketch-v12/build/cmake_install.cmake: RERUN_CMAKE D$:/Project/zketch-v12/build/CMakeFiles/cmake.verify_globs | C$:/msys64/mingw64/share/cmake/Modules/CMakeCXXInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeCommonLanguageInclude.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeGenericSystem.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeInitializeConfigs.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeLanguageInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeRCInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-Initialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-windres.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/WindowsPaths.cmake CMakeCache.txt CMakeFiles/4.1.0/CMakeCXXCompiler.cmake CMakeFiles/4.1.0/CMakeRCCompiler.cmake CMakeFiles/4.1.0/CMakeSystem.cmake D$:/Project/zketch-v12/build/CMakeFiles/VerifyGlobs.cmake D$:/Project/zketch-v12/CMakeLists.txt
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build C$:/msys64/mingw64/share/cmake/Modules/CMakeCXXInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeCommonLanguageInclude.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeGenericSystem.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeInitializeConfigs.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeLanguageInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeRCInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-Initialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-windres.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/WindowsPaths.cmake CMakeCache.txt CMakeFiles/4.1.0/CMakeCXXCompiler.cmake CMakeFiles/4.1.0/CMakeRCCompiler.cmake CMakeFiles/4.1.0/CMakeSystem.cmake D$:/Project/zketch-v12/CMakeLists.txt: phony
+build C$:/msys64/mingw64/share/cmake/Modules/CMakeCXXInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeCommonLanguageInclude.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeGenericSystem.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeInitializeConfigs.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeLanguageInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeRCInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Compiler/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Linker/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-Initialize.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows-windres.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/Windows.cmake C$:/msys64/mingw64/share/cmake/Modules/Platform/WindowsPaths.cmake CMakeCache.txt CMakeFiles/4.1.0/CMakeCXXCompiler.cmake CMakeFiles/4.1.0/CMakeRCCompiler.cmake CMakeFiles/4.1.0/CMakeSystem.cmake D$:/Project/zketch-v12/build/CMakeFiles/VerifyGlobs.cmake D$:/Project/zketch-v12/CMakeLists.txt: phony
 
 
 #############################################
