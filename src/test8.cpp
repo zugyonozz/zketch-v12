@@ -16,8 +16,6 @@ int main() {
 		d.DrawCircle({450, 400}, 200, rgba(255, 0, 0, 1), 10) ;
 		d.End() ;
 	}
-	Point p1 = {1, 2}, p2 = {2, 1} ;
-	Point p3 = p1 + p2 ;
 	
 	while(Application) {
 		Event e ;

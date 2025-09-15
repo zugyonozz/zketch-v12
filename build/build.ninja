@@ -68,7 +68,7 @@ build CMakeFiles/Win32TestProject.dir/src/test9.cpp.obj: CXX_COMPILER__Win32Test
 build D$:/Project/zketch-v12/bin/Win32TestProject.exe: CXX_EXECUTABLE_LINKER__Win32TestProject_Debug CMakeFiles/Win32TestProject.dir/src/test9.cpp.obj
   CONFIG = Debug
   FLAGS = -g
-  LINK_LIBRARIES = -luser32  -lgdi32  -lgdiplus  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = -luser32  -lgdi32  -lgdiplus  -lcomctl32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Win32TestProject.dir
   POST_BUILD = cd .
   PRE_LINK = cd .

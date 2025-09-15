@@ -6,12 +6,15 @@
 namespace zketch {
 
 	class Window ;
+	class TrackBar ;
 
 	class Application_ {
 		friend inline LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) ;
 		friend class Window ;
+		friend class TrackBar ;
 	private :
 		static inline std::unordered_map<HWND, Window*> g_windows_ ;
+		static inline std::unordered_map<HWND, TrackBar*> g_trackbars_ ;
 		
 		bool is_run_ = true ;
 	
@@ -74,10 +77,11 @@ namespace zketch {
 
 		static inline HINSTANCE g_hintance_ = GetModuleHandleW(nullptr) ;
 		static inline std::string g_window_class_name_ = "zketch_app" ;
-		static inline bool was_registered = false ;
+		static inline bool window_was_registered = false ;
+		static inline bool menu_was_registered = false ;
 
 		static void SetWindowClass(std::string&& windowclassname) noexcept {
-			if (was_registered) {
+			if (window_was_registered) {
 				logger::warning("SetWindowClass() failed : window class name was registered.") ;
 			} else {
 				g_window_class_name_ = std::move(windowclassname) ;
@@ -85,7 +89,7 @@ namespace zketch {
 		}
 
 		static void RegisterWindowClass() {
-			if (was_registered) {
+			if (window_was_registered) {
 				logger::warning("RegisterWindowClass() failed : window class name was registered.") ;
 			} else {
 				WNDCLASSEX wc = {
@@ -107,10 +111,26 @@ namespace zketch {
 					logger::error("RegisterWindowClass() failed : Error to registering window class!") ;
 				} else {
 					logger::info("RegisterWindowClass() success") ;
-					was_registered = true ;
+					window_was_registered = true ;
 				}
 			}
 		}
+
+		static void RegisterCommonControl() {
+			if (menu_was_registered) {
+				logger::warning("RegisterCommonControl() failed : common control was registered.") ;
+			} else {
+				tagINITCOMMONCONTROLSEX icex{
+					sizeof(icex),
+					0xFFFF // langsung regist semua
+				} ;
+
+				InitCommonControlsEx(&icex) ;
+			}
+		}
+
+		// next improvement is adding RegisterWindowClass with custom Style, icon, cursor, and other...
+		// next improvement is adding RegisterCommonControls with custom dxICC
 	} ;
 
 	class Window {
@@ -259,6 +279,71 @@ namespace zketch {
 		void setTitle(const char* title) noexcept {
 			if (hwnd_)
 				SetWindowText(hwnd_, title) ;
+		}
+	} ;
+
+	class TrackBar {
+	private :
+		HWND hwnd_ = nullptr ;
+
+	public :
+		TrackBar(const TrackBar&) = delete ;
+		TrackBar& operator=(const TrackBar&) = delete ;
+
+		TrackBar(HWND parent, const Rect& rect) {
+			hwnd_ = CreateWindowEx(
+				0,
+				TRACKBAR_CLASS,
+				"",
+				WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | TBS_VERT,
+				rect.x,
+				rect.y,
+				rect.w,
+				rect.h,
+				parent,
+				reinterpret_cast<HMENU>(static_cast<size_t>(ID_MENU)),
+				AppRegistry::g_hintance_,
+				nullptr
+			) ;
+			if (!hwnd_) 
+				logger::error("TrackBar() failed to create trackbar : handle is nullptr") ;
+			Application_::g_trackbars_.emplace(hwnd_, this) ;
+			logger::info("TrackBar() create trackbar success") ;
+
+			setPos(0) ;
+		}
+
+		~TrackBar() noexcept {
+			logger::info("Calling dtor of class TrackBar") ;
+			if (hwnd_) {
+				if (IsWindow(hwnd_)) {
+					DestroyWindow(hwnd_) ;
+				}
+				hwnd_ = nullptr ;
+				logger::info("Success to set hwnd to nullptr.") ;
+			} else {
+				logger::warning("failed to set hwnd, hwnd is already nullptr.") ;
+			}
+		}
+
+		int getPos() const noexcept {
+			return static_cast<int>(SendMessage(hwnd_, TBM_GETPOS, 0, 0));
+		}
+
+		HWND getHandle() const noexcept {
+			return hwnd_ ;
+		}
+
+		void setRange(int min, int max, bool redraw = true) noexcept {
+			SendMessage(hwnd_, TBM_SETRANGE, redraw, MAKELPARAM(min, max));
+		}
+
+		void setPos(int pos, bool redraw = true) noexcept {
+			SendMessage(hwnd_, TBM_SETPOS, redraw, pos);
+		}
+
+		void setTickFreq(int freq) noexcept {
+			SendMessage(hwnd_, TBM_SETTICFREQ, freq, 0);
 		}
 	} ;
 }

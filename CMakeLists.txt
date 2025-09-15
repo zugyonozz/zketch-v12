@@ -27,6 +27,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     user32
     gdi32
 	gdiplus
+	comctl32
 )
 
 # Opsional: tunjukkan semua perintah build (debugging)

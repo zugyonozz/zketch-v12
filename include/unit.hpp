@@ -450,15 +450,15 @@ struct Rect_ {
 	constexpr Rect_(const tagRECT& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.left) ;
 		y = math_ops::apply{}.operator()<T>(o.top) ;
-		w = math_ops::apply{}.operator()<T>(o.left - o.right) ;
-		h = math_ops::apply{}.operator()<T>(o.top - o.bottom) ;
+		w = math_ops::apply{}.operator()<T>(o.right - o.left) ;
+		h = math_ops::apply{}.operator()<T>(o.bottom - o.top) ;
 	}
 
 	constexpr Rect_(const RECTL& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.left) ;
 		y = math_ops::apply{}.operator()<T>(o.top) ;
-		w = math_ops::apply{}.operator()<T>(o.left - o.right) ;
-		h = math_ops::apply{}.operator()<T>(o.top - o.bottom) ;
+		w = math_ops::apply{}.operator()<T>(o.right - o.left) ;
+		h = math_ops::apply{}.operator()<T>(o.bottom - o.top) ;
 	}
 
 	template <typename U, typename = std::enable_if_t<std::is_arithmetic_v<U>>> 
@@ -820,5 +820,39 @@ struct Color {
 } ;
 
 using Vertex = std::vector<PointF> ;
+
+class ID {
+	using INCFN = size_t(*)(size_t&) ;
+private :
+	size_t start_ = 1000 ;
+	size_t index_ = 1000 ;
+	INCFN inc_ = nullptr ;
+
+public :
+	ID(ID&&) noexcept = delete ;
+	ID& operator=(size_t) = delete ;
+	ID& operator=(ID&&) = delete ;
+
+	ID(size_t start = 1000, INCFN inc = nullptr) noexcept : start_(start), index_(start), inc_(inc) {}
+
+	[[nodiscard]] operator size_t() noexcept { 
+		if (index_ >= start_ && index_ <= std::numeric_limits<size_t>::max()) {
+			if (inc_)
+				return inc_(index_) ; 
+			return index_++ ;
+		} else {
+			logger::warning("index has reached maximum value on type name : ", typeid(size_t).name()) ;
+			return index_ ;
+		}
+	}
+
+	size_t reset() noexcept { 
+		index_ = start_ ;
+		inc_ = nullptr ; 
+		return index_ ; 
+	}
+} ;
+
+static inline ID ID_MENU ;
 
 }

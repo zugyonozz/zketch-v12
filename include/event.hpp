@@ -21,7 +21,8 @@ namespace zketch {
 		MouseUp, 
 		MouseMove, 
 		Resize, 
-		Close
+		Close,
+		ScrollBar,
 	} ;
 
 	enum class MouseButton : uint8_t { 
@@ -29,6 +30,11 @@ namespace zketch {
 		Left, 
 		Right, 
 		Middle, 
+	} ;
+
+	enum class ScrollBarType : uint8_t {
+		VScroll,
+		HScroll,
 	} ;
 
 	class Event {
@@ -46,13 +52,17 @@ namespace zketch {
 				uint8_t button_ ;
 				uint32_t x_, y_ ;
 			} mouse_ ;
+			struct scroll__ {
+				uint8_t scrolltype_ ;
+				size_t value_ ;
+			} scroll_ ;
 		} data_ ;
 
 		// ========================================= //
 		//                  Construtor               //
 		// ========================================= // 
 
-		constexpr Event(HWND src_, EventType type_, uint32_t key_code_)  {
+		constexpr Event(HWND src_, EventType type_, uint32_t key_code_) {
 			this->type_ = type_ ;
 			if (!iskeyEvent()) 
 				throw error_handler::invalid_event_type() ;
@@ -74,6 +84,12 @@ namespace zketch {
 				data_.mouse_ = {0, pos_.x, pos_.y} ;
 			else
 				data_.mouse_ = {static_cast<uint8_t>(button_), pos_.x, pos_.y} ;
+			hwnd_ = src_ ;
+		}
+
+		constexpr Event(HWND src_, ScrollBarType scrolltype_, size_t value_) noexcept {
+			this->type_ = EventType::ScrollBar ;
+			data_.scroll_ = {static_cast<uint8_t>(scrolltype_), value_} ;
 			hwnd_ = src_ ;
 		}
 
@@ -131,6 +147,10 @@ namespace zketch {
 			return Event(src_, size_) ;
 		}
 
+		static Event createScrollEvent(HWND src_, ScrollBarType scrolltype_, size_t value) noexcept {
+			return Event(src_, scrolltype_, value) ;
+		}
+
 		static Event FromMSG(const MSG& msg) noexcept {
 			// logger::info("FromMSG: Converting message ", msg.message, " from HWND ", msg.hwnd) ;
 			
@@ -165,6 +185,12 @@ namespace zketch {
 				case WM_CLOSE : 
 					// logger::info("-> Converting to Close event") ;
 					return Event::createEvent(msg.hwnd, EventType::Close) ;
+				case WM_HSCROLL : 
+					// logger::info("-> Converting to Scroll event") ;
+					return Event::createScrollEvent(reinterpret_cast<HWND>(msg.lParam), ScrollBarType::HScroll, static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(msg.lParam), TBM_GETPOS, 0, 0))) ;
+				case WM_VSCROLL : 
+					// logger::info("-> Converting to Scroll event") ;
+					return Event::createScrollEvent(reinterpret_cast<HWND>(msg.lParam), ScrollBarType::VScroll, static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(msg.lParam), TBM_GETPOS, 0, 0))) ;
 			}
 
 			// logger::info("-> Converting to None event (unhandled message)") ;
@@ -185,6 +211,14 @@ namespace zketch {
 
 		constexpr MouseButton mouseButton() const noexcept { 
 			return static_cast<MouseButton>(data_.mouse_.button_) ; 
+		}
+
+		constexpr ScrollBarType scrollBarType() const noexcept {
+			return static_cast<ScrollBarType>(data_.scroll_.scrolltype_) ;
+		}
+
+		constexpr size_t scrollValue() const noexcept {
+			return data_.scroll_.value_ ;
 		}
 
 		constexpr operator EventType() const noexcept {
@@ -211,6 +245,7 @@ namespace zketch {
 			case EventType::MouseMove : return "MouseMove" ;
 			case EventType::Resize : return "Resize" ;
 			case EventType::Close : return "Close" ;
+			case EventType::ScrollBar : return "ScrollBar" ;
 		}
 		return "Unknown" ;
 	}
