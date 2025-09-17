@@ -59,8 +59,16 @@ namespace zketch {
 				return false ;
 			}
 
+			// Initialize both buffers dengan background transparan/hitam
+			{
+				Gdiplus::Graphics gfx_front(front_.get()) ;
+				Gdiplus::Graphics gfx_back(back_.get()) ;
+				gfx_front.Clear(Gdiplus::Color(255, 0, 0, 0)) ; // ARGB: Alpha=255, RGB=0,0,0
+				gfx_back.Clear(Gdiplus::Color(255, 0, 0, 0)) ;
+			}
+
 			size_ = size ;
-			dirty_ = true ;
+			dirty_ = true ; // Mark as dirty so it will be rendered initially
 			return true ;
 		}
 
@@ -125,16 +133,20 @@ namespace zketch {
 		bool IsValid() const noexcept { return front_ != nullptr && back_ != nullptr ; }
 		bool NeedRedraw() const noexcept { return dirty_ ; }
 
-		void MarkClean() noexcept { 
-			if (dirty_ && back_) {
+		// FIXED: Logika swap buffer yang benar
+		void SwapBuffers() noexcept {
+			if (front_ && back_) {
 				std::swap(front_, back_) ;
-				dirty_ = false ; 
+				dirty_ = false ;
 			}
 		}
+
 		void MarkDirty() noexcept { 
-			if (back_) {
-				dirty_ = true ; 
-			}
+			dirty_ = true ; 
+		}
+
+		void MarkClean() noexcept {
+			dirty_ = false ;
 		}
 	};
 
@@ -151,9 +163,6 @@ namespace zketch {
 			}
 
 			if (!gfx_ || !is_drawing_) {
-				if (!to_->NeedRedraw()) {
-					logger::warning("Renderer - gfx isn't need redraw!") ;
-				}
 				if (!gfx_) {
 					logger::warning("Renderer - gfx is nullptr!") ;
 				}
@@ -205,7 +214,7 @@ namespace zketch {
 			auto* back = src.GetBackBuffer() ;
 			if (!back) {
 				logger::error("Renderer Begin() - back buffer is null.") ;
-        		return false ;
+				return false ;
 			}
 
 			gfx_ = std::make_unique<Gdiplus::Graphics>(back) ;
@@ -233,11 +242,13 @@ namespace zketch {
 			return true ;
 		}
 
+		// FIXED: End() sekarang melakukan swap buffer dengan benar
 		void End() noexcept {
-			if (to_) {
-				to_->MarkClean() ;
+			if (to_ && is_drawing_) {
+				to_->SwapBuffers() ; // Swap front dan back buffer
 			}
 
+			gfx_.reset() ; // Release graphics object
 			to_ = nullptr ;
 			is_drawing_ = false ;
 		}
@@ -366,32 +377,7 @@ namespace zketch {
 			gfx_->DrawString(text.c_str(), -1, &f, layout, &fmt, &brush) ;
 		}
 
-		void DrawImage(const Point& pos) noexcept {
-			if (!IsValid() || !to_) {
-				return ;
-			}
-
-			to_->MarkDirty() ;
-			gfx_->DrawImage(to_->GetBitmap(), pos.x, pos.y) ;
-		}
-
-		void DrawImage(const RectF& destRect) noexcept {
-			if (!IsValid() || !to_) {
-				return ;
-			}
-
-			to_->MarkDirty() ;
-			gfx_->DrawImage(to_->GetBitmap(), static_cast<Gdiplus::RectF>(destRect)) ;
-		}
-
-		void DrawImage(const RectF& destRect, const RectF& srcRect) noexcept {
-			if (!IsValid() || !to_) {
-				return ;
-			}
-
-			to_->MarkDirty() ;
-			gfx_->DrawImage(to_->GetBitmap(), static_cast<Gdiplus::RectF>(destRect), srcRect.x, srcRect.y, srcRect.w, srcRect.h, Gdiplus::UnitPixel) ;
-		}
+		// REMOVED: DrawImage methods yang menggunakan to_->GetBitmap() (tidak masuk akal)
 
 		void DrawPolygon(const Vertex& vertices, const Color& color, float thickness = 1.0f) noexcept {
 			if (!IsValid() || vertices.empty()) {
@@ -461,7 +447,6 @@ namespace zketch {
 
 			to_->MarkDirty() ;
 			FillEllipse(RectF{static_cast<float>(center.x - radius), static_cast<float>(center.y - radius), radius * 2.0f, radius * 2.0f}, color) ;
-			logger::info("Fill Circle.") ;
 		}
 
 		// State queries
