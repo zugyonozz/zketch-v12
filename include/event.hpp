@@ -22,7 +22,7 @@ namespace zketch {
 		MouseMove, 
 		Resize, 
 		Close,
-		ScrollBar,
+		TrackBar,
 	} ;
 
 	enum class MouseButton : uint8_t { 
@@ -32,7 +32,7 @@ namespace zketch {
 		Middle, 
 	} ;
 
-	enum class ScrollBarType : uint8_t {
+	enum class TrackBarType : uint8_t {
 		VScroll,
 		HScroll,
 	} ;
@@ -41,6 +41,7 @@ namespace zketch {
 	private :
 		EventType type_ = EventType::None ;
 		HWND hwnd_ = nullptr ;
+		uint64_t timestamp_ = 0 ;
 
 		union data_ {
 			struct empty__ {} empty_ ;
@@ -52,15 +53,13 @@ namespace zketch {
 				uint8_t button_ ;
 				uint32_t x_, y_ ;
 			} mouse_ ;
-			struct scroll__ {
-				uint8_t scrolltype_ ;
+			struct trackbar__ {
+				uint8_t trackbarType_ ;
 				size_t value_ ;
-			} scroll_ ;
+			} trackbar_ ;
 		} data_ ;
 
-		// ========================================= //
-		//                  Construtor               //
-		// ========================================= // 
+		// -------------- Construtor  --------------
 
 		constexpr Event(HWND src_, EventType type_, uint32_t key_code_) {
 			this->type_ = type_ ;
@@ -87,9 +86,9 @@ namespace zketch {
 			hwnd_ = src_ ;
 		}
 
-		constexpr Event(HWND src_, ScrollBarType scrolltype_, size_t value_) noexcept {
-			this->type_ = EventType::ScrollBar ;
-			data_.scroll_ = {static_cast<uint8_t>(scrolltype_), value_} ;
+		constexpr Event(HWND src_, TrackBarType scrolltype_, size_t value_) noexcept {
+			this->type_ = EventType::TrackBar ;
+			data_.trackbar_ = {static_cast<uint8_t>(scrolltype_), value_} ;
 			hwnd_ = src_ ;
 		}
 
@@ -107,9 +106,7 @@ namespace zketch {
 			data_.empty_ = {} ;
 		}
 
-		// ========================================= //
-		//              Checking Method              //
-		// ========================================= // 
+		// -------------- Checking Method  --------------
 
 		constexpr bool iskeyEvent() const noexcept {
 			return (type_ == EventType::KeyDown || type_ == EventType::KeyUp) ;
@@ -123,9 +120,7 @@ namespace zketch {
 			return (type_ == EventType::Resize) ;
 		}
 
-		// ========================================= //
-		//              Creator Factory              //
-		// ========================================= // 
+		// -------------- Creator Factory  -------------- 
 
 		static Event createEvent() noexcept {
 			return Event(nullptr, EventType::None) ;
@@ -147,7 +142,7 @@ namespace zketch {
 			return Event(src_, size_) ;
 		}
 
-		static Event createScrollEvent(HWND src_, ScrollBarType scrolltype_, size_t value) noexcept {
+		static Event createScrollEvent(HWND src_, TrackBarType scrolltype_, size_t value) noexcept {
 			return Event(src_, scrolltype_, value) ;
 		}
 
@@ -176,21 +171,12 @@ namespace zketch {
 				case WM_RBUTTONUP : 
 					// logger::info("-> Converting to MouseUp (Right) event") ;
 					return Event::createMouseEvent(msg.hwnd, EventType::MouseUp, MouseButton::Right, {GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam)}) ; 
-				case WM_SIZE : 
-					// logger::info("-> Converting to Resize event (width=", LOWORD(msg.lParam), ", height=", HIWORD(msg.lParam), ")") ;
-					return Event::createResizeEvent(msg.hwnd, {LOWORD(msg.lParam), HIWORD(msg.lParam)}) ;
 				case WM_QUIT : 
 					// logger::info("-> Converting to Quit event") ;
 					return Event::createEvent(nullptr, EventType::Quit) ;
 				case WM_CLOSE : 
 					// logger::info("-> Converting to Close event") ;
 					return Event::createEvent(msg.hwnd, EventType::Close) ;
-				case WM_HSCROLL : 
-					// logger::info("-> Converting to Scroll event") ;
-					return Event::createScrollEvent(reinterpret_cast<HWND>(msg.lParam), ScrollBarType::HScroll, static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(msg.lParam), TBM_GETPOS, 0, 0))) ;
-				case WM_VSCROLL : 
-					// logger::info("-> Converting to Scroll event") ;
-					return Event::createScrollEvent(reinterpret_cast<HWND>(msg.lParam), ScrollBarType::VScroll, static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(msg.lParam), TBM_GETPOS, 0, 0))) ;
 			}
 
 			// logger::info("-> Converting to None event (unhandled message)") ;
@@ -213,12 +199,12 @@ namespace zketch {
 			return static_cast<MouseButton>(data_.mouse_.button_) ; 
 		}
 
-		constexpr ScrollBarType scrollBarType() const noexcept {
-			return static_cast<ScrollBarType>(data_.scroll_.scrolltype_) ;
+		constexpr TrackBarType scrollBarType() const noexcept {
+			return static_cast<TrackBarType>(data_.trackbar_.trackbarType_) ;
 		}
 
 		constexpr size_t scrollValue() const noexcept {
-			return data_.scroll_.value_ ;
+			return data_.trackbar_.value_ ;
 		}
 
 		constexpr operator EventType() const noexcept {
@@ -229,8 +215,48 @@ namespace zketch {
 			return type_ ;
 		}
 
+		uint64_t GetTimeStamp() const noexcept {
+			return timestamp_ ;
+		}
+
 		HWND getHandle() const noexcept {
 			return hwnd_ ;
+		}
+	} ;
+
+	class EventSystem {
+	private :
+		static inline std::queue<Event> g_events_ ;
+		static inline bool event_was_initialized_ = false ;
+
+	public :
+		static void Initialize() noexcept {
+			if (!event_was_initialized_) {
+				event_was_initialized_ = true ;
+				logger::info("EventSystem initialized!.") ;
+				return ;
+			}
+			logger::info("EventSystem was initialized.") ;
+		}
+
+		static void PushEvent(const Event& e) noexcept {
+			g_events_.push(e) ;
+		}
+
+		static bool PoolEvent(Event& e) noexcept {
+			if (g_events_.empty()) { 
+				return false ; 
+			}
+
+            e = g_events_.front() ;
+            g_events_.pop() ;
+            return true ;
+		}
+
+		static void Clear() noexcept {
+			while (!g_events_.empty()) {
+				g_events_.pop() ;
+			}
 		}
 	} ;
 
@@ -245,7 +271,7 @@ namespace zketch {
 			case EventType::MouseMove : return "MouseMove" ;
 			case EventType::Resize : return "Resize" ;
 			case EventType::Close : return "Close" ;
-			case EventType::ScrollBar : return "ScrollBar" ;
+			case EventType::TrackBar : return "ScrollBar" ;
 		}
 		return "Unknown" ;
 	}
@@ -259,21 +285,29 @@ namespace zketch {
 	}
 
 	static inline bool PollEvent(Event& e) {
+		if (EventSystem::PoolEvent(e)) {
+			return true ;
+		}
+
 		MSG msg{};
-		if (!PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-			return false; // tidak ada pesan
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+			if (msg.message == WM_QUIT) {
+				logger::info("PollEvent: WM_QUIT received via PeekMessage.") ;
+				e = Event::createEvent(nullptr, EventType::Quit) ;
+				return true ;
+			}
+
+			Event ecvt = Event::FromMSG(msg) ;
+
+			if (ecvt != EventType::None) {
+				EventSystem::PushEvent(ecvt) ;
+			}
+
+			TranslateMessage(&msg) ;
+			DispatchMessage(&msg) ;
 		}
 
-		if (msg.message == WM_QUIT) {
-			logger::info("PollEvent: WM_QUIT received (via PeekMessage)");
-			e = Event::createEvent(nullptr, EventType::Quit);
-			return true;
-		}
-
-		e = Event::FromMSG(msg);
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-		return true;
+		return EventSystem::PoolEvent(e) ;
 	}
 
 }

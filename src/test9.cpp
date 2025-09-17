@@ -14,12 +14,6 @@ int main() {
 	c1.Create({900, 800}) ;
 	Drawer d ;
 
-	if (d.Begin(c1)) {
-		d.FillCircle({450, 400}, 200, rgba(255, 0, 0, 1)) ;
-		d.DrawCircle({450, 400}, 200, rgba(255, 0, 0, 1), 10) ;
-		d.End() ;
-	}
-
 	w1.Show() ;
 	w2.Show() ;
 
@@ -40,14 +34,25 @@ int main() {
 				}
 				case EventType::MouseDown : 
 					break ;
-				case EventType::ScrollBar :
-					logger::info("Scroll.\nType : ", ev.scrollBarType() == ScrollBarType::HScroll ? "HSCROLL\n" : "VSCROLL\n", "Value : ", ev.scrollValue()) ;
-				case  EventType::Resize :
+
+				case EventType::TrackBar :
+					logger::info("Scroll.\nType : ", ev.scrollBarType() == TrackBarType::HScroll ? "HSCROLL\n" : "VSCROLL\n", "Value : ", ev.scrollValue()) ;
+
+				case EventType::Resize :
 					logger::info("Resize Event : {", ev.resizeSize().x, ", ", ev.resizeSize().y, '}') ;
+					c1.MarkDirty() ;
 				default : break ;
 			}
 		}
+		if (d.Begin(c1)) {
+			Rect r_ = w1.getClientBound() ;
+			d.FillCircle({r_.w / 2 - 100, r_.h / 2 - 100}, 200, rgba(255, 0, 0, 1)) ;
+			d.DrawCircle({r_.w / 2 - 100, r_.h / 2 - 100}, 200, rgba(255, 0, 0, 1), 10) ;
+			d.End() ;
+		}
+
 		c1.Present(w1.getHandle()) ;
+		Sleep(16) ;
 	}
 
 	return 0 ;

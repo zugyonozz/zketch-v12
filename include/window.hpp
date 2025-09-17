@@ -47,9 +47,24 @@ namespace zketch {
 
 	inline LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
 		switch (msg) {
+			case WM_HSCROLL : 
+				logger::info("-> Converting to HScroll event") ;
+				if (lp != 0) { 
+					size_t pos = static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(lp), TBM_GETPOS, 0, 0)) ;
+					EventSystem::PushEvent(Event::createScrollEvent(reinterpret_cast<HWND>(lp), TrackBarType::HScroll, pos)) ;
+				}
+				break;
+			case WM_VSCROLL : 
+				logger::info("-> Converting to VScroll event") ;
+				if (lp != 0) { 
+					size_t pos = static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(lp), TBM_GETPOS, 0, 0)) ;
+					EventSystem::PushEvent(Event::createScrollEvent(reinterpret_cast<HWND>(lp), TrackBarType::VScroll, pos)) ;
+				}
+				break ;
 			case WM_SIZE : 
-				logger::info("WM SIZE received") ;
-				return 0 ;
+				logger::info("-> Converting to Resize event (width=", LOWORD(lp), ", height=", HIWORD(lp), ")") ;
+				EventSystem::PushEvent(Event::createResizeEvent(hwnd, {LOWORD(lp), HIWORD(lp)})) ;
+				break ;
 			case WM_CLOSE : 
 				logger::info("WM CLOSE received") ;
 				DestroyWindow(hwnd) ;

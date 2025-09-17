@@ -10,7 +10,8 @@ namespace zketch {
 		friend class Drawer ;
 
 	private:
-		std::unique_ptr<Gdiplus::Bitmap> bmp_{} ;
+		std::unique_ptr<Gdiplus::Bitmap> front_{} ;
+		std::unique_ptr<Gdiplus::Bitmap> back_{} ;
 		Point size_{} ;
 		bool dirty_ = false ;
 
@@ -22,8 +23,6 @@ namespace zketch {
 		Canvas& operator=(Canvas&&) = default ;
 		~Canvas() = default ;
 
-		Gdiplus::Bitmap* GetBitmap() const noexcept { return bmp_.get() ; }
-
 		bool Create(const Point& size) noexcept {
 			Clear() ;
 
@@ -34,23 +33,29 @@ namespace zketch {
 
 			logger::info("Creating GDI+ bitmap: ", size.x, " x ", size.y) ;
 			try {
-				bmp_ = std::make_unique<Gdiplus::Bitmap>(size.x, size.y, PixelFormat32bppARGB) ;
+				front_ = std::make_unique<Gdiplus::Bitmap>(size.x, size.y, PixelFormat32bppARGB) ;
+				back_ = std::make_unique<Gdiplus::Bitmap>(size.x, size.y, PixelFormat32bppARGB) ;
 			} catch (...) {
-				bmp_.reset() ;
+				front_.reset() ;
+				back_.reset() ;
 				logger::error("Exception while creating bitmap.") ;
 				return false ;
 			}
 
-			if (!bmp_) {
+			if (!front_ || !back_) {
 				logger::error("Failed to allocate bitmap.") ;
 				return false ;
 			}
 
-			Gdiplus::Status st = bmp_->GetLastStatus() ;
-			logger::info("Bitmap status: ", static_cast<int32_t>(st)) ;
-			if (st != Gdiplus::Ok) {
-				bmp_.reset() ;
-				logger::error("Failed to create canvas bitmap, status: ", static_cast<int>(st)) ;
+			Gdiplus::Status fst = front_->GetLastStatus() ;
+			Gdiplus::Status bst = back_->GetLastStatus() ;
+			logger::info("front buffer status: ", static_cast<int32_t>(fst)) ;
+			logger::info("back buffer status: ", static_cast<int32_t>(bst)) ;
+			if (fst != Gdiplus::Ok || bst != Gdiplus::Ok) {
+				front_.reset() ;
+				back_.reset() ;
+				logger::error("Failed to create front buffer, status: ", static_cast<int32_t>(fst)) ;
+				logger::error("Failed to create back buffer, status: ", static_cast<int32_t>(bst)) ;
 				return false ;
 			}
 
@@ -60,17 +65,19 @@ namespace zketch {
 		}
 
 		void Clear() noexcept {
-			bmp_.reset() ;
+			front_.reset() ;
+			back_.reset() ;
 			size_ = {} ;
 			dirty_ = false ;
 			logger::info("Canvas cleared.") ;
 		}
 
-		void Present(HWND hwnd) const noexcept {
-			if (!bmp_) {
+		void Present(HWND hwnd) noexcept {
+			if (!front_) {
 				logger::warning("Canvas::Present - No bitmap.") ;
 				return ;
 			}
+
 			if (!hwnd) {
 				logger::warning("Canvas::Present - hwnd is null.") ;
 				return ;
@@ -82,41 +89,53 @@ namespace zketch {
 				return ;
 			}
 
-			{
-				Gdiplus::Graphics screen(hdc) ;
-				screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
-				screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
-				screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
-				screen.DrawImage(bmp_.get(), 0, 0) ;
-			}
+			Gdiplus::Graphics screen(hdc) ;
+			screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
+			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
+			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
+			screen.DrawImage(front_.get(), 0, 0) ;
 
 			ReleaseDC(hwnd, hdc) ;
 		}
 
 		void Present(HDC hdc, const Point& pos) const noexcept {
-			if (!bmp_) {
+			if (!front_) {
 				logger::warning("Canvas::Present - No bitmap.") ;
 				return ;
 			}
+
 			if (!hdc) {
 				logger::warning("Canvas::Present - invalid HDC.") ;
 				return ;
 			}
+
 			Gdiplus::Graphics screen(hdc) ;
 			screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
 			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
 			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
-			screen.DrawImage(bmp_.get(), pos.x, pos.y) ;
+			screen.DrawImage(front_.get(), pos.x, pos.y) ;
 		}
 
+		Gdiplus::Bitmap* GetBitmap() const noexcept { return front_.get() ; }
+		Gdiplus::Bitmap* GetBackBuffer() const noexcept { return back_.get() ; }
 		int32_t GetWidth() const noexcept { return size_.x ; }
 		int32_t GetHeight() const noexcept { return size_.y ; }
 		Point GetSize() const noexcept { return size_ ; }
 
-		bool IsValid() const noexcept { return bmp_ != nullptr ; }
+		bool IsValid() const noexcept { return front_ != nullptr && back_ != nullptr ; }
 		bool NeedRedraw() const noexcept { return dirty_ ; }
-		void MarkClean() noexcept { dirty_ = false ; }
-		void MarkDirty() noexcept { dirty_ = true ; }
+
+		void MarkClean() noexcept { 
+			if (dirty_ && back_) {
+				std::swap(front_, back_) ;
+				dirty_ = false ; 
+			}
+		}
+		void MarkDirty() noexcept { 
+			if (back_) {
+				dirty_ = true ; 
+			}
+		}
 	};
 
 	class Drawer {
@@ -126,9 +145,21 @@ namespace zketch {
 		bool is_drawing_ = false ;
 
 		bool IsValid() const noexcept {
+			if (!to_) {
+				logger::warning("Renderer - target canvas is null!") ;
+				return false ;
+			}
+
 			if (!gfx_ || !is_drawing_) {
-				if (!gfx_) logger::warning("Renderer - gfx is nullptr!") ;
-				if (!is_drawing_) logger::warning("Renderer - not in drawing state!") ;
+				if (!to_->NeedRedraw()) {
+					logger::warning("Renderer - gfx isn't need redraw!") ;
+				}
+				if (!gfx_) {
+					logger::warning("Renderer - gfx is nullptr!") ;
+				}
+				if (!is_drawing_) {
+					logger::warning("Renderer - not in drawing state!") ;
+				}
 				return false ;
 			}
 			return true ;
@@ -147,7 +178,8 @@ namespace zketch {
 		Drawer& operator=(const Drawer&) = delete ;
 
 		Drawer(Drawer&& o) noexcept
-			: gfx_(std::move(o.gfx_)), to_(std::exchange(o.to_, nullptr)), is_drawing_(std::exchange(o.is_drawing_, false)) {}
+			: gfx_(std::move(o.gfx_)), to_(std::exchange(o.to_, nullptr))
+			, is_drawing_(std::exchange(o.is_drawing_, false)) {}
 
 		Drawer& operator=(Drawer&& o) noexcept {
 			if (this != &o) {
@@ -164,19 +196,26 @@ namespace zketch {
 				logger::error("Renderer Begin() already in drawing state.") ;
 				return false ;
 			}
+
 			if (!src.IsValid()) {
 				logger::error("Renderer Begin() invalid canvas.") ;
 				return false ;
 			}
 
-			gfx_ = std::make_unique<Gdiplus::Graphics>(src.GetBitmap()) ;
+			auto* back = src.GetBackBuffer() ;
+			if (!back) {
+				logger::error("Renderer Begin() - back buffer is null.") ;
+        		return false ;
+			}
+
+			gfx_ = std::make_unique<Gdiplus::Graphics>(back) ;
 			if (!gfx_) {
 				logger::error("Renderer Begin() failed to create graphics object.") ;
 				return false ;
 			}
 
 			if (gfx_->GetLastStatus() != Gdiplus::Ok) {
-				logger::error("Renderer Begin() graphics status not OK: ", static_cast<int>(gfx_->GetLastStatus())) ;
+				logger::error("Renderer Begin() graphics status not OK: ", static_cast<int32_t>(gfx_ ? gfx_->GetLastStatus() : Gdiplus::GenericError)) ;
 				gfx_.reset() ;
 				return false ;
 			}
@@ -191,13 +230,14 @@ namespace zketch {
 			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
 			gfx_->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
 
-			to_->MarkDirty() ;
 			return true ;
 		}
 
 		void End() noexcept {
-			gfx_.reset() ;
-			if (to_) to_->MarkClean() ;
+			if (to_) {
+				to_->MarkClean() ;
+			}
+
 			to_ = nullptr ;
 			is_drawing_ = false ;
 		}
@@ -210,12 +250,16 @@ namespace zketch {
 		}
 
 		void DrawRect(const RectF& rect, const Color& color, float thickness = 1.0f) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
+
 			if (thickness < 0.1f) {
 				logger::warning("DrawRect - thickness lower than 0.1") ;
 				return ;
 			}
+
+			to_->MarkDirty() ;
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawRectangle(&p, static_cast<Gdiplus::RectF>(rect)) ;
 		}
@@ -223,16 +267,21 @@ namespace zketch {
 		void FillRect(const Rect& rect, const Color& color) noexcept {
 			if (!IsValid()) 
 				return ;
+
+			to_->MarkDirty() ;
 			Gdiplus::SolidBrush b(color) ;
 			gfx_->FillRectangle(&b, static_cast<Gdiplus::RectF>(rect)) ;
 		}
 
 		void DrawRectRounded(const RectF& rect, const Color& color, float radius, float thickness = 1.0f) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
+
 			if (thickness < 0.1f || radius < 0.0f) 
 				return ;
 
+			to_->MarkDirty() ;
 			Gdiplus::GraphicsPath path ;
 			float diameter = radius * 2.0f ;
 			path.AddArc(rect.x, rect.y, diameter, diameter, 180, 90) ;
@@ -246,10 +295,15 @@ namespace zketch {
 		}
 
 		void FillRectRounded(const RectF& rect, const Color& color, float radius) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
-			if (radius < 0.0f) 
+			}
+
+			if (radius < 0.0f) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 
 			Gdiplus::GraphicsPath path ;
 			float diameter = radius * 2.0f ;
@@ -264,27 +318,39 @@ namespace zketch {
 		}
 
 		void DrawEllipse(const RectF& rect, const Color& color, float thickness = 1.0f) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
-			if (thickness < 0.1f) 
+			}
+
+			if (thickness < 0.1f) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawEllipse(&p, static_cast<Gdiplus::RectF>(rect)) ;
 		}
 
 		void FillEllipse(const RectF& rect, const zketch::Color& color) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			Gdiplus::SolidBrush b(color) ;
 			gfx_->FillEllipse(&b, rect.x, rect.y, rect.w, rect.h) ;
 		}
 
 		void DrawString(const std::wstring& text, const Point& pos, const Color& color, const Font& font) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
-			if (text.empty()) 
-				return ;
+			}
 
+			if (text.empty()) {
+				return ;
+			}
+
+			to_->MarkDirty() ;
 			Gdiplus::SolidBrush brush(color) ;
 			Gdiplus::FontFamily family(font.family().c_str()) ;
 			Gdiplus::Font f(&family, font.size(), font.style(), Gdiplus::UnitPixel) ;
@@ -301,75 +367,106 @@ namespace zketch {
 		}
 
 		void DrawImage(const Point& pos) noexcept {
-			if (!IsValid() || !to_) 
+			if (!IsValid() || !to_) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			gfx_->DrawImage(to_->GetBitmap(), pos.x, pos.y) ;
 		}
 
 		void DrawImage(const RectF& destRect) noexcept {
-			if (!IsValid() || !to_) 
+			if (!IsValid() || !to_) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			gfx_->DrawImage(to_->GetBitmap(), static_cast<Gdiplus::RectF>(destRect)) ;
 		}
 
 		void DrawImage(const RectF& destRect, const RectF& srcRect) noexcept {
-			if (!IsValid() || !to_) 
+			if (!IsValid() || !to_) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			gfx_->DrawImage(to_->GetBitmap(), static_cast<Gdiplus::RectF>(destRect), srcRect.x, srcRect.y, srcRect.w, srcRect.h, Gdiplus::UnitPixel) ;
 		}
 
 		void DrawPolygon(const Vertex& vertices, const Color& color, float thickness = 1.0f) noexcept {
-			if (!IsValid() || vertices.empty()) 
+			if (!IsValid() || vertices.empty()) {
 				return;
-			if (thickness < 0.1f) 
-				return;
+			}
 
+			if (thickness < 0.1f) {
+				return;
+			}
+
+			to_->MarkDirty() ;
 			std::vector<Gdiplus::PointF> points ;
 			points.reserve(vertices.size()) ;
-			for (const auto& v : vertices) 
+
+			for (const auto& v : vertices) {
 				points.emplace_back(v.x, v.y) ;
+			}
 
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawPolygon(&p, points.data(), static_cast<int>(points.size())) ;
 		}
 
 		void FillPolygon(const Vertex& vertices, const Color& color) noexcept {
-			if (!IsValid() || vertices.empty()) 
+			if (!IsValid() || vertices.empty()) {
 				return ;
+			}
 
+			to_->MarkDirty() ;
 			std::vector<Gdiplus::PointF> points ;
 			points.reserve(vertices.size()) ;
-			for (const auto& v : vertices) 
+			
+			for (const auto& v : vertices) {
 				points.emplace_back(v.x, v.y) ;
+			}
 
 			Gdiplus::SolidBrush b(color) ;
 			gfx_->FillPolygon(&b, points.data(), static_cast<int>(points.size())) ;
 		}
 
 		void DrawLine(const Point& start, const Point& end, const Color& color, float thickness = 1.0f) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
-			if (thickness < 0.1f) 
+			}
+
+			if (thickness < 0.1f) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawLine(&p, start.x, start.y, end.x, end.y) ;
 		}
 
 		void DrawCircle(const Point& center, float radius, const Color& color, float thickness = 1.0f) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			DrawEllipse(RectF{static_cast<float>(center.x - radius), static_cast<float>(center.y - radius), radius * 2.0f, radius * 2.0f}, color, thickness) ;
 		}
 
 		void FillCircle(const Point& center, float radius, const Color& color) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
+
+			to_->MarkDirty() ;
 			FillEllipse(RectF{static_cast<float>(center.x - radius), static_cast<float>(center.y - radius), radius * 2.0f, radius * 2.0f}, color) ;
+			logger::info("Fill Circle.") ;
 		}
 
 		// State queries
-		bool isDrawing() const noexcept { return is_drawing_ ; }
-		Canvas* getTarget() const noexcept { return to_ ; }
+		bool IsDrawing() const noexcept { return is_drawing_ ; }
+		Canvas* GetTarget() const noexcept { return to_ ; }
 	} ;
 
 }
