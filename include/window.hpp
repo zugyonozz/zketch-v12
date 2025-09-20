@@ -11,10 +11,8 @@ namespace zketch {
 	class Application_ {
 		friend inline LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) ;
 		friend class Window ;
-		friend class TrackBar ;
 	private :
 		static inline std::unordered_map<HWND, Window*> g_windows_ ;
-		static inline std::unordered_map<HWND, TrackBar*> g_trackbars_ ;
 		
 		bool is_run_ = true ;
 	
@@ -93,7 +91,6 @@ namespace zketch {
 		static inline HINSTANCE g_hintance_ = GetModuleHandleW(nullptr) ;
 		static inline std::string g_window_class_name_ = "zketch_app" ;
 		static inline bool window_was_registered = false ;
-		static inline bool menu_was_registered = false ;
 
 		static void SetWindowClass(std::string&& windowclassname) noexcept {
 			if (window_was_registered) {
@@ -131,21 +128,7 @@ namespace zketch {
 			}
 		}
 
-		static void RegisterCommonControl() {
-			if (menu_was_registered) {
-				logger::warning("RegisterCommonControl() failed : common control was registered.") ;
-			} else {
-				tagINITCOMMONCONTROLSEX icex{
-					sizeof(icex),
-					0xFFFF // langsung regist semua
-				} ;
-
-				InitCommonControlsEx(&icex) ;
-			}
-		}
-
 		// next improvement is adding RegisterWindowClass with custom Style, icon, cursor, and other...
-		// next improvement is adding RegisterCommonControls with custom dxICC
 	} ;
 
 	class Window {
@@ -156,7 +139,7 @@ namespace zketch {
 		Window(const Window&) = delete ;
 		Window& operator=(const Window&) = delete ;
 
-		Window(const char* title, int width, int height) noexcept {
+		Window(const char* title, int32_t width, int32_t height) noexcept {
 			hwnd_ = CreateWindowEx(
 				0,
 				AppRegistry::g_window_class_name_.c_str(),
@@ -178,7 +161,7 @@ namespace zketch {
 			logger::info("Window() create Window success") ;
 		}
 
-		Window(const char* title, int xpos, int ypos, int width, int height) noexcept {
+		Window(const char* title, int32_t xpos, int32_t ypos, int32_t width, int32_t height) noexcept {
 			hwnd_ = CreateWindowEx(
 				0,
 				AppRegistry::g_window_class_name_.c_str(),
@@ -235,7 +218,7 @@ namespace zketch {
 			return *this ;
 		}
 
-		HWND getHandle() const noexcept {
+		HWND GetHandle() const noexcept {
 			return hwnd_ ;
 		}
 
@@ -255,17 +238,17 @@ namespace zketch {
 				ShowWindow(hwnd_, SW_HIDE) ; 
 		}
 
-		void minimize() noexcept { 
+		void Minimize() noexcept { 
 			if (hwnd_) 
 				ShowWindow(hwnd_, SW_MINIMIZE) ; 
 		}
 
-		void maximize() noexcept { 
+		void Maximize() noexcept { 
 			if (hwnd_) 
 				ShowWindow(hwnd_, SW_MAXIMIZE) ; 
 		}
 
-		void restore() noexcept { 
+		void Restore() noexcept { 
 			if (hwnd_) 
 				ShowWindow(hwnd_, SW_RESTORE) ; 
 		}
@@ -279,86 +262,129 @@ namespace zketch {
 			}
 		}
 
-		Rect getClientBound() const noexcept {
+		Rect GetClientBound() const noexcept {
 			tagRECT r ;
 			GetClientRect(hwnd_, &r) ;
 			return static_cast<Rect>(r) ;
 		}
 
-		Rect getClipBound() const noexcept {
+		Rect GetClipBound() const noexcept {
 			tagRECT r ;
 			GetWindowRect(hwnd_, &r) ;
 			return static_cast<Rect>(r) ;
 		}
 
-		void setTitle(const char* title) noexcept {
+		void SetTitle(const char* title) noexcept {
 			if (hwnd_)
 				SetWindowText(hwnd_, title) ;
 		}
 	} ;
 
-	class TrackBar {
-	private :
-		HWND hwnd_ = nullptr ;
-
+	class Slider {
 	public :
-		TrackBar(const TrackBar&) = delete ;
-		TrackBar& operator=(const TrackBar&) = delete ;
+		enum Orientation : uint8_t {
+			Vertical,
+			Horizontal
+		} ;
 
-		TrackBar(HWND parent, const Rect& rect) {
-			hwnd_ = CreateWindowEx(
-				0,
-				TRACKBAR_CLASS,
-				"",
-				WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | TBS_VERT,
-				rect.x,
-				rect.y,
-				rect.w,
-				rect.h,
-				parent,
-				reinterpret_cast<HMENU>(static_cast<size_t>(ID_MENU)),
-				AppRegistry::g_hintance_,
-				nullptr
-			) ;
-			if (!hwnd_) 
-				logger::error("TrackBar() failed to create trackbar : handle is nullptr") ;
-			Application_::g_trackbars_.emplace(hwnd_, this) ;
-			logger::info("TrackBar() create trackbar success") ;
+		struct Style {
+			Color background_ = rgba(0, 0, 0, 0) ;
+			Color border_fill_ = rgba(0, 0, 0, 0) ;
+			Color border_stroke_ = rgba(0, 0, 0, 0) ;
+			Color thumb_fill_ = rgba(0, 0, 0, 0) ;
+			Color thumb_stroke_ = rgba(0, 0, 0, 0) ;
+			Rect border_bound_ = {} ;
+			Rect thumb_bound_ = {} ;
+			Shape border_shape = Shape::Rect ;
+			Shape thumb_shape = Shape::Rect ;
+			float border_thick_ = 0.0f ;
+			float thumb_thick_ = 0.0f ;
+		} ;
 
-			setPos(0) ;
+	private :
+		Orientation orientation_ ;
+		Canvas* canvas_ ;
+		Rect* canvas_bound_ ;
+		Rect* thumb_bound_ ;
+		bool on_drag_ ;
+		Style* style_ ;
+
+		void Update() noexcept {
+			Drawer draw ;
+			if (!draw.Begin(*canvas_))
+				return ;
+			draw.Clear(style_->background_) ;
+			draw.FillRect(style_->border_bound_, rgba(255, 0, 0, 1)) ;
+			if (style_->border_thick_ > 0.0f) {
+				draw.DrawRect(style_->border_bound_, style_->border_stroke_) ;
+			}
+			draw.FillRect(style_->thumb_bound_, style_->thumb_fill_) ;
+			if (style_->thumb_thick_ > 0.0f) {
+				draw.DrawRect(style_->thumb_bound_, style_->thumb_stroke_) ;
+			}
+			draw.End() ;
 		}
 
-		~TrackBar() noexcept {
-			logger::info("Calling dtor of class TrackBar") ;
-			if (hwnd_) {
-				if (IsWindow(hwnd_)) {
-					DestroyWindow(hwnd_) ;
-				}
-				hwnd_ = nullptr ;
-				logger::info("Success to set hwnd to nullptr.") ;
-			} else {
-				logger::warning("failed to set hwnd, hwnd is already nullptr.") ;
+	public :
+		Slider(Orientation orientation, const Rect& bound, const Size& thumb) noexcept {
+			orientation_ = orientation ;
+			canvas_ = new Canvas() ;
+			canvas_->Create(bound.getSize()) ;
+			canvas_bound_ = new Rect() ;
+			*canvas_bound_ = bound ;
+			thumb_bound_ = new Rect() ;
+			*thumb_bound_ = {Point_<uint32_t>{0, 0}, thumb} ;
+			on_drag_ = false ;
+			style_ = new Style() ;
+			Update() ;
+		}
+
+		~Slider() noexcept {
+			delete canvas_ ;
+			delete thumb_bound_ ;
+			delete canvas_bound_ ;
+			delete style_ ;
+		}
+
+		void OnMouseDown(const Point& pos) noexcept {
+			if (thumb_bound_->Contain(pos)) {
+				on_drag_ = true ;
+				Update() ;
 			}
 		}
 
-		int getPos() const noexcept {
-			return static_cast<int>(SendMessage(hwnd_, TBM_GETPOS, 0, 0));
+		void OnMouseMove(const Point& pos) noexcept {
+			if (!on_drag_) {
+				return ;
+			}
+
+			if (orientation_ == Horizontal) {
+				thumb_bound_->x = pos.x ;
+			} else {
+				thumb_bound_->y = pos.y ;
+			}
+			Update() ;
 		}
 
-		HWND getHandle() const noexcept {
-			return hwnd_ ;
+		void OnMouseUp() noexcept {
+			on_drag_ = false ;
+			Update() ;
 		}
 
-		void setRange(int min, int max, bool redraw = true) noexcept {
-			SendMessage(hwnd_, TBM_SETRANGE, redraw, MAKELPARAM(min, max));
+		template <typename T = int32_t, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+		T GetValue() const noexcept {
+			if constexpr (std::is_integral_v<T>) {
+				return orientation_ == Horizontal ? thumb_bound_->x : thumb_bound_->y ;
+			}
+			return orientation_ == Horizontal ? (static_cast<T>(thumb_bound_->x) / (canvas_bound_->w - thumb_bound_->w) * 100.0f) : (static_cast<T>(thumb_bound_->y) / (canvas_bound_->h - thumb_bound_->y) * 100.0f) ;
 		}
 
-		void setPos(int pos, bool redraw = true) noexcept {
-			SendMessage(hwnd_, TBM_SETPOS, redraw, pos);
+		void Present(HWND hwnd) const noexcept {
+			canvas_->Present(hwnd) ;
 		}
 
-		void setTickFreq(int freq) noexcept {
-			SendMessage(hwnd_, TBM_SETTICFREQ, freq, 0);
+		bool OnDrag() const noexcept {
+			return on_drag_ ;
 		}
 	} ;
 }

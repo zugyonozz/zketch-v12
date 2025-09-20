@@ -3,19 +3,20 @@ using namespace zketch ;
 
 int main() {
 	AppRegistry::RegisterWindowClass() ;
-	AppRegistry::RegisterCommonControl() ;
 
 	Window w1("Window 1", 600, 400) ;
-	Rect r = w1.getClientBound() ;
-	TrackBar t1(w1.getHandle(), {r.x + r.w - 30, r.y, 30, r.h}) ;
+	Rect r = w1.GetClientBound() ;
+	Point s = r.getSize() ;
+	Slider slider(Slider::Vertical, {r.x + r.w - 20, r.y, 20, r.h}, {20, 20}) ;
 
 	Canvas c1 ;
-	c1.Create({600, 400}) ; // Ukuran canvas sesuai window
+	c1.Create({s.x - 20, s.y}) ; // Ukuran canvas sesuai window
 	Drawer d ;
 
 	w1.Show() ;
 
 	bool needRedraw = true ; // Flag untuk mengontrol redraw
+	InputSystem in ;
 
 	while(Application) {
 		Event ev ;
@@ -27,18 +28,27 @@ int main() {
 				case EventType::KeyDown : 
 					logger::info("Key down : ", ev.keyCode()) ;
 					// needRedraw = true ; // Mark untuk redraw jika ada input
+					in.SetKeyDown(ev.keyCode()) ;
 					break ;
 				case EventType::KeyUp : 
 					logger::info("Key up : ", ev.keyCode()) ;
+					in.SetKeyUp(ev.keyCode()) ;
 					break ;
 				case EventType::MouseUp : {
 					auto pos = ev.mousePos() ;
 					logger::info("Mouse up : {", pos.x, ", ", pos.y, '}') ;
-					// needRedraw = true ; // Mark untuk redraw
+					if (slider.OnDrag()) {
+						slider.OnMouseUp() ;
+					}
 					break ;
 				}
+				case EventType::MouseMove :
+					if (slider.OnDrag()) {
+						slider.OnMouseMove(ev.mousePos()) ;
+					}
+					break ;
 				case EventType::MouseDown : 
-					// needRedraw = true ; // Mark untuk redraw
+					slider.OnMouseDown(ev.mousePos()) ;
 					break ;
 
 				case EventType::TrackBar :
@@ -51,7 +61,7 @@ int main() {
 					logger::info("Resize Event : {", newSize.x, ", ", newSize.y, '}') ;
 					// Resize canvas sesuai ukuran baru window
 					if (newSize.x > 0 && newSize.y > 0) {
-						c1.Create({static_cast<int32_t>(newSize.x), static_cast<int32_t>(newSize.y)}) ;
+						c1.Create({static_cast<int32_t>(newSize.x - 20), static_cast<int32_t>(newSize.y)}) ;
 					}
 					needRedraw = true ;
 					break ;
@@ -63,8 +73,8 @@ int main() {
 		if (needRedraw) {
 			if (d.Begin(c1)) {
 				d.Clear(rgba(0, 0, 0, 255)) ; 
-				Rect clientRect = w1.getClientBound() ;
-				Point center = {clientRect.w / 2, clientRect.h / 2} ;
+				r = w1.GetClientBound() ;
+				Point center = {r.w / 2, r.h / 2} ;
 				d.FillCircle(center, 50, rgba(255, 0, 0, 1)) ;
 				d.DrawCircle(center, 50, rgba(255, 255, 255, 1), 3) ;
 				d.DrawString( // render string
@@ -76,7 +86,10 @@ int main() {
 			needRedraw = false ;
 		}
 
-		c1.Present(w1.getHandle()) ;
+		if (in.isCtrlDown() && in.isKeyDown(KeyCode::A)) {
+			logger::info("CTRL + A pressed") ;
+		}
+		slider.Present(w1.GetHandle()) ;
 		Sleep(16) ; // ~60 FPS
 	}
 	return 0 ;

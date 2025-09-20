@@ -25,7 +25,7 @@ int main() {
 					logger::info("Quit") ;
 			}
 		}
-		c1.Present(w1.getHandle()) ;
+		c1.Present(w1.GetHandle(), {100, 100}) ;
 	}
 
 	return 0 ;

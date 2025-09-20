@@ -510,13 +510,20 @@ struct Rect_ {
 		return math_ops::not_equal_to{}(x, o.x) || math_ops::not_equal_to{}(y, o.y) || math_ops::not_equal_to{}(w, o.w) || math_ops::not_equal_to{}(h, o.h) ;
 	}
 
-	constexpr bool contain(T v) const noexcept {
-		return (x == v) ? true : ((y == v) ? true : ((w == v) ? true : ((h == v) ? true : false))) ;
-	}
+	template <typename U>
+	constexpr bool Contain(Point_<U> pos) const noexcept {
+		if constexpr (std::is_unsigned_v<T>) {
+			return pos.x >= x && pos.x <= x + w &&
+				pos.y >= y && pos.y <= y + h;
+		} else {
+			auto x1 = std::min(x, x + w);
+			auto x2 = std::max(x, x + w);
+			auto y1 = std::min(y, y + h);
+			auto y2 = std::max(y, y + h);
 
-	template <typename ... Fn, typename = std::enable_if_t<(std::invocable<Fn, T> && ...)>>
-	constexpr bool contains(Fn&& ... fn) const noexcept {
-		return ((fn(x) || fn(y) || fn(w) || fn(h)) || ...) ;
+			return pos.x >= x1 && pos.x <= x2 &&
+				pos.y >= y1 && pos.y <= y2;
+		}
 	}
 
 	constexpr T size() const noexcept {
@@ -558,17 +565,19 @@ struct Rect_ {
         return !(x + w < o.x || o.x + o.w < x || y + h < o.y || o.y + o.h < y) ;
 	}
 
-	constexpr const Point_<T> Anchor(uint8_t i = 0) const noexcept {
-		switch (i) {
-			case 0 : return {x, y} ;						// TOP LEFT
-			case 1 : return {x + (w / 2), y} ;				// MID TOP
-			case 2 : return {x + w, y} ;					// TOP RIGHT
-			case 3 : return {x , y + (h / 2)} ;				// MID LEFT
-			case 4 : return {x + (w / 2) , y + (h / 2)} ;	// CENTER
-			case 5 : return {x + w , y + (h / 2)} ;			// MID RIGHT
-			case 6 : return {x , y + h} ;					// MID RIGHT
-			case 7 : return {x + (w / 2) , y + h} ;			// MID BOTTOM
-			case 8 : return {x + w , y + h} ;				// MID BOTTOM
+	constexpr const Point_<T> Anchor(Anchor anchor) const noexcept {
+		switch (anchor) {
+			case Anchor::Top | Anchor::Left			: return {x, y} ;						// TOP LEFT
+			case Anchor::Top						: return {x + (w / 2), y} ;				// TOP
+			case Anchor::Top | Anchor::Right		: return {x + w, y} ;					// TOP RIGHT
+			case Anchor::Left					 	: return {x , y + (h / 2)} ;			// LEFT
+			case Anchor::Center						: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
+			case Anchor::VCenter					: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
+			case Anchor::HCenter					: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
+			case Anchor::Right						: return {x + w , y + (h / 2)} ;		// RIGHT
+			case Anchor::Bottom | Anchor::Left		: return {x , y + h} ;					// BOT LEFT
+			case Anchor::Bottom 					: return {x + (w / 2) , y + h} ;		// BOTTOM
+			case Anchor::Bottom | Anchor::Right		: return {x + w , y + h} ;				// BOTTOM RIGHT
 			default : break ;
 		}
 		return {x, y} ;

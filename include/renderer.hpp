@@ -59,16 +59,15 @@ namespace zketch {
 				return false ;
 			}
 
-			// Initialize both buffers dengan background transparan/hitam
 			{
 				Gdiplus::Graphics gfx_front(front_.get()) ;
 				Gdiplus::Graphics gfx_back(back_.get()) ;
-				gfx_front.Clear(Gdiplus::Color(255, 0, 0, 0)) ; // ARGB: Alpha=255, RGB=0,0,0
+				gfx_front.Clear(Gdiplus::Color(255, 0, 0, 0)) ;
 				gfx_back.Clear(Gdiplus::Color(255, 0, 0, 0)) ;
 			}
 
 			size_ = size ;
-			dirty_ = true ; // Mark as dirty so it will be rendered initially
+			dirty_ = true ;
 			return true ;
 		}
 
@@ -106,12 +105,18 @@ namespace zketch {
 			ReleaseDC(hwnd, hdc) ;
 		}
 
-		void Present(HDC hdc, const Point& pos) const noexcept {
+		void Present(HWND hwnd, const Point& pos) const noexcept {
 			if (!front_) {
 				logger::warning("Canvas::Present - No bitmap.") ;
 				return ;
 			}
 
+			if (!hwnd) {
+				logger::warning("Canvas::Present - hwnd is null.") ;
+				return ;
+			}
+
+			HDC hdc = GetDC(hwnd) ;
 			if (!hdc) {
 				logger::warning("Canvas::Present - invalid HDC.") ;
 				return ;
@@ -124,16 +129,34 @@ namespace zketch {
 			screen.DrawImage(front_.get(), pos.x, pos.y) ;
 		}
 
-		Gdiplus::Bitmap* GetBitmap() const noexcept { return front_.get() ; }
-		Gdiplus::Bitmap* GetBackBuffer() const noexcept { return back_.get() ; }
-		int32_t GetWidth() const noexcept { return size_.x ; }
-		int32_t GetHeight() const noexcept { return size_.y ; }
-		Point GetSize() const noexcept { return size_ ; }
+		Gdiplus::Bitmap* GetBitmap() const noexcept { 
+			return front_.get() ; 
+		}
 
-		bool IsValid() const noexcept { return front_ != nullptr && back_ != nullptr ; }
-		bool NeedRedraw() const noexcept { return dirty_ ; }
+		Gdiplus::Bitmap* GetBackBuffer() const noexcept { 
+			return back_.get() ; 
+		}
 
-		// FIXED: Logika swap buffer yang benar
+		int32_t GetWidth() const noexcept { 
+			return size_.x ; 
+		}
+
+		int32_t GetHeight() const noexcept { 
+			return size_.y ; 
+		}
+
+		Point GetSize() const noexcept { 
+			return size_ ; 
+		}
+
+		bool IsValid() const noexcept { 
+			return front_ != nullptr && back_ != nullptr ; 
+		}
+
+		bool NeedRedraw() const noexcept { 
+			return dirty_ ; 
+		}
+
 		void SwapBuffers() noexcept {
 			if (front_ && back_) {
 				std::swap(front_, back_) ;
@@ -148,7 +171,7 @@ namespace zketch {
 		void MarkClean() noexcept {
 			dirty_ = false ;
 		}
-	};
+	} ;
 
 	class Drawer {
 	private:
@@ -242,13 +265,12 @@ namespace zketch {
 			return true ;
 		}
 
-		// FIXED: End() sekarang melakukan swap buffer dengan benar
 		void End() noexcept {
 			if (to_ && is_drawing_) {
-				to_->SwapBuffers() ; // Swap front dan back buffer
+				to_->SwapBuffers() ;
 			}
 
-			gfx_.reset() ; // Release graphics object
+			gfx_.reset() ;
 			to_ = nullptr ;
 			is_drawing_ = false ;
 		}
@@ -377,15 +399,13 @@ namespace zketch {
 			gfx_->DrawString(text.c_str(), -1, &f, layout, &fmt, &brush) ;
 		}
 
-		// REMOVED: DrawImage methods yang menggunakan to_->GetBitmap() (tidak masuk akal)
-
 		void DrawPolygon(const Vertex& vertices, const Color& color, float thickness = 1.0f) noexcept {
 			if (!IsValid() || vertices.empty()) {
-				return;
+				return ;
 			}
 
 			if (thickness < 0.1f) {
-				return;
+				return ;
 			}
 
 			to_->MarkDirty() ;
@@ -449,9 +469,12 @@ namespace zketch {
 			FillEllipse(RectF{static_cast<float>(center.x - radius), static_cast<float>(center.y - radius), radius * 2.0f, radius * 2.0f}, color) ;
 		}
 
-		// State queries
-		bool IsDrawing() const noexcept { return is_drawing_ ; }
-		Canvas* GetTarget() const noexcept { return to_ ; }
-	} ;
+		bool IsDrawing() const noexcept { 
+			return is_drawing_ ; 
+		}
 
+		Canvas* GetTarget() const noexcept { 
+			return to_ ; 
+		}
+	} ;
 }

@@ -7,6 +7,8 @@
 #include <optional>
 #include <bitset>
 #include <memory>
+#include <functional>
+#include <algorithm>
 #include <charconv>
 #include <string>
 #include <algorithm>

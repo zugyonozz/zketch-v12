@@ -139,4 +139,35 @@ namespace zketch {
 			// next improvements
 		#endif
 	} ;
+
+	enum class Anchor : uint8_t {
+		Top			= 0b00000001,
+		Bottom		= 0b00000010,
+		VCenter		= Top | Bottom,
+
+		Left		= 0b00000100,
+		Right		= 0b00001000,
+		HCenter		= Left | Right,
+
+		Center		= VCenter | HCenter,
+	} ;
+
+	constexpr Anchor operator|(Anchor a, Anchor b) noexcept {
+		return static_cast<Anchor>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b)) ;
+	}
+
+	constexpr Anchor operator&(Anchor a, Anchor b) noexcept {
+		return static_cast<Anchor>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) ;
+	}
+
+	enum class Shape : uint8_t {
+		Line,
+		Rect,
+		Ellipse,
+		Circle,
+		Polygon,
+		Image,
+		Text
+	} ;
+	
 }
