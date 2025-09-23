@@ -266,6 +266,8 @@ namespace zketch {
 		}
 	} ;
 
+	// Fixed Slider class - replace the existing Slider class in window.hpp
+
 	class Slider {
 	public :
 		enum Orientation : uint8_t {
@@ -274,7 +276,7 @@ namespace zketch {
 		} ;
 
 		struct Style {
-			Color background = rgba(255, 0, 0, 1) ;     // Light gray background
+			Color background = rgba(240, 240, 240, 255) ;     // Light gray background
 			Color track_fill = rgba(200, 200, 200, 255) ;     // Track color
 			Color track_stroke = rgba(150, 150, 150, 255) ;   // Track border
 			Color thumb_fill = rgba(100, 149, 237, 255) ;     // Cornflower blue thumb
@@ -299,37 +301,70 @@ namespace zketch {
 		std::unique_ptr<Canvas> canvas_ ;
 		std::unique_ptr<Drawer> drawer_ ;
 
-		// Calculate thumb position based on current value
+		// Get track bounds - centered within the slider bounds
+		RectF GetTrackBounds() const noexcept {
+			if (orientation_ == Horizontal) {
+				float track_y = (bounds_.h - style_.track_thickness) / 2.0f ;
+				float track_margin = style_.thumb_size / 2.0f ;
+				return {
+					track_margin, 
+					track_y, 
+					bounds_.w - style_.thumb_size, 
+					style_.track_thickness
+				} ;
+			} else {
+				float track_x = (bounds_.w - style_.track_thickness) / 2.0f ;
+				float track_margin = style_.thumb_size / 2.0f ;
+				return {
+					track_x, 
+					track_margin, 
+					style_.track_thickness, 
+					bounds_.h - style_.thumb_size
+				} ;
+			}
+		}
+
+		// Calculate thumb position based on current value - constrained to track bounds
 		PointF GetThumbPosition() const noexcept {
 			float ratio = (current_value_ - min_value_) / (max_value_ - min_value_);
 			ratio = std::clamp(ratio, 0.0f, 1.0f );
 
+			RectF track = GetTrackBounds() ;
+
 			if (orientation_ == Horizontal) {
-				float track_width = bounds_.w - style_.thumb_size ;
-				float thumb_x = bounds_.x + (track_width * ratio) ;
-				float thumb_y = bounds_.y + (bounds_.h - style_.thumb_size) / 2.0f ;
+				float thumb_x = track.x + (track.w * ratio) - (style_.thumb_size / 2.0f) ;
+				float thumb_y = (bounds_.h - style_.thumb_size) / 2.0f ;
+				
+				// Constrain thumb to stay within canvas bounds
+				thumb_x = std::clamp(thumb_x, 0.0f, bounds_.w - style_.thumb_size) ;
+				thumb_y = std::clamp(thumb_y, 0.0f, bounds_.h - style_.thumb_size) ;
+				
 				return {thumb_x, thumb_y} ;
 			} else {
-				float track_height = bounds_.h - style_.thumb_size ;
-				float thumb_x = bounds_.x + (bounds_.w - style_.thumb_size) / 2.0f ;
+				float thumb_x = (bounds_.w - style_.thumb_size) / 2.0f ;
 				// Invert for vertical (top = max, bottom = min)
-				float thumb_y = bounds_.y + track_height * (1.0f - ratio) ;
+				float thumb_y = track.y + track.h * (1.0f - ratio) - (style_.thumb_size / 2.0f) ;
+				
+				// Constrain thumb to stay within canvas bounds
+				thumb_x = std::clamp(thumb_x, 0.0f, bounds_.w - style_.thumb_size) ;
+				thumb_y = std::clamp(thumb_y, 0.0f, bounds_.h - style_.thumb_size) ;
+				
 				return {thumb_x, thumb_y} ;
 			}
 		}
 
 		// Calculate value from mouse position
 		float GetValueFromPosition(const PointF& pos) const noexcept {
+			RectF track = GetTrackBounds() ;
 			float ratio ;
+			
 			if (orientation_ == Horizontal) {
-				float track_width = bounds_.w - style_.thumb_size ;
-				float relative_pos = pos.x - bounds_.x - style_.thumb_size / 2.0f ;
-				ratio = relative_pos / track_width ;
+				float relative_pos = pos.x - track.x ;
+				ratio = relative_pos / track.w ;
 			} else {
-				float track_height = bounds_.h - style_.thumb_size ;
-				float relative_pos = pos.y - bounds_.y - style_.thumb_size / 2.0f ;
+				float relative_pos = pos.y - track.y ;
 				// Invert for vertical
-				ratio = 1.0f - (relative_pos / track_height) ;
+				ratio = 1.0f - (relative_pos / track.h) ;
 			}
 			
 			ratio = std::clamp(ratio, 0.0f, 1.0f);
@@ -340,17 +375,6 @@ namespace zketch {
 		RectF GetThumbBounds() const noexcept {
 			PointF thumb_pos = GetThumbPosition();
 			return {thumb_pos.x, thumb_pos.y, style_.thumb_size, style_.thumb_size};
-		}
-
-		// Get track bounds
-		RectF GetTrackBounds() const noexcept {
-			if (orientation_ == Horizontal) {
-				float track_y = bounds_.y + (bounds_.h - style_.track_thickness) / 2.0f ;
-				return {bounds_.x + style_.thumb_size / 2.0f, track_y, bounds_.w - style_.thumb_size, style_.track_thickness} ;
-			} else {
-				float track_x = bounds_.x + (bounds_.w - style_.track_thickness) / 2.0f ;
-				return {track_x, bounds_.y + style_.thumb_size / 2.0f, style_.track_thickness, bounds_.h - style_.thumb_size} ;
-			}
 		}
 
 		void Update() noexcept {
@@ -368,16 +392,19 @@ namespace zketch {
 				return ;
 			}
 
+			// Clear with background color
 			drawer_->Clear(style_.background) ;
 
+			// Draw track
 			RectF track_bound = GetTrackBounds() ;
-			drawer_->FillRect(track_bound, style_.track_fill) ;
-			drawer_->DrawRect(track_bound, style_.track_stroke, style_.track_thickness) ;
+			drawer_->FillRectRounded(track_bound, style_.track_fill, style_.corner_radius) ;
+			drawer_->DrawRectRounded(track_bound, style_.track_stroke, style_.corner_radius, style_.thumb_thickness) ;
 
+			// Draw thumb
 			RectF thumb_bound = GetThumbBounds() ;
 			Color thumb_color = is_hover_ ? style_.thumb_hover : style_.thumb_fill ;
-			drawer_->FillRect(thumb_bound, style_.thumb_fill) ;
-			drawer_->DrawRect(thumb_bound, style_.thumb_stroke, style_.thumb_thickness) ;
+			drawer_->FillRectRounded(thumb_bound, thumb_color, style_.corner_radius) ;
+			drawer_->DrawRectRounded(thumb_bound, style_.thumb_stroke, style_.corner_radius, style_.thumb_thickness) ;
 
 			drawer_->End() ;
 			is_update_ = false ;
@@ -386,8 +413,8 @@ namespace zketch {
 	public :
 		Slider(Orientation orientation, const RectF& bounds, float min_val = 0.0f, float max_val = 100.0f, float initial_val = 0.0f) noexcept
 			: orientation_(orientation), bounds_(bounds), min_value_(min_val), max_value_(max_val), 
-			  current_value_(std::clamp(initial_val, min_val, max_val)),
-			  is_dragging_(false), is_hover_(false), is_update_(true) {
+			current_value_(std::clamp(initial_val, min_val, max_val)),
+			is_dragging_(false), is_hover_(false), is_update_(true) {
 
 				canvas_ = std::make_unique<Canvas>() ;
 				drawer_ = std::make_unique<Drawer>() ;
@@ -404,10 +431,13 @@ namespace zketch {
 
 		~Slider() noexcept = default ;
 
-		// Handle mouse events
+		// Handle mouse events - convert absolute coordinates to relative canvas coordinates
 		bool OnMouseDown(const PointF& pos) noexcept {
+			// Convert absolute position to relative canvas position
+			PointF canvas_pos = {pos.x - bounds_.x, pos.y - bounds_.y} ;
+			
 			RectF thumb_bounds = GetThumbBounds() ;
-			if (thumb_bounds.Contain(pos)) {
+			if (thumb_bounds.Contain(canvas_pos)) {
 				is_dragging_ = true ;
 				is_update_ = true ;
 				EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::DragStart, current_value_, this)) ;
@@ -417,8 +447,8 @@ namespace zketch {
 			
 			// Click on track to jump to position
 			RectF track_bounds = GetTrackBounds() ;
-			if (track_bounds.Contain(pos)) {
-				float new_value = GetValueFromPosition(pos) ;
+			if (track_bounds.Contain(canvas_pos)) {
+				float new_value = GetValueFromPosition(canvas_pos) ;
 				if (std::abs(new_value - current_value_) > 0.001f) {
 					current_value_ = new_value ;
 					is_update_ = true ;
@@ -432,12 +462,15 @@ namespace zketch {
 		}
 
 		bool OnMouseMove(const PointF& pos) noexcept {
+			// Convert absolute position to relative canvas position
+			PointF canvas_pos = {pos.x - bounds_.x, pos.y - bounds_.y} ;
+			
 			bool was_hover = is_hover_ ;
 			RectF thumb_bounds = GetThumbBounds() ;
-			is_hover_ = thumb_bounds.Contain(pos) ;
+			is_hover_ = thumb_bounds.Contain(canvas_pos) ;
 			
 			if (is_dragging_) {
-				float new_value = GetValueFromPosition(pos) ;
+				float new_value = GetValueFromPosition(canvas_pos) ;
 				if (std::abs(new_value - current_value_) > 0.001f) {
 					current_value_ = new_value ;
 					is_update_ = true ;
@@ -473,9 +506,11 @@ namespace zketch {
 		
 		void SetValue(float value) noexcept {
 			float new_value = std::clamp(value, min_value_, max_value_) ;
-			if (new_value != current_value_) {
+			if (std::abs(new_value - current_value_) > 0.001f) {
 				current_value_ = new_value ;
+				is_update_ = true ;
 				EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::ValueChanged, current_value_, this)) ;
+				Update() ;
 			}
 		}
 
@@ -486,6 +521,8 @@ namespace zketch {
 			min_value_ = min_val ;
 			max_value_ = max_val ;
 			current_value_ = std::clamp(current_value_, min_value_, max_value_) ;
+			is_update_ = true ;
+			Update() ;
 		}
 
 		const RectF& GetBounds() const noexcept { return bounds_ ; }
@@ -494,9 +531,11 @@ namespace zketch {
 			bounds_ = bounds ; 
 			is_update_ = true ;
 
-			if (canvas_ && !canvas_->Create(bounds.getSize())) {
+			Point canvas_size(static_cast<int32_t>(std::ceil(bounds.w)), static_cast<int32_t>(std::ceil(bounds.h))) ;
+			if (canvas_ && !canvas_->Create(canvas_size)) {
 				logger::error("Failed to recreate slider canvas") ;
 			}
+			Update() ;
 		}
 
 		Style& GetStyle() noexcept { return style_ ; }
