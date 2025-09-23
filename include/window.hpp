@@ -274,7 +274,7 @@ namespace zketch {
 		} ;
 
 		struct Style {
-			Color background = rgba(240, 240, 240, 255) ;     // Light gray background
+			Color background = rgba(255, 0, 0, 1) ;     // Light gray background
 			Color track_fill = rgba(200, 200, 200, 255) ;     // Track color
 			Color track_stroke = rgba(150, 150, 150, 255) ;   // Track border
 			Color thumb_fill = rgba(100, 149, 237, 255) ;     // Cornflower blue thumb
@@ -369,11 +369,12 @@ namespace zketch {
 			}
 
 			drawer_->Clear(style_.background) ;
+
 			RectF track_bound = GetTrackBounds() ;
 			drawer_->FillRect(track_bound, style_.track_fill) ;
 			drawer_->DrawRect(track_bound, style_.track_stroke, style_.track_thickness) ;
 
-			RectF thumb_bound = GetTrackBounds() ;
+			RectF thumb_bound = GetThumbBounds() ;
 			Color thumb_color = is_hover_ ? style_.thumb_hover : style_.thumb_fill ;
 			drawer_->FillRect(thumb_bound, style_.thumb_fill) ;
 			drawer_->DrawRect(thumb_bound, style_.thumb_stroke, style_.thumb_thickness) ;
@@ -383,21 +384,21 @@ namespace zketch {
 		}
 
 	public :
-		Slider(Orientation orientation, const RectF& bounds, 
-			   float min_val = 0.0f, float max_val = 100.0f, float initial_val = 0.0f) noexcept
-			: orientation_(orientation), bounds_(bounds), 
-			  min_value_(min_val), max_value_(max_val), 
+		Slider(Orientation orientation, const RectF& bounds, float min_val = 0.0f, float max_val = 100.0f, float initial_val = 0.0f) noexcept
+			: orientation_(orientation), bounds_(bounds), min_value_(min_val), max_value_(max_val), 
 			  current_value_(std::clamp(initial_val, min_val, max_val)),
 			  is_dragging_(false), is_hover_(false), is_update_(true) {
+
 				canvas_ = std::make_unique<Canvas>() ;
 				drawer_ = std::make_unique<Drawer>() ;
 
-				Point canvas_size(static_cast<int32_t>(bounds_.w), static_cast<int32_t>(bounds_.h)) ;
+				Point canvas_size(static_cast<int32_t>(std::ceil(bounds_.w)), static_cast<int32_t>(std::ceil(bounds_.h))) ;
 				if (!canvas_->Create(canvas_size)) {
 					logger::error("Failed to create slider canvas") ;
 					return ;
 				}
 
+				logger::info("Slider created with bounds: ", bounds_.x, ",", bounds_.y, ",", bounds_.w, ",", bounds_.h) ;
 				Update() ;
 		}
 
