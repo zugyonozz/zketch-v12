@@ -33,10 +33,16 @@ namespace zketch {
 	} ;
 
 	enum class SliderEventType : uint8_t {
+		None,
 		ValueChanged,
 		DragStart,
-		DragEnd,
-		None
+		DragEnd
+	} ;
+
+	struct Slider__ {
+		SliderEventType type_ ;
+		float value_ ;
+		void* slider_ptr_ ;
 	} ;
 
 	class Event {
@@ -55,11 +61,7 @@ namespace zketch {
 				uint8_t button_ ;
 				uint32_t x_, y_ ;
 			} mouse_ ;
-			struct Slider__ {
-				uint8_t type_ ;
-				float value_ ;
-				void* slider_ptr_ ;
-			} slider_ ;
+			Slider__ slider_ ;
 		} data_ ;
 
 		// -------------- Construtor  --------------
@@ -91,7 +93,7 @@ namespace zketch {
 
 		constexpr Event(HWND src_, SliderEventType type_, float value_, void* slider_ptr = nullptr) noexcept {
 			this->type_ = EventType::Slider ;
-			data_.slider_= {static_cast<uint8_t>(type_), value_, slider_ptr} ;
+			data_.slider_ = {type_, value_, slider_ptr} ;
 			hwnd_ = src_ ;
 		}
 

@@ -294,11 +294,10 @@ namespace zketch {
 		float current_value_ ;
 		bool is_dragging_ ;
 		bool is_hover_ ;
+		bool is_update_ = true ;
 		Style style_ ;
-		std::function<void(SliderEvent)> event_callback_ ;
 		std::unique_ptr<Canvas> canvas_ ;
 		std::unique_ptr<Drawer> drawer_ ;
-		bool is_update_ = true ;
 
 		// Calculate thumb position based on current value
 		PointF GetThumbPosition() const noexcept {
@@ -346,23 +345,19 @@ namespace zketch {
 		// Get track bounds
 		RectF GetTrackBounds() const noexcept {
 			if (orientation_ == Horizontal) {
-				float track_y = bounds_.y + (bounds_.h - style_.track_thickness) / 2.0f;
-				return {bounds_.x + style_.thumb_size / 2.0f, track_y, 
-						bounds_.w - style_.thumb_size, style_.track_thickness};
+				float track_y = bounds_.y + (bounds_.h - style_.track_thickness) / 2.0f ;
+				return {bounds_.x + style_.thumb_size / 2.0f, track_y, bounds_.w - style_.thumb_size, style_.track_thickness} ;
 			} else {
-				float track_x = bounds_.x + (bounds_.w - style_.track_thickness) / 2.0f;
-				return {track_x, bounds_.y + style_.thumb_size / 2.0f, 
-						style_.track_thickness, bounds_.h - style_.thumb_size};
-			}
-		}
-
-		void TriggerEvent(SliderEventType type) noexcept {
-			if (event_callback_) {
-				event_callback_(SliderEvent(type, current_value_, this));
+				float track_x = bounds_.x + (bounds_.w - style_.track_thickness) / 2.0f ;
+				return {track_x, bounds_.y + style_.thumb_size / 2.0f, style_.track_thickness, bounds_.h - style_.thumb_size} ;
 			}
 		}
 
 		void Update() noexcept {
+			if (!is_update_) {
+				return ;
+			}
+
 			if (!canvas_ || !canvas_->IsValid()) {
 				logger::warning("Slider::UpdateCanvas - Canvas not valid.") ;
 				return ;
@@ -374,13 +369,14 @@ namespace zketch {
 			}
 
 			drawer_->Clear(style_.background) ;
-			RectF trb = GetTrackBounds() ;
-			drawer_->FillRect(trb, style_.track_fill) ;
-			drawer_->DrawRect(trb, style_.track_stroke, style_.track_thickness) ;
+			RectF track_bound = GetTrackBounds() ;
+			drawer_->FillRect(track_bound, style_.track_fill) ;
+			drawer_->DrawRect(track_bound, style_.track_stroke, style_.track_thickness) ;
 
-			RectF thb = GetTrackBounds() ;
-			drawer_->FillRect(thb, style_.thumb_fill) ;
-			drawer_->DrawRect(thb, style_.thumb_stroke, style_.thumb_thickness) ;
+			RectF thumb_bound = GetTrackBounds() ;
+			Color thumb_color = is_hover_ ? style_.thumb_hover : style_.thumb_fill ;
+			drawer_->FillRect(thumb_bound, style_.thumb_fill) ;
+			drawer_->DrawRect(thumb_bound, style_.thumb_stroke, style_.thumb_thickness) ;
 
 			drawer_->End() ;
 			is_update_ = false ;
@@ -393,14 +389,19 @@ namespace zketch {
 			  min_value_(min_val), max_value_(max_val), 
 			  current_value_(std::clamp(initial_val, min_val, max_val)),
 			  is_dragging_(false), is_hover_(false), is_update_(true) {
+				canvas_ = std::make_unique<Canvas>() ;
+				drawer_ = std::make_unique<Drawer>() ;
+
+				Point canvas_size(static_cast<int32_t>(bounds_.w), static_cast<int32_t>(bounds_.h)) ;
+				if (!canvas_->Create(canvas_size)) {
+					logger::error("Failed to create slider canvas") ;
+					return ;
+				}
+
 				Update() ;
 		}
 
 		~Slider() noexcept = default ;
-
-		void SetEventCallback(std::function<void(SliderEvent)> callback) noexcept {
-			event_callback_ = std::move(callback) ;
-		}
 
 		// Handle mouse events
 		bool OnMouseDown(const PointF& pos) noexcept {
@@ -408,19 +409,19 @@ namespace zketch {
 			if (thumb_bounds.Contain(pos)) {
 				is_dragging_ = true ;
 				is_update_ = true ;
-				TriggerEvent(SliderEventType::DragStart) ;
+				EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::DragStart, current_value_, this)) ;
 				Update() ;
 				return true ; // Event handled
 			}
 			
 			// Click on track to jump to position
-			RectF track_bounds = GetTrackBounds();
+			RectF track_bounds = GetTrackBounds() ;
 			if (track_bounds.Contain(pos)) {
-				float new_value = GetValueFromPosition(pos);
-				if (new_value != current_value_) {
+				float new_value = GetValueFromPosition(pos) ;
+				if (std::abs(new_value - current_value_) > 0.001f) {
 					current_value_ = new_value ;
 					is_update_ = true ;
-					TriggerEvent(SliderEventType::ValueChanged) ;
+					EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::ValueChanged, current_value_, this)) ;
 					Update() ;
 				}
 				return true ; // Event handled
@@ -430,30 +431,36 @@ namespace zketch {
 		}
 
 		bool OnMouseMove(const PointF& pos) noexcept {
-			bool was_hover = is_hover_;
-			RectF thumb_bounds = GetThumbBounds();
-			is_hover_ = thumb_bounds.Contain(pos);
+			bool was_hover = is_hover_ ;
+			RectF thumb_bounds = GetThumbBounds() ;
+			is_hover_ = thumb_bounds.Contain(pos) ;
 			
 			if (is_dragging_) {
-				float new_value = GetValueFromPosition(pos);
-				if (new_value != current_value_) {
+				float new_value = GetValueFromPosition(pos) ;
+				if (std::abs(new_value - current_value_) > 0.001f) {
 					current_value_ = new_value ;
 					is_update_ = true ;
-					TriggerEvent(SliderEventType::ValueChanged) ;
+					EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::ValueChanged, current_value_, this)) ;
 					Update() ;
 				}
-				return true;  // Event handled
+				return true ;  // Event handled
 			}
 			
-			// Return true if hover state changed (for redraw)
-			return was_hover != is_hover_ ;
+			// Redraw if hover state changed
+			if (was_hover != is_hover_) {
+				is_update_ = true ;
+				Update() ;
+				return true ;
+			}
+			
+			return false ;
 		}
 
 		bool OnMouseUp(const PointF& pos) noexcept {
 			if (is_dragging_) {
 				is_dragging_ = false ;
 				is_update_ = true ;
-				TriggerEvent(SliderEventType::DragEnd) ;
+				EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::DragEnd, current_value_, this)) ;
 				Update() ;
 				return true ; // Event handled
 			}
@@ -464,29 +471,38 @@ namespace zketch {
 		float GetValue() const noexcept { return current_value_ ; }
 		
 		void SetValue(float value) noexcept {
-			float new_value = std::clamp(value, min_value_, max_value_);
+			float new_value = std::clamp(value, min_value_, max_value_) ;
 			if (new_value != current_value_) {
-				current_value_ = new_value;
-				TriggerEvent(SliderEventType::ValueChanged);
+				current_value_ = new_value ;
+				EventSystem::PushEvent(Event::createSliderEvent(nullptr, SliderEventType::ValueChanged, current_value_, this)) ;
 			}
 		}
 
-		float GetMin() const noexcept { return min_value_; }
-		float GetMax() const noexcept { return max_value_; }
+		float GetMin() const noexcept { return min_value_ ; }
+		float GetMax() const noexcept { return max_value_ ; }
+
 		void SetRange(float min_val, float max_val) noexcept {
-			min_value_ = min_val;
-			max_value_ = max_val;
-			current_value_ = std::clamp(current_value_, min_value_, max_value_);
+			min_value_ = min_val ;
+			max_value_ = max_val ;
+			current_value_ = std::clamp(current_value_, min_value_, max_value_) ;
 		}
 
-		const RectF& GetBounds() const noexcept { return bounds_; }
-		void SetBounds(const RectF& bounds) noexcept { bounds_ = bounds; }
+		const RectF& GetBounds() const noexcept { return bounds_ ; }
 
-		Style& GetStyle() noexcept { return style_; }
-		const Style& GetStyle() const noexcept { return style_; }
+		void SetBounds(const RectF& bounds) noexcept { 
+			bounds_ = bounds ; 
+			is_update_ = true ;
 
-		bool IsDragging() const noexcept { return is_dragging_; }
-		bool IsHover() const noexcept { return is_hover_; }
+			if (canvas_ && !canvas_->Create(bounds.getSize())) {
+				logger::error("Failed to recreate slider canvas") ;
+			}
+		}
+
+		Style& GetStyle() noexcept { return style_ ; }
+		const Style& GetStyle() const noexcept { return style_ ; }
+
+		bool IsDragging() const noexcept { return is_dragging_ ; }
+		bool IsHover() const noexcept { return is_hover_ ; }
 		
 		Orientation GetOrientation() const noexcept { return orientation_; }
 
@@ -495,6 +511,8 @@ namespace zketch {
 				logger::warning("Slider::Present - Canvas not valid") ;
 				return ;
 			}
+
+			Update() ;
 
 			canvas_->Present(hwnd, {static_cast<int32_t>(bounds_.x), static_cast<int32_t>(bounds_.y)}) ;
 		}
