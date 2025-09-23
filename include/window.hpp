@@ -45,20 +45,6 @@ namespace zketch {
 
 	inline LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
 		switch (msg) {
-			case WM_HSCROLL : 
-				logger::info("-> Converting to HScroll event") ;
-				if (lp != 0) { 
-					size_t pos = static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(lp), TBM_GETPOS, 0, 0)) ;
-					EventSystem::PushEvent(Event::createScrollEvent(reinterpret_cast<HWND>(lp), TrackBarType::HScroll, pos)) ;
-				}
-				break;
-			case WM_VSCROLL : 
-				logger::info("-> Converting to VScroll event") ;
-				if (lp != 0) { 
-					size_t pos = static_cast<size_t>(SendMessage(reinterpret_cast<HWND>(lp), TBM_GETPOS, 0, 0)) ;
-					EventSystem::PushEvent(Event::createScrollEvent(reinterpret_cast<HWND>(lp), TrackBarType::VScroll, pos)) ;
-				}
-				break ;
 			case WM_SIZE : 
 				logger::info("-> Converting to Resize event (width=", LOWORD(lp), ", height=", HIWORD(lp), ")") ;
 				EventSystem::PushEvent(Event::createResizeEvent(hwnd, {LOWORD(lp), HIWORD(lp)})) ;
@@ -288,103 +274,229 @@ namespace zketch {
 		} ;
 
 		struct Style {
-			Color background_ = rgba(0, 0, 0, 0) ;
-			Color border_fill_ = rgba(0, 0, 0, 0) ;
-			Color border_stroke_ = rgba(0, 0, 0, 0) ;
-			Color thumb_fill_ = rgba(0, 0, 0, 0) ;
-			Color thumb_stroke_ = rgba(0, 0, 0, 0) ;
-			Rect border_bound_ = {} ;
-			Rect thumb_bound_ = {} ;
-			Shape border_shape = Shape::Rect ;
-			Shape thumb_shape = Shape::Rect ;
-			float border_thick_ = 0.0f ;
-			float thumb_thick_ = 0.0f ;
+			Color background = rgba(240, 240, 240, 255) ;     // Light gray background
+			Color track_fill = rgba(200, 200, 200, 255) ;     // Track color
+			Color track_stroke = rgba(150, 150, 150, 255) ;   // Track border
+			Color thumb_fill = rgba(100, 149, 237, 255) ;     // Cornflower blue thumb
+			Color thumb_stroke = rgba(70, 130, 180, 255) ;    // Steel blue thumb border
+			Color thumb_hover = rgba(135, 206, 250, 255) ;    // Light sky blue on hover
+			float track_thickness = 6.0f ;    // Track thickness
+			float thumb_size = 16.0f ;        // Thumb size
+			float thumb_thickness = 1.0f ;   // Border thickness
+			float corner_radius = 3.0f ;      // Rounded corners
 		} ;
 
 	private :
 		Orientation orientation_ ;
-		Canvas* canvas_ ;
-		Rect* canvas_bound_ ;
-		Rect* thumb_bound_ ;
-		bool on_drag_ ;
-		Style* style_ ;
+		RectF bounds_ ;
+		float min_value_ ;
+		float max_value_ ;
+		float current_value_ ;
+		bool is_dragging_ ;
+		bool is_hover_ ;
+		Style style_ ;
+		std::function<void(SliderEvent)> event_callback_ ;
+		std::unique_ptr<Canvas> canvas_ ;
+		std::unique_ptr<Drawer> drawer_ ;
+		bool is_update_ = true ;
+
+		// Calculate thumb position based on current value
+		PointF GetThumbPosition() const noexcept {
+			float ratio = (current_value_ - min_value_) / (max_value_ - min_value_);
+			ratio = std::clamp(ratio, 0.0f, 1.0f );
+
+			if (orientation_ == Horizontal) {
+				float track_width = bounds_.w - style_.thumb_size ;
+				float thumb_x = bounds_.x + (track_width * ratio) ;
+				float thumb_y = bounds_.y + (bounds_.h - style_.thumb_size) / 2.0f ;
+				return {thumb_x, thumb_y} ;
+			} else {
+				float track_height = bounds_.h - style_.thumb_size ;
+				float thumb_x = bounds_.x + (bounds_.w - style_.thumb_size) / 2.0f ;
+				// Invert for vertical (top = max, bottom = min)
+				float thumb_y = bounds_.y + track_height * (1.0f - ratio) ;
+				return {thumb_x, thumb_y} ;
+			}
+		}
+
+		// Calculate value from mouse position
+		float GetValueFromPosition(const PointF& pos) const noexcept {
+			float ratio ;
+			if (orientation_ == Horizontal) {
+				float track_width = bounds_.w - style_.thumb_size ;
+				float relative_pos = pos.x - bounds_.x - style_.thumb_size / 2.0f ;
+				ratio = relative_pos / track_width ;
+			} else {
+				float track_height = bounds_.h - style_.thumb_size ;
+				float relative_pos = pos.y - bounds_.y - style_.thumb_size / 2.0f ;
+				// Invert for vertical
+				ratio = 1.0f - (relative_pos / track_height) ;
+			}
+			
+			ratio = std::clamp(ratio, 0.0f, 1.0f);
+			return min_value_ + ratio * (max_value_ - min_value_);
+		}
+
+		// Get thumb bounds for hit testing
+		RectF GetThumbBounds() const noexcept {
+			PointF thumb_pos = GetThumbPosition();
+			return {thumb_pos.x, thumb_pos.y, style_.thumb_size, style_.thumb_size};
+		}
+
+		// Get track bounds
+		RectF GetTrackBounds() const noexcept {
+			if (orientation_ == Horizontal) {
+				float track_y = bounds_.y + (bounds_.h - style_.track_thickness) / 2.0f;
+				return {bounds_.x + style_.thumb_size / 2.0f, track_y, 
+						bounds_.w - style_.thumb_size, style_.track_thickness};
+			} else {
+				float track_x = bounds_.x + (bounds_.w - style_.track_thickness) / 2.0f;
+				return {track_x, bounds_.y + style_.thumb_size / 2.0f, 
+						style_.track_thickness, bounds_.h - style_.thumb_size};
+			}
+		}
+
+		void TriggerEvent(SliderEventType type) noexcept {
+			if (event_callback_) {
+				event_callback_(SliderEvent(type, current_value_, this));
+			}
+		}
 
 		void Update() noexcept {
-			Drawer draw ;
-			if (!draw.Begin(*canvas_))
+			if (!canvas_ || !canvas_->IsValid()) {
+				logger::warning("Slider::UpdateCanvas - Canvas not valid.") ;
 				return ;
-			draw.Clear(style_->background_) ;
-			draw.FillRect(style_->border_bound_, rgba(255, 0, 0, 1)) ;
-			if (style_->border_thick_ > 0.0f) {
-				draw.DrawRect(style_->border_bound_, style_->border_stroke_) ;
 			}
-			draw.FillRect(style_->thumb_bound_, style_->thumb_fill_) ;
-			if (style_->thumb_thick_ > 0.0f) {
-				draw.DrawRect(style_->thumb_bound_, style_->thumb_stroke_) ;
+
+			if (!drawer_->Begin(*canvas_)) {
+				logger::warning("Slider::UpdateCanvas - Failed to begin drawing") ;
+				return ;
 			}
-			draw.End() ;
+
+			drawer_->Clear(style_.background) ;
+			RectF trb = GetTrackBounds() ;
+			drawer_->FillRect(trb, style_.track_fill) ;
+			drawer_->DrawRect(trb, style_.track_stroke, style_.track_thickness) ;
+
+			RectF thb = GetTrackBounds() ;
+			drawer_->FillRect(thb, style_.thumb_fill) ;
+			drawer_->DrawRect(thb, style_.thumb_stroke, style_.thumb_thickness) ;
+
+			drawer_->End() ;
+			is_update_ = false ;
 		}
 
 	public :
-		Slider(Orientation orientation, const Rect& bound, const Size& thumb) noexcept {
-			orientation_ = orientation ;
-			canvas_ = new Canvas() ;
-			canvas_->Create(bound.getSize()) ;
-			canvas_bound_ = new Rect() ;
-			*canvas_bound_ = bound ;
-			thumb_bound_ = new Rect() ;
-			*thumb_bound_ = {Point_<uint32_t>{0, 0}, thumb} ;
-			on_drag_ = false ;
-			style_ = new Style() ;
-			Update() ;
-		}
-
-		~Slider() noexcept {
-			delete canvas_ ;
-			delete thumb_bound_ ;
-			delete canvas_bound_ ;
-			delete style_ ;
-		}
-
-		void OnMouseDown(const Point& pos) noexcept {
-			if (thumb_bound_->Contain(pos)) {
-				on_drag_ = true ;
+		Slider(Orientation orientation, const RectF& bounds, 
+			   float min_val = 0.0f, float max_val = 100.0f, float initial_val = 0.0f) noexcept
+			: orientation_(orientation), bounds_(bounds), 
+			  min_value_(min_val), max_value_(max_val), 
+			  current_value_(std::clamp(initial_val, min_val, max_val)),
+			  is_dragging_(false), is_hover_(false), is_update_(true) {
 				Update() ;
+		}
+
+		~Slider() noexcept = default ;
+
+		void SetEventCallback(std::function<void(SliderEvent)> callback) noexcept {
+			event_callback_ = std::move(callback) ;
+		}
+
+		// Handle mouse events
+		bool OnMouseDown(const PointF& pos) noexcept {
+			RectF thumb_bounds = GetThumbBounds() ;
+			if (thumb_bounds.Contain(pos)) {
+				is_dragging_ = true ;
+				is_update_ = true ;
+				TriggerEvent(SliderEventType::DragStart) ;
+				Update() ;
+				return true ; // Event handled
+			}
+			
+			// Click on track to jump to position
+			RectF track_bounds = GetTrackBounds();
+			if (track_bounds.Contain(pos)) {
+				float new_value = GetValueFromPosition(pos);
+				if (new_value != current_value_) {
+					current_value_ = new_value ;
+					is_update_ = true ;
+					TriggerEvent(SliderEventType::ValueChanged) ;
+					Update() ;
+				}
+				return true ; // Event handled
+			}
+			
+			return false ; // Event not handled
+		}
+
+		bool OnMouseMove(const PointF& pos) noexcept {
+			bool was_hover = is_hover_;
+			RectF thumb_bounds = GetThumbBounds();
+			is_hover_ = thumb_bounds.Contain(pos);
+			
+			if (is_dragging_) {
+				float new_value = GetValueFromPosition(pos);
+				if (new_value != current_value_) {
+					current_value_ = new_value ;
+					is_update_ = true ;
+					TriggerEvent(SliderEventType::ValueChanged) ;
+					Update() ;
+				}
+				return true;  // Event handled
+			}
+			
+			// Return true if hover state changed (for redraw)
+			return was_hover != is_hover_ ;
+		}
+
+		bool OnMouseUp(const PointF& pos) noexcept {
+			if (is_dragging_) {
+				is_dragging_ = false ;
+				is_update_ = true ;
+				TriggerEvent(SliderEventType::DragEnd) ;
+				Update() ;
+				return true ; // Event handled
+			}
+			return false ; // Event not handled
+		}
+
+		// Getters and Setters
+		float GetValue() const noexcept { return current_value_ ; }
+		
+		void SetValue(float value) noexcept {
+			float new_value = std::clamp(value, min_value_, max_value_);
+			if (new_value != current_value_) {
+				current_value_ = new_value;
+				TriggerEvent(SliderEventType::ValueChanged);
 			}
 		}
 
-		void OnMouseMove(const Point& pos) noexcept {
-			if (!on_drag_) {
+		float GetMin() const noexcept { return min_value_; }
+		float GetMax() const noexcept { return max_value_; }
+		void SetRange(float min_val, float max_val) noexcept {
+			min_value_ = min_val;
+			max_value_ = max_val;
+			current_value_ = std::clamp(current_value_, min_value_, max_value_);
+		}
+
+		const RectF& GetBounds() const noexcept { return bounds_; }
+		void SetBounds(const RectF& bounds) noexcept { bounds_ = bounds; }
+
+		Style& GetStyle() noexcept { return style_; }
+		const Style& GetStyle() const noexcept { return style_; }
+
+		bool IsDragging() const noexcept { return is_dragging_; }
+		bool IsHover() const noexcept { return is_hover_; }
+		
+		Orientation GetOrientation() const noexcept { return orientation_; }
+
+		void Present(HWND hwnd) noexcept {
+			if (!canvas_ || !canvas_->IsValid()) {
+				logger::warning("Slider::Present - Canvas not valid") ;
 				return ;
 			}
 
-			if (orientation_ == Horizontal) {
-				thumb_bound_->x = pos.x ;
-			} else {
-				thumb_bound_->y = pos.y ;
-			}
-			Update() ;
-		}
-
-		void OnMouseUp() noexcept {
-			on_drag_ = false ;
-			Update() ;
-		}
-
-		template <typename T = int32_t, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-		T GetValue() const noexcept {
-			if constexpr (std::is_integral_v<T>) {
-				return orientation_ == Horizontal ? thumb_bound_->x : thumb_bound_->y ;
-			}
-			return orientation_ == Horizontal ? (static_cast<T>(thumb_bound_->x) / (canvas_bound_->w - thumb_bound_->w) * 100.0f) : (static_cast<T>(thumb_bound_->y) / (canvas_bound_->h - thumb_bound_->y) * 100.0f) ;
-		}
-
-		void Present(HWND hwnd) const noexcept {
-			canvas_->Present(hwnd) ;
-		}
-
-		bool OnDrag() const noexcept {
-			return on_drag_ ;
+			canvas_->Present(hwnd, {static_cast<int32_t>(bounds_.x), static_cast<int32_t>(bounds_.y)}) ;
 		}
 	} ;
 }

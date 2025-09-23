@@ -22,7 +22,7 @@ namespace zketch {
 		MouseMove, 
 		Resize, 
 		Close,
-		TrackBar,
+		Slider,
 	} ;
 
 	enum class MouseButton : uint8_t { 
@@ -32,9 +32,11 @@ namespace zketch {
 		Middle, 
 	} ;
 
-	enum class TrackBarType : uint8_t {
-		VScroll,
-		HScroll,
+	enum class SliderEventType : uint8_t {
+		ValueChanged,
+		DragStart,
+		DragEnd,
+		None
 	} ;
 
 	class Event {
@@ -53,10 +55,11 @@ namespace zketch {
 				uint8_t button_ ;
 				uint32_t x_, y_ ;
 			} mouse_ ;
-			struct trackbar__ {
-				uint8_t trackbarType_ ;
-				size_t value_ ;
-			} trackbar_ ;
+			struct Slider__ {
+				uint8_t type_ ;
+				float value_ ;
+				void* slider_ptr_ ;
+			} slider_ ;
 		} data_ ;
 
 		// -------------- Construtor  --------------
@@ -86,9 +89,9 @@ namespace zketch {
 			hwnd_ = src_ ;
 		}
 
-		constexpr Event(HWND src_, TrackBarType scrolltype_, size_t value_) noexcept {
-			this->type_ = EventType::TrackBar ;
-			data_.trackbar_ = {static_cast<uint8_t>(scrolltype_), value_} ;
+		constexpr Event(HWND src_, SliderEventType type_, float value_, void* slider_ptr = nullptr) noexcept {
+			this->type_ = EventType::Slider ;
+			data_.slider_= {static_cast<uint8_t>(type_), value_, slider_ptr} ;
 			hwnd_ = src_ ;
 		}
 
@@ -142,8 +145,8 @@ namespace zketch {
 			return Event(src_, size_) ;
 		}
 
-		static Event createScrollEvent(HWND src_, TrackBarType scrolltype_, size_t value) noexcept {
-			return Event(src_, scrolltype_, value) ;
+		static Event createSliderEvent(HWND src_, SliderEventType type_, float value_, void* slider_ptr = nullptr) {
+			return Event(src_, type_, value_, slider_ptr) ;
 		}
 
 		static Event FromMSG(const MSG& msg) noexcept {
@@ -199,12 +202,16 @@ namespace zketch {
 			return static_cast<MouseButton>(data_.mouse_.button_) ; 
 		}
 
-		constexpr TrackBarType scrollBarType() const noexcept {
-			return static_cast<TrackBarType>(data_.trackbar_.trackbarType_) ;
+		constexpr SliderEventType sliderEventType() const noexcept {
+			return static_cast<SliderEventType>(data_.slider_.type_) ;
 		}
 
-		constexpr size_t scrollValue() const noexcept {
-			return data_.trackbar_.value_ ;
+		constexpr float sliderValue() const noexcept {
+			return data_.slider_.value_ ;
+		}
+
+		constexpr void* sliderAddress() const noexcept {
+			return data_.slider_.slider_ptr_ ;
 		}
 
 		constexpr operator EventType() const noexcept {
@@ -271,7 +278,7 @@ namespace zketch {
 			case EventType::MouseMove : return "MouseMove" ;
 			case EventType::Resize : return "Resize" ;
 			case EventType::Close : return "Close" ;
-			case EventType::TrackBar : return "ScrollBar" ;
+			case EventType::Slider : return "Slider" ;
 		}
 		return "Unknown" ;
 	}
