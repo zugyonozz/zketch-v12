@@ -20,6 +20,7 @@ namespace zketch {
 		MouseDown, 
 		MouseUp, 
 		MouseMove, 
+		MouseWheel,
 		Resize, 
 		Close,
 		Slider,
@@ -60,6 +61,8 @@ namespace zketch {
 			struct mouse__ {
 				uint8_t button_ ;
 				uint32_t x_, y_ ;
+				int16_t delta_ ;
+				uint32_t key_code_ ;
 			} mouse_ ;
 			Slider__ slider_ ;
 		} data_ ;
@@ -80,14 +83,19 @@ namespace zketch {
 			hwnd_ = src_ ;
 		}
 
-		constexpr Event(HWND src_, EventType type_, MouseButton button_, const Point_<uint32_t>& pos_) {
+		constexpr Event(HWND src_, EventType type_, MouseButton button_, const Point_<uint32_t>& pos_, int16_t delta_ = 0, uint32_t key_code_ = 0) {
 			this->type_ = type_ ;
-			if (!isMouseEvent())
+			if (!isMouseEvent()) {
 				throw error_handler::invalid_event_type() ;
-			if (type_ == EventType::MouseMove)
+			}
+			
+			if (type_ == EventType::MouseMove) {
 				data_.mouse_ = {0, pos_.x, pos_.y} ;
-			else
+			} else if (type_ == EventType::MouseWheel) {
+				data_.mouse_ = {0, pos_.x, pos_.y, delta_, key_code_} ;
+			} else {
 				data_.mouse_ = {static_cast<uint8_t>(button_), pos_.x, pos_.y} ;
+			}
 			hwnd_ = src_ ;
 		}
 
@@ -139,8 +147,8 @@ namespace zketch {
 			return Event(src_, type_, key_code_) ;
 		}
 
-		static Event createMouseEvent(HWND src_, EventType type_, MouseButton button_, const Point& pos_) noexcept {
-			return Event(src_, type_, button_, pos_) ;
+		static Event createMouseEvent(HWND src_, EventType type_, MouseButton button_, const Point_<uint32_t>& pos_, int16_t delta_ = 0, uint32_t key_code_ = 0) noexcept {
+			return Event(src_, type_, button_, pos_, delta_, key_code_) ;
 		}
 
 		static Event createResizeEvent(HWND src_, const Point& size_) noexcept {
@@ -161,6 +169,8 @@ namespace zketch {
 				case WM_KEYUP : 
 					// logger::info("-> Converting to KeyUp event") ;
 					return Event::createKeyEvent(msg.hwnd, EventType::KeyUp, msg.wParam) ; 
+				case WM_MOUSEHWHEEL :
+					return Event::createMouseEvent(msg.hwnd, EventType::MouseWheel, MouseButton::Unknown, {GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam)}, GET_WHEEL_DELTA_WPARAM(msg.wParam), GET_KEYSTATE_WPARAM(msg.wParam)) ;
 				case WM_MOUSEMOVE : 
 					// logger::info("-> Converting to MouseMove event") ;
 					return Event::createMouseEvent(msg.hwnd, EventType::MouseMove, MouseButton::Unknown, {GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam)}) ; 
@@ -188,31 +198,39 @@ namespace zketch {
 			return Event::createEvent(msg.hwnd, EventType::None) ;
 		}
 
-		constexpr uint32_t keyCode() const noexcept { 
+		constexpr uint32_t GetKeyCode() const noexcept { 
 			return data_.key_code_ ; 
 		}
 
-		constexpr Point_<uint32_t> resizeSize() const noexcept { 
+		constexpr Point_<uint32_t> GetSizeResizeEvent() const noexcept { 
 			return {data_.resize_.width_, data_.resize_.height_} ; 
 		}
 
-		constexpr Point_<uint32_t> mousePos() const noexcept { 
+		constexpr Point_<uint32_t> GetMousePos() const noexcept { 
 			return {data_.mouse_.x_, data_.mouse_.y_} ; 
 		}
 
-		constexpr MouseButton mouseButton() const noexcept { 
+		constexpr MouseButton GetMouseButton() const noexcept { 
 			return static_cast<MouseButton>(data_.mouse_.button_) ; 
 		}
 
-		constexpr SliderEventType sliderEventType() const noexcept {
+		constexpr uint16_t GetMouseDelta() const noexcept {
+			return data_.mouse_.delta_ ;
+		}
+
+		constexpr uint32_t GetMouseModifier() const noexcept {
+			return data_.mouse_.key_code_ ;
+		}
+
+		constexpr SliderEventType GetSliderEventType() const noexcept {
 			return static_cast<SliderEventType>(data_.slider_.type_) ;
 		}
 
-		constexpr float sliderValue() const noexcept {
+		constexpr float GetSliderValue() const noexcept {
 			return data_.slider_.value_ ;
 		}
 
-		constexpr void* sliderAddress() const noexcept {
+		constexpr void* GetSliderAddress() const noexcept {
 			return data_.slider_.slider_ptr_ ;
 		}
 
@@ -228,7 +246,7 @@ namespace zketch {
 			return timestamp_ ;
 		}
 
-		HWND getHandle() const noexcept {
+		HWND GetHandle() const noexcept {
 			return hwnd_ ;
 		}
 	} ;
@@ -269,15 +287,16 @@ namespace zketch {
 		}
 	} ;
 
-	std::string getEventString(const Event& e) noexcept {
-		switch (e.GetEventType()) {
+	std::string EventListener(const Event& e) noexcept {
+		switch (e) {
 			case EventType::None : return "None" ;
 			case EventType::Quit : return "Quit" ;
 			case EventType::KeyDown : return "KeyDown" ;
 			case EventType::KeyUp : return "KeyUp" ;
+			case EventType::MouseMove : return "MouseMove" ;
+			case EventType::MouseWheel : return "MouseWheel" ;
 			case EventType::MouseDown : return "MouseDown" ;
 			case EventType::MouseUp : return "MouseUp" ;
-			case EventType::MouseMove : return "MouseMove" ;
 			case EventType::Resize : return "Resize" ;
 			case EventType::Close : return "Close" ;
 			case EventType::Slider : return "Slider" ;

@@ -14,16 +14,18 @@ int main() {
 		while(PollEvent(e)) {
 			switch (e) {
 				case EventType::KeyDown : 
-					in.SetKeyDown(e.keyCode()) ;
-					logger::info("KeyDown ", e.keyCode()) ;
+					in.SetKeyDown(e.GetKeyCode()) ;
+					logger::info("KeyDown ", e.GetKeyCode()) ;
 					break ;
 				case EventType::KeyUp : 
-					in.SetKeyUp(e.keyCode()) ;
-					logger::info("KeyUp ", e.keyCode()) ;
+					in.SetKeyUp(e.GetKeyCode()) ;
+					logger::info("KeyUp ", e.GetKeyCode()) ;
 					break ;
 				case EventType::MouseMove :
-					logger::info("Mouse move ", e.mousePos().x, ", ", e.mousePos().y) ;
+					logger::info("Mouse move ", e.GetMousePos().x, ", ", e.GetMousePos().y) ;
 					break ;
+				case EventType::MouseWheel :
+					logger::info("MouseWheel", e.GetMouseDelta()) ;
 				
 			}
 		}
@@ -32,6 +34,7 @@ int main() {
 		} else if (in.isCtrlDown() && in.isKeyDown(KeyCode::B)) {
 			logger::info("CTRL + B Pressed") ;
 		}
+		
 		in.Update() ;
 		Sleep(16) ;
 	}

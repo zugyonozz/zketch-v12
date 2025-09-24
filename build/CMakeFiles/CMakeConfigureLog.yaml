@@ -31,7 +31,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -42,6 +42,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -63,7 +65,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -76,6 +78,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -130,7 +134,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -143,6 +147,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -210,7 +216,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -221,6 +227,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -239,7 +247,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -252,6 +260,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -297,7 +307,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -308,6 +318,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -326,7 +338,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -339,6 +351,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -384,7 +398,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -395,6 +409,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -413,7 +429,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -426,6 +442,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -471,7 +489,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -482,6 +500,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -500,7 +520,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -513,6 +533,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -558,7 +580,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -569,6 +591,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -587,7 +611,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -600,6 +624,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -645,7 +671,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -656,6 +682,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -674,7 +702,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -687,6 +715,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -732,7 +762,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -743,6 +773,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -761,7 +793,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -774,6 +806,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -819,7 +853,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -830,6 +864,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -848,7 +884,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -861,6 +897,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -906,7 +944,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -917,6 +955,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -935,7 +975,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -948,6 +988,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -993,7 +1035,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -1004,6 +1046,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -1022,7 +1066,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -1035,6 +1079,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -1080,7 +1126,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -1091,6 +1137,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -1107,9 +1155,9 @@ events:
       - "C:/msys64/usr/bin/tapi.com"
       - "C:/msys64/usr/bin/tapi.exe"
       - "C:/msys64/usr/bin/tapi"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/tapi.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/tapi.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/tapi"
+      - "D:/Zulu/bin/tapi.com"
+      - "D:/Zulu/bin/tapi.exe"
+      - "D:/Zulu/bin/tapi"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/tapi.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/tapi.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/tapi"
@@ -1140,6 +1188,12 @@ events:
       - "C:/xampp/php/tapi.com"
       - "C:/xampp/php/tapi.exe"
       - "C:/xampp/php/tapi"
+      - "C:/Program Files/Java/jdk-25/bin/tapi.com"
+      - "C:/Program Files/Java/jdk-25/bin/tapi.exe"
+      - "C:/Program Files/Java/jdk-25/bin/tapi"
+      - "D:/gradle/tapi.com"
+      - "D:/gradle/tapi.exe"
+      - "D:/gradle/tapi"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/tapi.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/tapi.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/tapi"
@@ -1174,7 +1228,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -1187,6 +1241,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -1235,7 +1291,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -1246,6 +1302,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -1262,9 +1320,9 @@ events:
       - "C:/msys64/usr/bin/gcc-ar-15.2.com"
       - "C:/msys64/usr/bin/gcc-ar-15.2.exe"
       - "C:/msys64/usr/bin/gcc-ar-15.2"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-15.2.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-15.2.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-15.2"
+      - "D:/Zulu/bin/gcc-ar-15.2.com"
+      - "D:/Zulu/bin/gcc-ar-15.2.exe"
+      - "D:/Zulu/bin/gcc-ar-15.2"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar-15.2.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar-15.2.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar-15.2"
@@ -1295,6 +1353,12 @@ events:
       - "C:/xampp/php/gcc-ar-15.2.com"
       - "C:/xampp/php/gcc-ar-15.2.exe"
       - "C:/xampp/php/gcc-ar-15.2"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar-15.2.com"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar-15.2.exe"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar-15.2"
+      - "D:/gradle/gcc-ar-15.2.com"
+      - "D:/gradle/gcc-ar-15.2.exe"
+      - "D:/gradle/gcc-ar-15.2"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar-15.2.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar-15.2.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar-15.2"
@@ -1328,9 +1392,9 @@ events:
       - "C:/msys64/usr/bin/gcc-ar-15.com"
       - "C:/msys64/usr/bin/gcc-ar-15.exe"
       - "C:/msys64/usr/bin/gcc-ar-15"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-15.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-15.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar-15"
+      - "D:/Zulu/bin/gcc-ar-15.com"
+      - "D:/Zulu/bin/gcc-ar-15.exe"
+      - "D:/Zulu/bin/gcc-ar-15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar-15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar-15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar-15"
@@ -1361,6 +1425,12 @@ events:
       - "C:/xampp/php/gcc-ar-15.com"
       - "C:/xampp/php/gcc-ar-15.exe"
       - "C:/xampp/php/gcc-ar-15"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar-15.com"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar-15.exe"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar-15"
+      - "D:/gradle/gcc-ar-15.com"
+      - "D:/gradle/gcc-ar-15.exe"
+      - "D:/gradle/gcc-ar-15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar-15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar-15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar-15"
@@ -1394,9 +1464,9 @@ events:
       - "C:/msys64/usr/bin/gcc-ar15.com"
       - "C:/msys64/usr/bin/gcc-ar15.exe"
       - "C:/msys64/usr/bin/gcc-ar15"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar15.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar15.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ar15"
+      - "D:/Zulu/bin/gcc-ar15.com"
+      - "D:/Zulu/bin/gcc-ar15.exe"
+      - "D:/Zulu/bin/gcc-ar15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ar15"
@@ -1427,6 +1497,12 @@ events:
       - "C:/xampp/php/gcc-ar15.com"
       - "C:/xampp/php/gcc-ar15.exe"
       - "C:/xampp/php/gcc-ar15"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar15.com"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar15.exe"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ar15"
+      - "D:/gradle/gcc-ar15.com"
+      - "D:/gradle/gcc-ar15.exe"
+      - "D:/gradle/gcc-ar15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ar15"
@@ -1462,7 +1538,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -1475,6 +1551,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -1523,7 +1601,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -1534,6 +1612,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -1550,9 +1630,9 @@ events:
       - "C:/msys64/usr/bin/gcc-ranlib-15.2.com"
       - "C:/msys64/usr/bin/gcc-ranlib-15.2.exe"
       - "C:/msys64/usr/bin/gcc-ranlib-15.2"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-15.2.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-15.2.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-15.2"
+      - "D:/Zulu/bin/gcc-ranlib-15.2.com"
+      - "D:/Zulu/bin/gcc-ranlib-15.2.exe"
+      - "D:/Zulu/bin/gcc-ranlib-15.2"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib-15.2.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib-15.2.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib-15.2"
@@ -1583,6 +1663,12 @@ events:
       - "C:/xampp/php/gcc-ranlib-15.2.com"
       - "C:/xampp/php/gcc-ranlib-15.2.exe"
       - "C:/xampp/php/gcc-ranlib-15.2"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib-15.2.com"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib-15.2.exe"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib-15.2"
+      - "D:/gradle/gcc-ranlib-15.2.com"
+      - "D:/gradle/gcc-ranlib-15.2.exe"
+      - "D:/gradle/gcc-ranlib-15.2"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib-15.2.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib-15.2.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib-15.2"
@@ -1616,9 +1702,9 @@ events:
       - "C:/msys64/usr/bin/gcc-ranlib-15.com"
       - "C:/msys64/usr/bin/gcc-ranlib-15.exe"
       - "C:/msys64/usr/bin/gcc-ranlib-15"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-15.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-15.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib-15"
+      - "D:/Zulu/bin/gcc-ranlib-15.com"
+      - "D:/Zulu/bin/gcc-ranlib-15.exe"
+      - "D:/Zulu/bin/gcc-ranlib-15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib-15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib-15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib-15"
@@ -1649,6 +1735,12 @@ events:
       - "C:/xampp/php/gcc-ranlib-15.com"
       - "C:/xampp/php/gcc-ranlib-15.exe"
       - "C:/xampp/php/gcc-ranlib-15"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib-15.com"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib-15.exe"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib-15"
+      - "D:/gradle/gcc-ranlib-15.com"
+      - "D:/gradle/gcc-ranlib-15.exe"
+      - "D:/gradle/gcc-ranlib-15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib-15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib-15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib-15"
@@ -1682,9 +1774,9 @@ events:
       - "C:/msys64/usr/bin/gcc-ranlib15.com"
       - "C:/msys64/usr/bin/gcc-ranlib15.exe"
       - "C:/msys64/usr/bin/gcc-ranlib15"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib15.com"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib15.exe"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/gcc-ranlib15"
+      - "D:/Zulu/bin/gcc-ranlib15.com"
+      - "D:/Zulu/bin/gcc-ranlib15.exe"
+      - "D:/Zulu/bin/gcc-ranlib15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/gcc-ranlib15"
@@ -1715,6 +1807,12 @@ events:
       - "C:/xampp/php/gcc-ranlib15.com"
       - "C:/xampp/php/gcc-ranlib15.exe"
       - "C:/xampp/php/gcc-ranlib15"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib15.com"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib15.exe"
+      - "C:/Program Files/Java/jdk-25/bin/gcc-ranlib15"
+      - "D:/gradle/gcc-ranlib15.com"
+      - "D:/gradle/gcc-ranlib15.exe"
+      - "D:/gradle/gcc-ranlib15"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib15.com"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib15.exe"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/gcc-ranlib15"
@@ -1750,7 +1848,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -1763,6 +1861,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -1811,7 +1911,7 @@ events:
     candidate_directories:
       - "C:/msys64/mingw64/bin/"
       - "C:/msys64/usr/bin/"
-      - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath/"
+      - "D:/Zulu/bin/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts/"
       - "C:/Windows/System32/"
@@ -1822,6 +1922,8 @@ events:
       - "C:/Program Files/dotnet/"
       - "C:/xampp/mysql/bin/"
       - "C:/xampp/php/"
+      - "C:/Program Files/Java/jdk-25/bin/"
+      - "D:/gradle/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/Scripts/"
       - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
       - "C:/MinGW/bin/"
@@ -1852,7 +1954,7 @@ events:
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\mingw64\\bin"
         - "C:\\msys64\\usr\\bin"
-        - "C:/Program Files (x86)/Common Files/Oracle/Java/javapath"
+        - "D:/Zulu/bin/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python313/Scripts"
         - "C:\\WINDOWS\\system32"
@@ -1865,6 +1967,8 @@ events:
         - "C:/xampp/php"
         - "C:\\msys64\\mingw64\\bin"
         - "C:/msys64/usr/bin"
+        - "C:\\Program Files\\Java\\jdk-25\\bin"
+        - "D:/gradle"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\"
         - "C:/Users/ASUS/AppData/Local/Programs/Python/Python311/"
         - "C:\\Users\\ASUS\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
@@ -1904,8 +2008,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-r4z9wh"
-      binary: "D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-r4z9wh"
+      source: "D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-675nrq"
+      binary: "D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-675nrq"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -1915,10 +2019,10 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-r4z9wh'
+        Change Dir: 'D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-675nrq'
         
-        Run Build Command(s): C:/msys64/mingw64/bin/ninja.exe -v cmTC_798ca
-        [1/2] C:\\msys64\\mingw64\\bin\\g++.exe   -v -o CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj -c C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): C:/msys64/mingw64/bin/ninja.exe -v cmTC_14a4f
+        [1/2] C:\\msys64\\mingw64\\bin\\g++.exe   -v -o CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj -c C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
         COLLECT_GCC=C:\\msys64\\mingw64\\bin\\g++.exe
         Target: x86_64-w64-mingw32
@@ -1926,8 +2030,8 @@ events:
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
         gcc version 15.2.0 (Rev8, Built by MSYS2 project) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_798ca.dir/'
-         C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/cc1plus.exe -quiet -v -iprefix C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/ -D_REENTRANT C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_798ca.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=nocona -version -o C:\\Users\\ASUS\\AppData\\Local\\Temp\\cc1HIpqS.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_14a4f.dir/'
+         C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/cc1plus.exe -quiet -v -iprefix C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/ -D_REENTRANT C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_14a4f.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=nocona -version -o C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmkY7El.s
         GNU C++17 (Rev8, Built by MSYS2 project) version 15.2.0 (x86_64-w64-mingw32)
         	compiled by GNU C version 15.2.0, GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.3.1, isl version isl-0.27-GMP
         
@@ -1952,13 +2056,13 @@ events:
          C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/include-fixed
         End of search list.
         Compiler executable checksum: e7386b44e3a7fd4f3b26b08cdd95994a
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_798ca.dir/'
-         C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/as.exe -v -o CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\ASUS\\AppData\\Local\\Temp\\cc1HIpqS.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_14a4f.dir/'
+         C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/as.exe -v -o CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmkY7El.s
         GNU assembler version 2.45 (x86_64-w64-mingw32) using BFD version (GNU Binutils) 2.45
         COMPILER_PATH=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/;C:/msys64/mingw64/bin/../lib/gcc/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/
         LIBRARY_PATH=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/;C:/msys64/mingw64/bin/../lib/gcc/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.'
-        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\msys64\\mingw64\\bin\\g++.exe  -v -Wl,-v CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_798ca.exe -Wl,--out-implib,libcmTC_798ca.dll.a -Wl,--major-image-version,0,--minor-image-version,0   && cd ."
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.'
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\msys64\\mingw64\\bin\\g++.exe  -v -Wl,-v CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_14a4f.exe -Wl,--out-implib,libcmTC_14a4f.dll.a -Wl,--major-image-version,0,--minor-image-version,0   && cd ."
         Using built-in specs.
         COLLECT_GCC=C:\\msys64\\mingw64\\bin\\g++.exe
         COLLECT_LTO_WRAPPER=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe
@@ -1969,12 +2073,12 @@ events:
         gcc version 15.2.0 (Rev8, Built by MSYS2 project) 
         COMPILER_PATH=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/;C:/msys64/mingw64/bin/../lib/gcc/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/
         LIBRARY_PATH=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/;C:/msys64/mingw64/bin/../lib/gcc/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/;C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_798ca.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_798ca.'
-         C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/collect2.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccPZYMuV.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_798ca.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_798ca.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_14a4f.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_14a4f.'
+         C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/collect2.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmuImyu.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_14a4f.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_14a4f.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o
         collect2 version 15.2.0
-        C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccPZYMuV.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_798ca.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_798ca.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o
+        C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmuImyu.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_14a4f.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_14a4f.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o
         GNU ld (GNU Binutils) 2.45
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_798ca.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_798ca.'
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_14a4f.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_14a4f.'
         
       exitCode: 0
   -
@@ -2013,10 +2117,10 @@ events:
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
-        ignore line: [Change Dir: 'D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-r4z9wh']
+        ignore line: [Change Dir: 'D:/Project/zketch-v12/build/CMakeFiles/CMakeScratch/TryCompile-675nrq']
         ignore line: []
-        ignore line: [Run Build Command(s): C:/msys64/mingw64/bin/ninja.exe -v cmTC_798ca]
-        ignore line: [[1/2] C:\\msys64\\mingw64\\bin\\g++.exe   -v -o CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj -c C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): C:/msys64/mingw64/bin/ninja.exe -v cmTC_14a4f]
+        ignore line: [[1/2] C:\\msys64\\mingw64\\bin\\g++.exe   -v -o CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj -c C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=C:\\msys64\\mingw64\\bin\\g++.exe]
         ignore line: [Target: x86_64-w64-mingw32]
@@ -2024,8 +2128,8 @@ events:
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
         ignore line: [gcc version 15.2.0 (Rev8  Built by MSYS2 project) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_798ca.dir/']
-        ignore line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/cc1plus.exe -quiet -v -iprefix C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/ -D_REENTRANT C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_798ca.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=nocona -version -o C:\\Users\\ASUS\\AppData\\Local\\Temp\\cc1HIpqS.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_14a4f.dir/']
+        ignore line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/cc1plus.exe -quiet -v -iprefix C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/ -D_REENTRANT C:/msys64/mingw64/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_14a4f.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=nocona -version -o C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmkY7El.s]
         ignore line: [GNU C++17 (Rev8  Built by MSYS2 project) version 15.2.0 (x86_64-w64-mingw32)]
         ignore line: [	compiled by GNU C version 15.2.0  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.3.1  isl version isl-0.27-GMP]
         ignore line: []
@@ -2050,8 +2154,8 @@ events:
         ignore line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/include-fixed]
         ignore line: [End of search list.]
         ignore line: [Compiler executable checksum: e7386b44e3a7fd4f3b26b08cdd95994a]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_798ca.dir/']
-        ignore line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/as.exe -v -o CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\ASUS\\AppData\\Local\\Temp\\cc1HIpqS.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_14a4f.dir/']
+        ignore line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/as.exe -v -o CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmkY7El.s]
         ignore line: [GNU assembler version 2.45 (x86_64-w64-mingw32) using BFD version (GNU Binutils) 2.45]
         ignore line: [COMPILER_PATH=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/]
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/]
@@ -2062,8 +2166,8 @@ events:
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/]
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/]
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [[2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\msys64\\mingw64\\bin\\g++.exe  -v -Wl -v CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_798ca.exe -Wl --out-implib libcmTC_798ca.dll.a -Wl --major-image-version 0 --minor-image-version 0   && cd ."]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [[2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\msys64\\mingw64\\bin\\g++.exe  -v -Wl -v CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_14a4f.exe -Wl --out-implib libcmTC_14a4f.dll.a -Wl --major-image-version 0 --minor-image-version 0   && cd ."]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=C:\\msys64\\mingw64\\bin\\g++.exe]
         ignore line: [COLLECT_LTO_WRAPPER=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe]
@@ -2081,13 +2185,13 @@ events:
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/]
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/]
         ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_798ca.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_798ca.']
-        link line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/collect2.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccPZYMuV.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_798ca.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_798ca.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_14a4f.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_14a4f.']
+        link line: [ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/collect2.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmuImyu.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_14a4f.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_14a4f.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o]
           arg [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/collect2.exe] ==> ignore
           arg [-plugin] ==> ignore
           arg [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll] ==> ignore
           arg [-plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe] ==> ignore
-          arg [-plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccPZYMuV.res] ==> ignore
+          arg [-plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmuImyu.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
@@ -2109,7 +2213,7 @@ events:
           arg [i386pep] ==> ignore
           arg [-Bdynamic] ==> search dynamic
           arg [-o] ==> ignore
-          arg [cmTC_798ca.exe] ==> ignore
+          arg [cmTC_14a4f.exe] ==> ignore
           arg [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o] ==> obj [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o]
           arg [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o] ==> obj [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o]
           arg [-LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0] ==> dir [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0]
@@ -2119,9 +2223,9 @@ events:
           arg [-LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib] ==> dir [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib]
           arg [-LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../..] ==> dir [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../..]
           arg [-v] ==> ignore
-          arg [CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+          arg [CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
           arg [--out-implib] ==> ignore
-          arg [libcmTC_798ca.dll.a] ==> ignore
+          arg [libcmTC_14a4f.dll.a] ==> ignore
           arg [--major-image-version] ==> ignore
           arg [0] ==> ignore
           arg [--minor-image-version] ==> ignore
@@ -2147,7 +2251,7 @@ events:
           arg [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o] ==> obj [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o]
           arg [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o] ==> obj [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o]
         ignore line: [collect2 version 15.2.0]
-        ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccPZYMuV.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_798ca.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_798ca.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_798ca.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o]
+        ignore line: [C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe -plugin C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/liblto_plugin.dll -plugin-opt=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\\Users\\ASUS\\AppData\\Local\\Temp\\ccmuImyu.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lkernel32 -m i386pep -Bdynamic -o cmTC_14a4f.exe C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/crt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtbegin.o -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../.. -v CMakeFiles/cmTC_14a4f.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_14a4f.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmingwex -lmsvcrt -lkernel32 C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/../../../../lib/default-manifest.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/15.2.0/crtend.o]
         linker tool for 'CXX': C:/msys64/mingw64/x86_64-w64-mingw32/bin/ld.exe
         remove lib [msvcrt]
         remove lib [msvcrt]
