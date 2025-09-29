@@ -118,6 +118,47 @@ namespace math_ops {
 		}
 	} ;
 
+	template <typename>
+	struct neightbor_type ;
+
+	template <>
+	struct neightbor_type<uint8_t> {
+		using type = int8_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<uint16_t> {
+		using type = int16_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<uint32_t> {
+		using type = int32_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<uint64_t> {
+		using type = int64_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<float> {
+		using type = float ;
+	} ;
+
+	template <>
+	struct neightbor_type<double> {
+		using type = double ;
+	} ;
+
+	template <>
+	struct neightbor_type<long double> {
+		using type = long double ;
+	} ;
+
+	template <typename T> 
+	using neightbor_type_t = typename neightbor_type<T>::type ;
+
 }
 
 inline constexpr uint32_t rgba8(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept {
@@ -147,7 +188,7 @@ namespace zketch {
 
 // Point_ implementation for base specificly Point
 
-template <typename T> 
+template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>> 
 struct Point_ {
 	T x = 0 ;
 	T y = 0 ;
@@ -395,12 +436,12 @@ using SizeF = Point_<float> ;
 
 // Rect_ implementation for base specificly Point
 
-template <typename T> 
+template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>> 
 struct Rect_ {
 	T x = 0 ;
 	T y = 0 ;
-	T w = 0 ;
-	T h = 0 ;
+	math_ops::neightbor_type_t<T> w = 0 ;
+	math_ops::neightbor_type_t<T> h = 0 ;
 
 	constexpr Rect_() noexcept = default ;
 
@@ -413,57 +454,58 @@ struct Rect_ {
 	constexpr Rect_(U x, V y, W w, X h) noexcept {
 		this->x = math_ops::apply{}.operator()<T>(x) ;
 		this->y = math_ops::apply{}.operator()<T>(y) ;
-		this->w = math_ops::apply{}.operator()<T>(w) ;
-		this->h = math_ops::apply{}.operator()<T>(h) ;
+		this->w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(w) ;
+		this->h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(h) ;
 	}
 
 	template <typename U, typename V> 
 	constexpr Rect_(const Point_<U>& p, const Point_<V>& s) noexcept {
 		x = math_ops::apply{}.operator()<T>(p.x) ;
 		y = math_ops::apply{}.operator()<T>(p.y) ;
-		w = math_ops::apply{}.operator()<T>(s.x) ;
-		h = math_ops::apply{}.operator()<T>(s.y) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(s.x) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(s.y) ;
 	}
 
 	template <typename U>
 	constexpr Rect_(const Rect_<U>& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.x) ;
 		y = math_ops::apply{}.operator()<T>(o.y) ;
-		w = math_ops::apply{}.operator()<T>(o.w) ;
-		h = math_ops::apply{}.operator()<T>(o.h) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.w) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.h) ;
 	}
 
 	constexpr Rect_(const Gdiplus::Rect& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.X) ;
 		y = math_ops::apply{}.operator()<T>(o.Y) ;
-		w = math_ops::apply{}.operator()<T>(o.Width) ;
-		h = math_ops::apply{}.operator()<T>(o.Height) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.Width) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.Height) ;
 	}
 
 	constexpr Rect_(const Gdiplus::RectF& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.X) ;
 		y = math_ops::apply{}.operator()<T>(o.Y) ;
-		w = math_ops::apply{}.operator()<T>(o.Width) ;
-		h = math_ops::apply{}.operator()<T>(o.Height) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.Width) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.Height) ;
 	}
 
 	constexpr Rect_(const tagRECT& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.left) ;
 		y = math_ops::apply{}.operator()<T>(o.top) ;
-		w = math_ops::apply{}.operator()<T>(o.right - o.left) ;
-		h = math_ops::apply{}.operator()<T>(o.bottom - o.top) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.right - o.left) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.bottom - o.top) ;
 	}
 
 	constexpr Rect_(const RECTL& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.left) ;
 		y = math_ops::apply{}.operator()<T>(o.top) ;
-		w = math_ops::apply{}.operator()<T>(o.right - o.left) ;
-		h = math_ops::apply{}.operator()<T>(o.bottom - o.top) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.right - o.left) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.bottom - o.top) ;
 	}
 
 	template <typename U, typename = std::enable_if_t<std::is_arithmetic_v<U>>> 
 	constexpr Rect_& operator=(U v) noexcept {
-		x = y = w = h = math_ops::apply{}.operator()<T>(v) ;
+		x = y = math_ops::apply{}.operator()<T>(v) ;
+		w = h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(v) ;
 		return *this ;
 	}
 
@@ -471,8 +513,8 @@ struct Rect_ {
 	constexpr Rect_& operator=(const Rect_<U>& o) noexcept {
 		x = math_ops::apply{}.operator()<T>(o.x) ;
 		y = math_ops::apply{}.operator()<T>(o.y) ;
-		w = math_ops::apply{}.operator()<T>(o.w) ;
-		h = math_ops::apply{}.operator()<T>(o.h) ;
+		w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.w) ;
+		h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(o.h) ;
 		return *this ;
 	}
 
@@ -534,7 +576,7 @@ struct Rect_ {
 		return {x, y} ;
 	}
 
-	constexpr const Point_<T> getSize() const noexcept {
+	constexpr const Point_<math_ops::neightbor_type_t<T>> getSize() const noexcept {
 		return {w, h} ;
 	}
 
@@ -542,7 +584,7 @@ struct Rect_ {
 		return {x, y} ;
 	}
 
-	constexpr Point_<T> getSize() noexcept {
+	constexpr Point_<math_ops::neightbor_type_t<T>> getSize() noexcept {
 		return {w, h} ;
 	}
 
@@ -567,17 +609,15 @@ struct Rect_ {
 
 	constexpr const Point_<T> Anchor(Anchor anchor) const noexcept {
 		switch (anchor) {
-			case Anchor::Top | Anchor::Left			: return {x, y} ;						// TOP LEFT
-			case Anchor::Top						: return {x + (w / 2), y} ;				// TOP
-			case Anchor::Top | Anchor::Right		: return {x + w, y} ;					// TOP RIGHT
-			case Anchor::Left					 	: return {x , y + (h / 2)} ;			// LEFT
-			case Anchor::Center						: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
-			case Anchor::VCenter					: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
-			case Anchor::HCenter					: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
-			case Anchor::Right						: return {x + w , y + (h / 2)} ;		// RIGHT
-			case Anchor::Bottom | Anchor::Left		: return {x , y + h} ;					// BOT LEFT
-			case Anchor::Bottom 					: return {x + (w / 2) , y + h} ;		// BOTTOM
-			case Anchor::Bottom | Anchor::Right		: return {x + w , y + h} ;				// BOTTOM RIGHT
+			case Anchor::Left			: return {x , y + (h / 2)} ;			// LEFT
+			case Anchor::LeftTop		: return {x, y} ;						// LEFT TOP 
+			case Anchor::Top			: return {x + (w / 2), y} ;				// TOP
+			case Anchor::RightTop		: return {x + w, y} ;					// RIGHT TOP 
+			case Anchor::Right			: return {x + w , y + (h / 2)} ;		// RIGHT
+			case Anchor::RightBottom	: return {x + w , y + h} ;				// BOTTOM RIGHT
+			case Anchor::Bottom			: return {x + (w / 2) , y + h} ;		// BOTTOM
+			case Anchor::LeftBottom		: return {x , y + h} ;					// BOTTOM LEFT
+			case Anchor::Center			: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
 			default : break ;
 		}
 		return {x, y} ;
@@ -585,10 +625,10 @@ struct Rect_ {
 
 	operator Gdiplus::Rect() const noexcept {
 		return {
-			math_ops::apply{}.operator()<int>(x), 
-			math_ops::apply{}.operator()<int>(y),
-			math_ops::apply{}.operator()<int>(w), 
-			math_ops::apply{}.operator()<int>(h)
+			math_ops::apply{}.operator()<int32_t>(x), 
+			math_ops::apply{}.operator()<int32_t>(y),
+			math_ops::apply{}.operator()<int32_t>(w), 
+			math_ops::apply{}.operator()<int32_t>(h)
 		} ;
 	}
 
@@ -744,7 +784,7 @@ constexpr const Rect_<std::common_type_t<T, U>> operator/(U v, const Rect_<T>& a
 
 // alias of Rect
 
-using Rect = Rect_<int> ;
+using Rect = Rect_<int32_t> ;
 using RectF = Rect_<float> ;
 
 template <typename T> 
@@ -829,39 +869,5 @@ struct Color {
 } ;
 
 using Vertex = std::vector<PointF> ;
-
-class ID {
-	using INCFN = size_t(*)(size_t&) ;
-private :
-	size_t start_ = 1000 ;
-	size_t index_ = 1000 ;
-	INCFN inc_ = nullptr ;
-
-public :
-	ID(ID&&) noexcept = delete ;
-	ID& operator=(size_t) = delete ;
-	ID& operator=(ID&&) = delete ;
-
-	ID(size_t start = 1000, INCFN inc = nullptr) noexcept : start_(start), index_(start), inc_(inc) {}
-
-	[[nodiscard]] operator size_t() noexcept { 
-		if (index_ >= start_ && index_ <= std::numeric_limits<size_t>::max()) {
-			if (inc_)
-				return inc_(index_) ; 
-			return index_++ ;
-		} else {
-			logger::warning("index has reached maximum value on type name : ", typeid(size_t).name()) ;
-			return index_ ;
-		}
-	}
-
-	size_t reset() noexcept { 
-		index_ = start_ ;
-		inc_ = nullptr ; 
-		return index_ ; 
-	}
-} ;
-
-static inline ID ID_MENU ;
 
 }

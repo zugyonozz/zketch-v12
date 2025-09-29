@@ -12,8 +12,8 @@ private:
     std::bitset<3> MouseDown_ ; 
 	std::bitset<3> MouseReleased_;
 	std::bitset<3> MousePressed_ ;
-    Point MousePos_, MouseDelta_ ;
-    float MouseWheel_ = 0.0f ;
+    Point mouse_pos_ ;
+    int64_t mouse_delta_ = 0 ;
 
 public:
     constexpr InputSystem() noexcept = default ;
@@ -25,8 +25,7 @@ public:
         MousePressed_.reset() ;
         MouseReleased_.reset() ;
 
-        MouseDelta_ = {0, 0} ;
-        MouseWheel_ = 0.0f ;
+        mouse_delta_ = 0 ;
     }
 
     
@@ -57,87 +56,82 @@ public:
 		SetKeyUp(static_cast<uint32_t>(key)) ; 
 	}
 
-    void setMouseDown(uint32_t button) noexcept {
+    void SetMouseDown(uint32_t button) noexcept {
         if (button < MouseDown_.size()) {
             if (!MouseDown_[button]) MousePressed_[button] = true ;
             MouseDown_[button] = true ;
         }
     }
 
-    void setMouseUp(uint32_t button) noexcept {
+    void SetMouseUp(uint32_t button) noexcept {
         if (button < MouseDown_.size()) {
             if (MouseDown_[button]) MouseReleased_[button] = true ;
             MouseDown_[button] = false ;
         }
     }
 
-    void setMousePos(const Point& pos) noexcept {
-        MouseDelta_ = pos - MousePos_ ;
-        MousePos_ = pos ;
+    void SetMousePos(const Point& pos) noexcept {
+        mouse_pos_ = pos ;
     }
 
-    void setMouseWheel(float delta) noexcept { 
-		MouseWheel_ = delta ; 
+    void SetMouseDelta(int16_t delta) noexcept { 
+		mouse_delta_ = delta ; 
 	}
 
-    bool isKeyDown(uint32_t key) const noexcept { 
+    bool IsKeyDown(uint32_t key) const noexcept { 
 		return key < KeyDown_.size() && KeyDown_[key] ; 
 	}
 
-    bool isKeyPressed(uint32_t key) const noexcept { 
+    bool IsKeyPressed(uint32_t key) const noexcept { 
 		return key < KeyPressed_.size() && KeyPressed_[key] ; 
 	}
 
-    bool isKeyReleased(uint32_t key) const noexcept { 
+    bool IsKeyReleased(uint32_t key) const noexcept { 
 		return key < KeyReleased_.size() && KeyReleased_[key] ; 
 	}
 
-    bool isKeyDown(KeyCode key) const noexcept { 
-		return isKeyDown(static_cast<uint32_t>(key)) ; 
+    bool IsKeyDown(KeyCode key) const noexcept { 
+		return IsKeyDown(static_cast<uint32_t>(key)) ; 
 	}
 
-    bool isKeyPressed(KeyCode key) const noexcept { 
-		return isKeyPressed(static_cast<uint32_t>(key)) ; 
+    bool IsKeyPressed(KeyCode key) const noexcept { 
+		return IsKeyPressed(static_cast<uint32_t>(key)) ; 
 	}
 
-    bool isKeyReleased(KeyCode key) const noexcept { 
-		return isKeyReleased(static_cast<uint32_t>(key)) ; 
+    bool IsKeyReleased(KeyCode key) const noexcept { 
+		return IsKeyReleased(static_cast<uint32_t>(key)) ; 
 	}
 
-    bool isMouseDown(uint32_t button) const noexcept { 
+    bool IsMouseDown(uint32_t button) const noexcept { 
 		return button < MouseDown_.size() && MouseDown_[button] ; 
 	}
 
-    bool isMousePressed(uint32_t button) const noexcept { 
+    bool IsMousePressed(uint32_t button) const noexcept { 
 		return button < MousePressed_.size() && MousePressed_[button] ; 
 	}
 
-    bool isMouseReleased(uint32_t button) const noexcept { 
+    bool IsMouseReleased(uint32_t button) const noexcept { 
 		return button < MouseReleased_.size() && MouseReleased_[button] ; 
 	}
 
-    Point getMousePos() const noexcept { 
-		return MousePos_ ; 
+    Point GetMousePos() const noexcept { 
+		return mouse_pos_ ; 
 	}
 
-    Point getMouseDelta() const noexcept { 
-		return MouseDelta_ ; 
-	}
-
-    float getMouseWheel() const noexcept { 
-		return MouseWheel_ ; 
+    int16_t GetMouseDelta() const noexcept { 
+		return mouse_delta_ ;
 	}
  
-    bool isShiftDown() const noexcept { 
-		return isKeyDown(static_cast<uint32_t>(VK_SHIFT)) ; 
+    bool IsShiftDown() const noexcept { 
+		return IsKeyDown(static_cast<uint32_t>(VK_SHIFT)) ; 
 	}
 
-    bool isCtrlDown() const noexcept { 
-		return isKeyDown(static_cast<uint32_t>(VK_CONTROL)) ; 
+    bool IsCtrlDown() const noexcept { 
+		return IsKeyDown(static_cast<uint32_t>(VK_CONTROL)) ; 
 	}
 
-    bool isAltDown() const noexcept { 
-		return isKeyDown(static_cast<uint32_t>(VK_MENU)) ; 
+    bool IsAltDown() const noexcept { 
+		return IsKeyDown(static_cast<uint32_t>(VK_MENU)) ; 
 	}
 
 } ;

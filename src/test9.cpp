@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include "slider.hpp"
 using namespace zketch ;
 
 int main() {
@@ -38,8 +38,8 @@ int main() {
         while (PollEvent(e)) {
             switch (e) {
                 case EventType::MouseDown:
-                    if (e.mouseButton() == MouseButton::Left) {
-                        Point mouse_pos = e.mousePos() ;
+                    if (e.GetMouseButton() == MouseButton::Left) {
+                        Point mouse_pos = e.GetMousePos() ;
                         PointF mouse_posf = {static_cast<float>(mouse_pos.x), static_cast<float>(mouse_pos.y)} ;
                         
                         // Try vertical slider first
@@ -47,52 +47,52 @@ int main() {
                             // If vertical slider didn't handle it, try horizontal
                             horizontal_slider.OnMouseDown(mouse_posf) ;
                         }
-                        input.setMouseDown(1) ; // Left button
-                        input.setMousePos(mouse_pos) ;
+                        input.SetMouseDown(1) ; // Left button
+                        input.SetMousePos(mouse_pos) ;
                     }
                     break ;
 
                 case EventType::MouseMove:
                     {
-                        Point mouse_pos = e.mousePos() ;
+                        Point mouse_pos = e.GetMousePos() ;
                         PointF mouse_posf = {static_cast<float>(mouse_pos.x), static_cast<float>(mouse_pos.y)} ;
                         
                         vertical_slider.OnMouseMove(mouse_posf) ;
                         horizontal_slider.OnMouseMove(mouse_posf) ;
-                        input.setMousePos(mouse_pos) ;
+                        input.SetMousePos(mouse_pos) ;
                     }
                     break ;
 
                 case EventType::MouseUp:
-                    if (e.mouseButton() == MouseButton::Left) {
-                        Point mouse_pos = e.mousePos() ;
+                    if (e.GetMouseButton() == MouseButton::Left) {
+                        Point mouse_pos = e.GetMousePos() ;
                         PointF mouse_posf = {static_cast<float>(mouse_pos.x), static_cast<float>(mouse_pos.y)} ;
                         
                         vertical_slider.OnMouseUp(mouse_posf) ;
                         horizontal_slider.OnMouseUp(mouse_posf) ;
-                        input.setMouseUp(1) ; // Left button
-                        input.setMousePos(mouse_pos) ;
+                        input.SetMouseUp(1) ; // Left button
+                        input.SetMousePos(mouse_pos) ;
                     }
                     break ;
 
                 case EventType::Slider : 
                     {
                         std::string event_type ;
-                        switch (e.sliderEventType()) {
+                        switch (e.GetSliderEventType()) {
                             case SliderEventType::ValueChanged: event_type = "ValueChanged"; break ;
                             case SliderEventType::DragStart: event_type = "DragStart"; break ;
                             case SliderEventType::DragEnd: event_type = "DragEnd"; break ;
                             default: event_type = "Unknown"; break ;
                         }
                         
-                        std::string slider_type = (e.sliderAddress() == &vertical_slider) ? "Vertical" : "Horizontal" ;
-                        logger::info("Slider event - ", slider_type, " - Type: ", event_type, ", Value: ", e.sliderValue()) ;
+                        std::string slider_type = (e.GetSliderAddress() == &vertical_slider) ? "Vertical" : "Horizontal" ;
+                        logger::info("Slider event - ", slider_type, " - Type: ", event_type, ", Value: ", e.GetSliderValue()) ;
                     }
                     break ;
 
                 case EventType::KeyDown:
                     // Test programmatic value setting
-                    if (e.keyCode() == static_cast<uint32_t>(KeyCode::Space)) {
+                    if (e.GetKeyCode() == static_cast<uint32_t>(KeyCode::Space)) {
                         vertical_slider.SetValue(50.0f) ;
                         horizontal_slider.SetValue(75.0f) ;
                         logger::info("Reset sliders to default values") ;

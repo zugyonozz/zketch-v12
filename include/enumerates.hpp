@@ -43,7 +43,7 @@ namespace zketch {
 		return a ;
 	}
 
-	template <typename From, typename To = int, typename = std::enable_if_t<std::is_integral_v<To> && std::is_convertible_v<From, To>>>
+	template <typename From, typename To = int32_t, typename = std::enable_if_t<std::is_integral_v<To> && std::is_convertible_v<From, To>>>
 	inline To FromFlag(From from) noexcept {
 		return static_cast<To>(from) ;
 		char c = '\'' ;
@@ -141,33 +141,14 @@ namespace zketch {
 	} ;
 
 	enum class Anchor : uint8_t {
-		Top			= 0b00000001,
-		Bottom		= 0b00000010,
-		VCenter		= Top | Bottom,
-
-		Left		= 0b00000100,
-		Right		= 0b00001000,
-		HCenter		= Left | Right,
-
-		Center		= VCenter | HCenter,
+		Left		= 1 << 0,
+		LeftTop		= 1 << 1,
+		Top			= 1 << 2,
+		RightTop	= 1 << 3,
+		Right		= 1 << 4,
+		RightBottom	= 1 << 5,
+		Bottom		= 1 << 6,
+		LeftBottom	= 1 << 7,
+		Center		= 0b11111111,
 	} ;
-
-	constexpr Anchor operator|(Anchor a, Anchor b) noexcept {
-		return static_cast<Anchor>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b)) ;
-	}
-
-	constexpr Anchor operator&(Anchor a, Anchor b) noexcept {
-		return static_cast<Anchor>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) ;
-	}
-
-	enum class Shape : uint8_t {
-		Line,
-		Rect,
-		Ellipse,
-		Circle,
-		Polygon,
-		Image,
-		Text
-	} ;
-	
 }

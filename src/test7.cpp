@@ -15,26 +15,28 @@ int main() {
 			switch (e) {
 				case EventType::KeyDown : 
 					in.SetKeyDown(e.GetKeyCode()) ;
-					logger::info("KeyDown ", e.GetKeyCode()) ;
+					logger::info("KeyDown -> ", e.GetKeyCode()) ;
 					break ;
 				case EventType::KeyUp : 
 					in.SetKeyUp(e.GetKeyCode()) ;
-					logger::info("KeyUp ", e.GetKeyCode()) ;
+					logger::info("KeyUp -> ", e.GetKeyCode()) ;
 					break ;
+				case EventType::MouseDown :
+					logger::info("MouseDown -> ", MouseButtonListener(e.GetMouseButton())) ;
 				case EventType::MouseMove :
-					logger::info("Mouse move ", e.GetMousePos().x, ", ", e.GetMousePos().y) ;
+					logger::info(" -> ", e.GetMousePos().x, ", ", e.GetMousePos().y) ;
 					break ;
 				case EventType::MouseWheel :
-					logger::info("MouseWheel", e.GetMouseDelta()) ;
+					logger::info(" -> ", e.GetMouseDelta()) ;
 				
 			}
 		}
-		if (in.isCtrlDown() && in.isKeyDown(KeyCode::A)) {
+		if (in.IsCtrlDown() && in.IsKeyDown(KeyCode::A)) {
 			logger::info("CTRL + A Pressed") ;
-		} else if (in.isCtrlDown() && in.isKeyDown(KeyCode::B)) {
+		} else if (in.IsCtrlDown() && in.IsKeyDown(KeyCode::B)) {
 			logger::info("CTRL + B Pressed") ;
 		}
-		
+
 		in.Update() ;
 		Sleep(16) ;
 	}
