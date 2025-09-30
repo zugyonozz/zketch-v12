@@ -145,7 +145,7 @@ namespace zketch {
 			return size_.y ; 
 		}
 
-		Point GetSize() const noexcept { 
+		const Point& GetSize() const noexcept { 
 			return size_ ; 
 		}
 

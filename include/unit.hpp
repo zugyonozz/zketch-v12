@@ -122,23 +122,43 @@ namespace math_ops {
 	struct neightbor_type ;
 
 	template <>
+	struct neightbor_type<int8_t> {
+		using type = uint8_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<int16_t> {
+		using type = uint16_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<int32_t> {
+		using type = uint32_t ;
+	} ;
+
+	template <>
+	struct neightbor_type<int64_t> {
+		using type = uint64_t ;
+	} ;
+
+	template <>
 	struct neightbor_type<uint8_t> {
-		using type = int8_t ;
+		using type = uint8_t ;
 	} ;
 
 	template <>
 	struct neightbor_type<uint16_t> {
-		using type = int16_t ;
+		using type = uint16_t ;
 	} ;
 
 	template <>
 	struct neightbor_type<uint32_t> {
-		using type = int32_t ;
+		using type = uint32_t ;
 	} ;
 
 	template <>
 	struct neightbor_type<uint64_t> {
-		using type = int64_t ;
+		using type = uint64_t ;
 	} ;
 
 	template <>
