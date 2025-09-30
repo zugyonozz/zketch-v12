@@ -1,89 +1,71 @@
 #include "builtin.hpp"
 using namespace zketch ;
 
-RectF RectClient ;
+Rect Client ;
 
-void UpdateClientRect(const Window& window) noexcept {
-	std::cout << RectClient << '\n' ;
-	RectClient = window.GetClientBound() ;
-}
-
-void UpdateBg(Canvas* canvas, const Color& color) noexcept {
-	canvas->Create(RectClient.getSize()) ;
+void InvokeRedrawHSlider(Canvas* canvas, const Slider& slider) noexcept {
 	Drawer draw ;
+	
 	if (!draw.Begin(*canvas)) {
 		return ;
 	}
 
-	draw.Clear(rgba(0, 0, 0, 1)) ;
+	draw.Clear(rgba(60, 60, 60, 1)) ;
+	if (slider.IsHovered()) {
+		draw.FillRectRounded(slider.GetRelativeThumbBound(), rgba(200, 100, 100, 1), slider.GetRelativeThumbBound().w / 2) ;
+	} else {
+		draw.FillRectRounded(slider.GetRelativeThumbBound(), rgba(200, 200, 200, 1), slider.GetRelativeThumbBound().w / 2) ;
+	}
 	draw.End() ;
 }
 
 int main() {
-    // Initialize systems
     AppRegistry::RegisterWindowClass() ;
     EventSystem::Initialize() ;
 
-    // Create main window
-    Window window("Built-in Widgets Demo - zketch", 800, 600) ;
+    Window window("Built-in Demo", 800, 600) ;
     window.Show() ;
 
-	Canvas main ;
-	main.Create(RectClient.getSize()) ;
+	Client = window.GetClientBound() ;
 
-	UpdateClientRect(window) ;
+	Slider HSlider(Slider::Vertical, {Client.w - 10, Client.y, 10, Client.h}, {10, 60}) ;
 
-	Slider HSlider(
-		Slider::Horizontal, 
-		{0, RectClient.y, 10, RectClient.h},
-		{15, 15}
-	) ;
+	HSlider.SetDrawer(InvokeRedrawHSlider) ;
 
-	HSlider.SetDrawer(
-		[&](Canvas* canvas){
-			Drawer draw ;
-			if (HSlider.GetTrackBound().h != RectClient.h) {
-				canvas->Create({5, RectClient.h}) ;
-			}
+	Event e ;
 
-			if (!draw.Begin(*canvas)) {
-				return ;
-			}
+    while (Application) {
+		while (PollEvent(e)) {
+			if (e == EventType::Mouse) {
+				if (e.GetMouseState() == MouseState::Up) {
+					HSlider.OnPress(e.GetMousePosition()) ;
+				} else if (e.GetMouseState() == MouseState::Down) {
+					HSlider.OnRelease() ;
+				} else if (e.GetMouseState() == MouseState::Wheel) {
 
-			draw.Clear(rgba(0, 0, 0, 1)) ;
-
-			draw.FillRectRounded(HSlider.GetTrackBound(), rgba(60, 60, 60, 1), HSlider.GetTrackBound().h / 2) ;
-			draw.FillRect(HSlider.GetThumbBound(), rgba(200, 200, 200, 1)) ;
-
-			draw.End() ;
-		}
-	) ;
-
-	while(Application) {
-
-		Event e ;
-		while(PollEvent(e)) {
-			HSlider.OnHover(e) ;
-			HSlider.OnPress(e) ;
-			HSlider.OnDrag(e) ;
-			HSlider.OnRelease(e) ;
-
-			if (e.IsSliderEvent()) {
-				if (e.GetSliderAddress() == &HSlider) {
-					HSlider.Update() ;
+				} else if (e.GetMouseState() == MouseState::None) {
+					HSlider.OnHover(e.GetMousePosition()) ;
 				}
 			}
-			if (e.IsResizeEvent()) {
-				UpdateClientRect(window) ;
+
+			if (e == EventType::Slider) {
+				if (e.GetSliderState() == SliderState::Start) {
+					logger::info("Slider::Start") ;
+				} else if (e.GetSliderState() == SliderState::Changed) {
+					logger::info("Slider::Changed -> ", e.GetSliderValue()) ;
+				} else if (e.GetSliderState() == SliderState::End) {
+					logger::info("Slider::End") ;
+				} else if (e.GetSliderState() == SliderState::Hover) {
+					logger::info("Slider::Hover") ;
+				}
+			}
+
+			if (e == EventType::Resize) {
 				HSlider.Update() ;
-				UpdateBg(&main, rgba(0, 0, 0, 1)) ;
-				std::cout << HSlider.GetTrackBound() << '\n' ;
 			}
 		}
 
-		main.Present(window.GetHandle()) ;
 		HSlider.Present(window.GetHandle()) ;
-
 		Sleep(16) ;
 	}
 }

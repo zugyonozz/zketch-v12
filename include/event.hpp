@@ -203,6 +203,10 @@ namespace zketch {
 			return (type_ == EventType::Slider) ;
 		}
 
+		constexpr bool IsButtonEvent() const noexcept {
+			return (type_ == EventType::Button) ;
+		}
+
 		static Event CreateNormalEvent() noexcept {
 			return Event(nullptr, EventType::None) ;
 		}
@@ -301,6 +305,14 @@ namespace zketch {
 			return data_.slider_.slider_ptr_ ;
 		}
 
+		constexpr ButtonState GetButtonState() const noexcept {
+			return data_.button_.state_ ;
+		}
+
+		constexpr void* GetButtonAddress() const noexcept {
+			return data_.button_.button_ptr_ ;
+		}
+
 		constexpr operator EventType() const noexcept {
 			return type_ ;
 		}
@@ -345,6 +357,15 @@ namespace zketch {
             e = g_events_.front() ;
             g_events_.pop() ;
             return true ;
+		}
+
+		static bool PeekEvent(Event& e) noexcept {
+			if (g_events_.empty()) {
+				return false ;
+			}
+
+			e = g_events_.front() ;
+			return true ;
 		}
 
 		static void Clear() noexcept {
