@@ -139,18 +139,21 @@ namespace zketch {
             
             canvas_ = std::make_unique<Canvas>();
             canvas_->Create(bound_.getSize());
+            
+            // FIX: Set transparent clear color
+            canvas_->SetClearColor(rgba(0, 0, 0, 0));
 
             SetDrawer([](Canvas* canvas, const Slider& slider) {
                 Drawer drawer;
                 if (!drawer.Begin(*canvas)) return;
 
-                Color bg_color = rgba(250, 250, 250, 0);
+                // No need to call Clear() - already done by Begin()
+
                 Color track_color = rgba(220, 220, 220, 255);
                 Color thumb_color = slider.IsHovered() || slider.IsDragging() 
                     ? rgba(135, 206, 250, 255) 
                     : rgba(100, 149, 237, 255);
 
-                drawer.Clear(bg_color);
                 drawer.FillRect(slider.GetRelativeTrackBound(), track_color);
                 
                 // Rounded thumb
@@ -302,7 +305,7 @@ namespace zketch {
     // Button Class - Optimized
     // ============================================
     class Button : public Widget<Button> {
-		friend class Widget<Button> ;
+		friend class Widget<Button>;
 
     private:
         bool is_hovered_ = false;
@@ -324,12 +327,16 @@ namespace zketch {
             bound_ = bound;
             canvas_ = std::make_unique<Canvas>();
             canvas_->Create(bound_.getSize());
+            
+            // FIX: Set transparent clear color
+            canvas_->SetClearColor(rgba(0, 0, 0, 0));
 
             SetDrawer([](Canvas* canvas, const Button& button) {
                 Drawer drawer;
                 if (!drawer.Begin(*canvas)) return;
 
-                Color bg_color = rgba(250, 250, 250, 0);
+                // No need to call Clear() - already done by Begin()
+
                 Color button_color;
                 Color border_color;
                 
@@ -343,8 +350,6 @@ namespace zketch {
                     button_color = rgba(135, 206, 250, 255);
                     border_color = rgba(100, 171, 220, 255);
                 }
-
-                drawer.Clear(bg_color);
                 
                 RectF rect = button.GetRelativeBound();
                 drawer.FillRectRounded(rect, button_color, 5.0f);
@@ -450,11 +455,15 @@ namespace zketch {
             canvas_ = std::make_unique<Canvas>();
             canvas_->Create(bound_.getSize());
             
+            // FIX: Set opaque background for TextBox (not transparent)
+            canvas_->SetClearColor(bg_color_);
+            
             SetDrawer([](Canvas* canvas, const TextBox& textbox){
                 Drawer drawer;
                 if (!drawer.Begin(*canvas)) return;
 
-                drawer.Clear(textbox.GetBackgroundColor());
+                // No need to call Clear() - already done by Begin() with bg_color_
+
                 drawer.DrawString(
                     textbox.GetText(), 
                     {5, 5}, 
@@ -480,6 +489,7 @@ namespace zketch {
         
         void SetBackgroundColor(const Color& color) noexcept {
             bg_color_ = color;
+            canvas_->SetClearColor(color); // Update canvas clear color
             MarkDirty();
         }
 

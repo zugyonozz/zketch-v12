@@ -14,6 +14,7 @@ namespace zketch {
 		std::unique_ptr<Gdiplus::Bitmap> back_{} ;
 		Point size_{} ;
 		bool dirty_ = false ;
+		Color clear_color_ = rgba(0, 0, 0, 0); // Default transparent
 
 	public:
 		Canvas(const Canvas&) = delete ;
@@ -59,11 +60,12 @@ namespace zketch {
 				return false ;
 			}
 
+			// Clear both buffers initially
 			{
 				Gdiplus::Graphics gfx_front(front_.get()) ;
 				Gdiplus::Graphics gfx_back(back_.get()) ;
-				gfx_front.Clear(Gdiplus::Color(255, 0, 0, 0)) ;
-				gfx_back.Clear(Gdiplus::Color(255, 0, 0, 0)) ;
+				gfx_front.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
+				gfx_back.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
 			}
 
 			size_ = size ;
@@ -77,6 +79,14 @@ namespace zketch {
 			size_ = {} ;
 			dirty_ = false ;
 			logger::info("Canvas cleared.") ;
+		}
+
+		void SetClearColor(const Color& color) noexcept {
+			clear_color_ = color;
+		}
+
+		const Color& GetClearColor() const noexcept {
+			return clear_color_;
 		}
 
 		void Present(HWND hwnd) noexcept {
@@ -127,6 +137,8 @@ namespace zketch {
 			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
 			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
 			screen.DrawImage(front_.get(), pos.x, pos.y) ;
+
+			ReleaseDC(hwnd, hdc) ;
 		}
 
 		Gdiplus::Bitmap* GetBitmap() const noexcept { 
@@ -223,7 +235,7 @@ namespace zketch {
 			return *this ;
 		}
 
-		bool Begin(Canvas& src) noexcept {
+		bool Begin(Canvas& src, bool auto_clear = true) noexcept {
 			if (is_drawing_) {
 				logger::error("Renderer Begin() already in drawing state.") ;
 				return false ;
@@ -255,12 +267,21 @@ namespace zketch {
 			to_ = &src ;
 			is_drawing_ = true ;
 
-			// quality settings
+			// Quality settings BEFORE any drawing
 			gfx_->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality) ;
 			gfx_->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic) ;
 			gfx_->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality) ;
-			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
 			gfx_->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
+
+			// FIX: Use SourceCopy mode for clearing to completely replace pixels
+			// This prevents artifacts when using transparent backgrounds
+			if (auto_clear) {
+				gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceCopy) ;
+				gfx_->Clear(static_cast<Gdiplus::Color>(src.GetClearColor())) ;
+			}
+			
+			// Set to SourceOver for normal drawing operations
+			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
 
 			return true ;
 		}
@@ -278,7 +299,14 @@ namespace zketch {
 		void Clear(const Color& color) noexcept {
 			if (!IsValid()) 
 				return ;
+			
+			// FIX: Use SourceCopy to completely replace pixels (not blend)
+			// This ensures transparent clear actually clears everything
+			auto prevMode = gfx_->GetCompositingMode() ;
+			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceCopy) ;
 			gfx_->Clear(color) ;
+			gfx_->SetCompositingMode(prevMode) ;
+			
 			if (to_) to_->MarkDirty() ;
 		}
 
@@ -475,6 +503,16 @@ namespace zketch {
 
 		Canvas* GetTarget() const noexcept { 
 			return to_ ; 
+		}
+
+		// Helper to composite another canvas onto current target
+		void DrawCanvas(const Canvas* src, float x, float y) noexcept {
+			if (!IsValid() || !src || !src->IsValid()) return;
+			auto* bitmap = src->GetBitmap();
+			if (bitmap) {
+				gfx_->DrawImage(bitmap, x, y);
+				if (to_) to_->MarkDirty();
+			}
 		}
 	} ;
 }

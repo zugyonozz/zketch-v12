@@ -49,9 +49,9 @@ cmake_ninja_workdir = D$:/Project/zketch-v12/build/
 
 build cmake_object_order_depends_target_Win32TestProject: phony || .
 
-build CMakeFiles/Win32TestProject.dir/src/test10.cpp.obj: CXX_COMPILER__Win32TestProject_unscanned_Debug D$:/Project/zketch-v12/src/test10.cpp || cmake_object_order_depends_target_Win32TestProject
+build CMakeFiles/Win32TestProject.dir/src/test2.cpp.obj: CXX_COMPILER__Win32TestProject_unscanned_Debug D$:/Project/zketch-v12/src/test2.cpp || cmake_object_order_depends_target_Win32TestProject
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\Win32TestProject.dir\src\test10.cpp.obj.d
+  DEP_FILE = CMakeFiles\Win32TestProject.dir\src\test2.cpp.obj.d
   FLAGS = -g -std=c++20
   INCLUDES = -ID:/Project/zketch-v12/include
   OBJECT_DIR = CMakeFiles\Win32TestProject.dir
@@ -65,7 +65,7 @@ build CMakeFiles/Win32TestProject.dir/src/test10.cpp.obj: CXX_COMPILER__Win32Tes
 #############################################
 # Link the executable D:\Project\zketch-v12\bin\Win32TestProject.exe
 
-build D$:/Project/zketch-v12/bin/Win32TestProject.exe: CXX_EXECUTABLE_LINKER__Win32TestProject_Debug CMakeFiles/Win32TestProject.dir/src/test10.cpp.obj
+build D$:/Project/zketch-v12/bin/Win32TestProject.exe: CXX_EXECUTABLE_LINKER__Win32TestProject_Debug CMakeFiles/Win32TestProject.dir/src/test2.cpp.obj
   CONFIG = Debug
   FLAGS = -g
   LINK_LIBRARIES = -luser32  -lgdi32  -lgdiplus  -lcomctl32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

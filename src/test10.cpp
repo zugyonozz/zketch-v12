@@ -9,9 +9,6 @@ InputSystem input;
 void CustomSliderDrawer(Canvas* canvas, const Slider& slider) {
     Drawer draw;
     if (!draw.Begin(*canvas)) return;
-
-    // Background transparan
-    draw.Clear(rgba(255, 255, 255, 1));
     
     // Track dengan gradient effect
     RectF track = slider.GetRelativeTrackBound();
@@ -51,10 +48,15 @@ int main() {
     AppRegistry::RegisterWindowClass();
     EventSystem::Initialize();
 
-    Window window("Built-in Widget Demo - Optimized", 900, 600);
+    Window window("Built-in Widget Demo - No Flicker", 900, 600);
     window.Show();
 
     Client = window.GetClientBound();
+
+    // CRITICAL: Create main canvas for entire window (double buffering)
+    Canvas mainCanvas;
+    mainCanvas.Create(Client.getSize());
+    mainCanvas.SetClearColor(rgba(240, 240, 240, 255)); // Light gray background
 
     // Create UI Components
     
@@ -191,6 +193,11 @@ int main() {
             if (e == EventType::Resize) {
                 Client = window.GetClientBound();
                 
+                // Recreate main canvas with new size
+                mainCanvas.Clear();
+                mainCanvas.Create(Client.getSize());
+                mainCanvas.SetClearColor(rgba(240, 240, 240, 255));
+                
                 // Reposition vertical slider
                 vSlider.SetPosition({static_cast<float>(Client.w - 40), 20.0f});
                 
@@ -213,17 +220,39 @@ int main() {
             }
         }
 
-        // Present all widgets
         HWND hwnd = window.GetHandle();
-        
-        vSlider.Present(hwnd);
-        hSlider.Present(hwnd);
-        btnReset.Present(hwnd);
-        btnApply.Present(hwnd);
-        btnTest.Present(hwnd);
-        txtVSlider.Present(hwnd);
-        txtHSlider.Present(hwnd);
-        txtStatus.Present(hwnd);
+
+        // ANTI-FLICKER SOLUTION:
+        // 1. Update widgets first (render to their own canvas)
+        vSlider.Update();
+        hSlider.Update();
+        btnReset.Update();
+        btnApply.Update();
+        btnTest.Update();
+        txtVSlider.Update();
+        txtHSlider.Update();
+        txtStatus.Update();
+
+        // 2. Composite everything to main canvas (off-screen)
+        Drawer mainDraw;
+        if (mainDraw.Begin(mainCanvas)) {
+            // Background already cleared by Begin()
+            
+            // Composite all widget canvases onto main canvas
+            mainDraw.DrawCanvas(vSlider.GetCanvas(), vSlider.GetBound().x, vSlider.GetBound().y);
+            mainDraw.DrawCanvas(hSlider.GetCanvas(), hSlider.GetBound().x, hSlider.GetBound().y);
+            mainDraw.DrawCanvas(btnReset.GetCanvas(), btnReset.GetBound().x, btnReset.GetBound().y);
+            mainDraw.DrawCanvas(btnApply.GetCanvas(), btnApply.GetBound().x, btnApply.GetBound().y);
+            mainDraw.DrawCanvas(btnTest.GetCanvas(), btnTest.GetBound().x, btnTest.GetBound().y);
+            mainDraw.DrawCanvas(txtVSlider.GetCanvas(), txtVSlider.GetBound().x, txtVSlider.GetBound().y);
+            mainDraw.DrawCanvas(txtHSlider.GetCanvas(), txtHSlider.GetBound().x, txtHSlider.GetBound().y);
+            mainDraw.DrawCanvas(txtStatus.GetCanvas(), txtStatus.GetBound().x, txtStatus.GetBound().y);
+            
+            mainDraw.End();
+        }
+
+        // 3. Present main canvas ONCE (single blit = no flicker!)
+        mainCanvas.Present(hwnd);
 
         Sleep(16); // ~60 FPS
     }

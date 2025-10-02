@@ -13,7 +13,7 @@ private:
 	std::bitset<3> MouseReleased_;
 	std::bitset<3> MousePressed_ ;
     Point mouse_pos_ ;
-    int64_t mouse_delta_ = 0 ;
+    int64_t mouse_wheel_ = 0 ;
 
 public:
     constexpr InputSystem() noexcept = default ;
@@ -25,7 +25,7 @@ public:
         MousePressed_.reset() ;
         MouseReleased_.reset() ;
 
-        mouse_delta_ = 0 ;
+        mouse_wheel_ = 0 ;
     }
 
     
@@ -63,6 +63,10 @@ public:
         }
     }
 
+	void SetMouseDown(MouseButton button) noexcept {
+        SetMouseDown(static_cast<uint8_t>(button)) ;
+    }
+
     void SetMouseUp(uint32_t button) noexcept {
         if (button < MouseDown_.size()) {
             if (MouseDown_[button]) MouseReleased_[button] = true ;
@@ -70,12 +74,16 @@ public:
         }
     }
 
+	void SetMouseUp(MouseButton button) noexcept {
+        SetMouseUp(static_cast<uint32_t>(button)) ;
+    }
+
     void SetMousePos(const Point& pos) noexcept {
         mouse_pos_ = pos ;
     }
 
-    void SetMouseDelta(int16_t delta) noexcept { 
-		mouse_delta_ = delta ; 
+    void SetMouseWheel(int16_t value) noexcept { 
+		mouse_wheel_ = value ; 
 	}
 
     bool IsKeyDown(uint32_t key) const noexcept { 
@@ -110,16 +118,24 @@ public:
 		return button < MousePressed_.size() && MousePressed_[button] ; 
 	}
 
+	bool IsMousePressed(MouseButton button) const noexcept { 
+		return IsMousePressed(static_cast<uint8_t>(button)) ;
+	}
+
     bool IsMouseReleased(uint32_t button) const noexcept { 
 		return button < MouseReleased_.size() && MouseReleased_[button] ; 
+	}
+
+	bool IsMouseReleased(MouseButton button) const noexcept { 
+		return IsMouseReleased(static_cast<uint8_t>(button)) ;
 	}
 
     Point GetMousePos() const noexcept { 
 		return mouse_pos_ ; 
 	}
 
-    int16_t GetMouseDelta() const noexcept { 
-		return mouse_delta_ ;
+    int16_t GetMouseWheel() const noexcept { 
+		return mouse_wheel_ ;
 	}
  
     bool IsShiftDown() const noexcept { 

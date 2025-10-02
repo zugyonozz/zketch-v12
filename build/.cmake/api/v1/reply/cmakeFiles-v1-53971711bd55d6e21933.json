@@ -2,10 +2,10 @@
 	"globsDependent" : 
 	[
 		{
-			"expression" : "D:/Project/zketch-v12/src/test10.cpp",
+			"expression" : "D:/Project/zketch-v12/src/test2.cpp",
 			"paths" : 
 			[
-				"D:/Project/zketch-v12/src/test10.cpp"
+				"D:/Project/zketch-v12/src/test2.cpp"
 			],
 			"recurse" : true
 		}

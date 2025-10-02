@@ -1,82 +1,57 @@
-#include "win32init.hpp"
-#include "gdiplusinit.hpp"
+#include "builtin.hpp"
+using namespace zketch ;
 
-HINSTANCE g_hintance_ = GetModuleHandleW(nullptr) ;
-const char* g_window_class_name_ = "Test - 2" ;
+// this code is tutorial for Event
 
-LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
-	switch (msg) {
-		case WM_DESTROY : PostQuitMessage(0) ; return 0 ;
-	}
-	return DefWindowProc(hwnd, msg, wp, lp) ;
-}
-
-/*
-tagWNDCLASSEXA{
-	UINT cbSize, 
-	UINT style, 
-	WNDPROC lpfnWndProc,
-	int cbClsExtra, 
-	int cbWndExtra, 
-	HINSTANCE hInstance, 
-	HICON hIcon, 
-	HCURSOR hCursor, 
-	HBRUSH hbrBackground, 
-	LPCSTR lpszMenuName, 
-	LPCSTR lpszClassName, 
-	HICON hIconSm 
-} 
-*/
-
-WNDCLASSEX wc = {
-	sizeof(wc),
-	CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
-	wndproc,
-	0,
-	0,
-	g_hintance_,
-	LoadIcon(nullptr, IDI_APPLICATION),
-	LoadCursor(nullptr, IDC_ARROW),
-	reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1),
-	nullptr,
-	g_window_class_name_,
-	LoadIcon(nullptr, IDI_APPLICATION)
+struct Input {
+	Event event_ ;
+	InputSystem input_ ;
 } ;
 
 int main() {
-	if (!RegisterClassEx(&wc)) {
-		MessageBox(nullptr, "Gagal mendaftarkan kelas jendela!", "Error", MB_ICONEXCLAMATION | MB_OK) ;
-		return 0 ;
+	AppRegistry::RegisterWindowClass() ;
+
+	Window window("Event Demo", 500, 400) ;
+	window.Show() ;
+
+	Input in ;
+	while (Application) {
+		while (PollEvent(in.event_)) {
+			switch (in.event_) {
+				case EventType::Mouse :
+					if (in.event_.GetMouseState() == MouseState::Up) {
+						logger::info("Mouse Up [", DescMouseButton(in.event_.GetMouseButton()),"]\t- {", in.event_.GetMousePosition().x, ", ", in.event_.GetMousePosition().y, '}') ;
+					} else if (in.event_.GetMouseState() == MouseState::Down) {
+						logger::info("Mouse Down [", DescMouseButton(in.event_.GetMouseButton()),"]\t- {", in.event_.GetMousePosition().x, ", ", in.event_.GetMousePosition().y, '}') ;
+					} else if (in.event_.GetMouseState() == MouseState::Wheel) {
+						logger::info("Mouse Wheel\t- ", in.event_.GetMouseWheelValue()) ;
+					} else if (in.event_.GetMouseState() == MouseState::None) {
+					}
+					break ;
+				case EventType::Key :
+					if (in.event_.GetKeyState() == KeyState::Up) {
+						logger::info("Key Up\t\t- ", in.event_.GetKeyCode())	 ;
+						in.input_.SetKeyUp(in.event_.GetKeyCode()) ;
+					} else if (in.event_.GetKeyState() == KeyState::Down) {
+						logger::info("Key Down\t- ", in.event_.GetKeyCode())	 ;
+						in.input_.SetKeyDown(in.event_.GetKeyCode()) ;
+					}
+					break ;
+				case EventType::Resize :
+					logger::info("Resize\t\t- {", in.event_.GetResizedSize().x, ", ", in.event_.GetResizedSize().y, '}') ;
+					break ;
+			}
+
+			if (in.input_.IsCtrlDown()) {
+				if (in.event_.IsMouseEvent() && in.input_.IsMousePressed(MouseButton::Left)) {
+					logger::info("CTRL + Mouse Up [LEFT]\t- {", in.event_.GetMousePosition().x, ", ", in.event_.GetMousePosition().y, '}') ;
+				}
+				in.input_.Update() ;
+			} else {
+				in.input_.Update() ;
+			}
+
+			Sleep(16) ;
+		}
 	}
-
-	HWND hwnd = CreateWindowEx(
-		0,
-		g_window_class_name_,
-		"test - 2",
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		800,
-		600,
-		nullptr,
-		nullptr,
-		g_hintance_,
-		nullptr
-	) ;
-
-	if (!hwnd) {
-		MessageBox(nullptr, "Gagal membuat jendela!", "Error", MB_ICONEXCLAMATION | MB_OK) ;
-		return 0 ;
-	}
-
-	ShowWindow(hwnd, SW_SHOWDEFAULT) ;
-	UpdateWindow(hwnd) ;
-
-	MSG msg = {} ;
-	while(GetMessage(&msg, nullptr, 0, 0) > 0) {
-		TranslateMessage(&msg) ;
-		DispatchMessage(&msg) ;
-	}
-
-	return 0;
 }

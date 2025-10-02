@@ -375,84 +375,26 @@ namespace zketch {
 		}
 	} ;
 
-	std::string EventDescribe(const Event& e) noexcept {
-		std::string msg = "\nEvent Type\t: " ;
-		switch (e) {
-			case EventType::None : 
-				msg += "None\n" ;
-				break ;
-
-			case EventType::Quit : 
-				msg += "Quit\n" ; 
-				break ;
-
-			case EventType::Resize : 
-				msg += "Resize\nSize\t\t: {" + std::to_string(e.GetResizedSize().x) + ", " + std::to_string(e.GetResizedSize().y) + "}\n" ;
-				break ;
-
-			case EventType::Close : 
-				msg += "Close\n" ;
-				break ;
-				
-
-			case EventType::Key : 
-				msg += "Key\nState\t\t: " ;
-				if (e.GetKeyState() == KeyState::Down) {
-					msg += "Down\n" ;
-				} else if (e.GetKeyState() == KeyState::Up) {
-					msg += "Up\n" ;
-				} else {
-					msg += "Unknown\n" ;
-				}
-				msg += "Value\t\t: " + std::to_string(e.GetKeyCode()) + '\n' ;
-				break ;
-
-			case EventType::Mouse :
-				msg += "Mouse\nButton\t\t: " ;
-				if (e.GetMouseButton() == MouseButton::None) {
-					msg += "None\n" ;
-				} else if (e.GetMouseButton() == MouseButton::Left) {
-					msg += "Left\n" ;
-				} else if (e.GetMouseButton() == MouseButton::Right) {
-					msg += "Right\n" ;
-				} else {
-					msg += "Middle\n" ;
-				}
-
-				msg += "State\t\t: " ;
-				if (e.GetMouseState() == MouseState::None) {
-					msg += "None\n" ;
-				} else if (e.GetMouseState() == MouseState::Up) {
-					msg += "Up\n" ;
-				} else if (e.GetMouseState() == MouseState::Down) {
-					msg += "Down\n" ;
-				} else {
-					msg += "Wheel\n" ;
-				}
-				msg += "Position\t: {" + std::to_string(e.GetMousePosition().x) + ", " + std::to_string(e.GetMousePosition().y) + "}\n" ;
-				break ;
-
-			case EventType::Slider : 
-				msg += "Slider\nState\t\t: " ;
-				if (e.GetSliderState() == SliderState::None) {
-					msg += "None\n" ;
-				} else if (e.GetSliderState() == SliderState::Changed) {
-					msg += "Changed\n" ;
-				} else if (e.GetSliderState() == SliderState::Start) {
-					msg += "Start\n" ;
-				} else if (e.GetSliderState() == SliderState::End) {
-					msg += "End\n" ;
-				}
-				
-				msg += "Value\t\t: " + std::to_string(e.GetSliderValue()) + '\n' ;
-				msg += "Address\t: " + std::to_string(reinterpret_cast<uintptr_t>(e.GetSliderAddress())) + '\n' ;
-				break ;
-
-			default :
-				msg += "None" ;
-				break ;
+	static constexpr std::string DescMouseState(MouseState state) noexcept {
+		switch (state) {
+			case MouseState::Up : return "UP" ;
+			case MouseState::Down : return "DOWN" ;
+			case MouseState::Wheel : return "WHEEL" ;
+			case MouseState::None : return "NONE" ;
+			default : return "Undefined" ;
 		}
-		return msg ;
+		return "Undefined" ;
+	}
+
+	static constexpr std::string DescMouseButton(MouseButton button) noexcept {
+		switch (button) {
+			case MouseButton::Left : return "LEFT" ;
+			case MouseButton::Right : return "Right" ;
+			case MouseButton::Middle : return "MIDDLE" ;
+			case MouseButton::None : return "NONE" ;
+			default : return "Undefined" ;
+		}
+		return "Undefined" ;
 	}
 
 	constexpr bool operator==(uint32_t a, KeyCode b) noexcept {
