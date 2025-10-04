@@ -1,8 +1,8 @@
 [
 {
-  "directory": "D:/Project/zketch-v12/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -ID:/Project/zketch-v12/include -g -std=c++20 -o CMakeFiles\\Win32TestProject.dir\\src\\test4.cpp.obj -c D:\\Project\\zketch-v12\\src\\test4.cpp",
-  "file": "D:/Project/zketch-v12/src/test4.cpp",
-  "output": "D:/Project/zketch-v12/build/CMakeFiles/Win32TestProject.dir/src/test4.cpp.obj"
+  "directory": "D:/Project/zketch-final/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -ID:/Project/zketch-final/include -g -std=c++20 -o CMakeFiles\\Win32TestProject.dir\\src\\test1.cpp.obj -c D:\\Project\\zketch-final\\src\\test1.cpp",
+  "file": "D:/Project/zketch-final/src/test1.cpp",
+  "output": "D:/Project/zketch-final/build/CMakeFiles/Win32TestProject.dir/src/test1.cpp.obj"
 }
 ]

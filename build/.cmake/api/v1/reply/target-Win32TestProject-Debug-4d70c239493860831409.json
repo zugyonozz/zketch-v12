@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Project/zketch-v12/bin/Win32TestProject.exe"
+			"path" : "D:/Project/zketch-final/bin/Win32TestProject.exe"
 		},
 		{
-			"path" : "D:/Project/zketch-v12/bin/Win32TestProject.pdb"
+			"path" : "D:/Project/zketch-final/bin/Win32TestProject.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -59,7 +59,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "D:/Project/zketch-v12/include"
+					"path" : "D:/Project/zketch-final/include"
 				}
 			],
 			"language" : "CXX",
@@ -135,7 +135,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/test4.cpp",
+			"path" : "src/test1.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

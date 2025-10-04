@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "d:/Project/zketch-v12/build"
+			"value" : "d:/Project/zketch-final/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -443,7 +443,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Project/zketch-v12/build/CMakeFiles/pkgRedirects"
+			"value" : "D:/Project/zketch-final/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -515,7 +515,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "D:/Project/zketch-v12"
+			"value" : "D:/Project/zketch-final"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1235,7 +1235,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Project/zketch-v12/build"
+			"value" : "D:/Project/zketch-final/build"
 		},
 		{
 			"name" : "Win32TestProject_IS_TOP_LEVEL",
@@ -1259,7 +1259,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Project/zketch-v12"
+			"value" : "D:/Project/zketch-final"
 		}
 	],
 	"kind" : "cache",

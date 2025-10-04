@@ -2,10 +2,10 @@
 	"globsDependent" : 
 	[
 		{
-			"expression" : "D:/Project/zketch-v12/src/test4.cpp",
+			"expression" : "D:/Project/zketch-final/src/test1.cpp",
 			"paths" : 
 			[
-				"D:/Project/zketch-v12/src/test4.cpp"
+				"D:/Project/zketch-final/src/test1.cpp"
 			],
 			"recurse" : true
 		}
@@ -156,8 +156,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "D:/Project/zketch-v12/build",
-		"source" : "D:/Project/zketch-v12"
+		"build" : "D:/Project/zketch-final/build",
+		"source" : "D:/Project/zketch-final"
 	},
 	"version" : 
 	{

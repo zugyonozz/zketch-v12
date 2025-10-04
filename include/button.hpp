@@ -2,42 +2,47 @@
 #include "widget.hpp"
 
 namespace zketch {
-	class Button : public Widget<Button> {
-		friend class Widget<Button> ;
+    class Button : public Widget<Button> {
+        friend class Widget<Button> ;
 
     private:
         bool is_hovered_ = false ;
         bool is_pressed_ = false ;
         std::wstring label_ ;
         Font font_ ;
-        std::function<void(Canvas*, const Button&)> drawer_ ;
+        std::function<void(Renderer*, const Button&)> drawer_ ;
         std::function<void()> on_click_ ;
 
-		void UpdateImpl() noexcept {
-            if (!drawer_) {
-				return ;
-			}
+        void UpdateImpl() noexcept {
+            if (!drawer_ || !ValidateCanvas("Button::UpdateImpl()")) {
+                return ;
+            }
 
-            if (!ValidateCanvas("Button::UpdateImpl()")) {
-				return ;
-			}
+            Renderer renderer ;
+            if (!renderer.Begin(*canvas_)) {
+                logger::error("Button::UpdateImpl - Failed to begin renderer") ;
+                return ;
+            }
 
-            drawer_(canvas_.get(), *this) ;
+            drawer_(&renderer, *this) ;
+            renderer.End() ;
         }
 
     public:
-        Button(const RectF& bound, const std::wstring& label = L"", const Font& font = Font()) noexcept : label_(label), font_(font) {
+        Button(const RectF& bound, const std::wstring& label = L"", const Font& font = Font()) noexcept 
+            : label_(label), font_(font) {
+            
             bound_ = bound ;
             canvas_ = std::make_unique<Canvas>() ;
-            canvas_->Create(bound_.GetSize()) ;
+            
+            if (!canvas_->Create(bound_.GetSize())) {
+                logger::error("Button - Failed to create canvas") ;
+                return ;
+            }
+            
             canvas_->SetClearColor(rgba(0, 0, 0, 0)) ;
 
-            SetDrawer([](Canvas* canvas, const Button& button) {
-                Drawer drawer ;
-                if (!drawer.Begin(*canvas)) return ;
-
-                // No need to call Clear() - already done by Begin()
-
+            SetDrawer([](Renderer* renderer, const Button& button) {
                 Color button_color ;
                 Color border_color ;
                 
@@ -53,8 +58,8 @@ namespace zketch {
                 }
                 
                 RectF rect = button.GetRelativeBound() ;
-                drawer.FillRectRounded(rect, button_color, 5.0f) ;
-                drawer.DrawRectRounded(rect, border_color, 5.0f, 2.0f) ;
+                renderer->FillRectRounded(rect, button_color, 5.0f) ;
+                renderer->DrawRectRounded(rect, border_color, 5.0f, 2.0f) ;
                 
                 if (!button.GetLabel().empty()) {
                     Color text_color = rgba(255, 255, 255, 255) ;
@@ -62,14 +67,14 @@ namespace zketch {
                         static_cast<int32_t>(rect.w / 2 - 30),
                         static_cast<int32_t>(rect.h / 2 - 10)
                     } ;
-                    drawer.DrawString(button.GetLabel(), text_pos, text_color, button.GetFont()) ;
+                    renderer->DrawString(button.GetLabel(), text_pos, text_color, button.GetFont()) ;
                 }
-
-                drawer.End() ;
             }) ;
         }
 
         bool OnHover(const PointF& mouse_pos) noexcept {
+            if (!enabled_) return false ;
+            
             bool state = bound_.Contain(mouse_pos) ;
             if (state != is_hovered_) {
                 is_hovered_ = state ;
@@ -79,6 +84,8 @@ namespace zketch {
         }
 
         bool OnPress(const PointF& mouse_pos) noexcept {
+            if (!enabled_) return false ;
+            
             if (bound_.Contain(mouse_pos)) {
                 is_pressed_ = true ;
                 MarkDirty() ;
@@ -88,8 +95,11 @@ namespace zketch {
         }
 
         bool OnRelease(const PointF& mouse_pos) noexcept {
+            if (!enabled_) return false ;
+            
             bool was_pressed = is_pressed_ ;
             is_pressed_ = false ;
+            
             if (was_pressed) {
                 MarkDirty() ;
                 if (bound_.Contain(mouse_pos) && on_click_) {
@@ -105,7 +115,7 @@ namespace zketch {
             canvas_->Present(hwnd, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
         }
 
-        void SetDrawer(std::function<void(Canvas*, const Button&)> drawer) noexcept {
+        void SetDrawer(std::function<void(Renderer*, const Button&)> drawer) noexcept {
             drawer_ = std::move(drawer) ;
             MarkDirty() ;
         }
@@ -121,24 +131,29 @@ namespace zketch {
             }
         }
 
+        void SetFont(const Font& font) noexcept {
+            font_ = font ;
+            MarkDirty() ;
+        }
+
         RectF GetRelativeBound() const noexcept {
             return {0, 0, bound_.w, bound_.h} ;
         }
 
         const std::wstring& GetLabel() const noexcept { 
-			return label_ ; 
-		}
+            return label_ ; 
+        }
 
         const Font& GetFont() const noexcept { 
-			return font_ ; 
-		}
+            return font_ ; 
+        }
 
         bool IsHovered() const noexcept { 
-			return is_hovered_ ; 
-		}
+            return is_hovered_ ; 
+        }
 
         bool IsPressed() const noexcept { 
-			return is_pressed_ ; 
-		}
+            return is_pressed_ ; 
+        }
     } ;
 }

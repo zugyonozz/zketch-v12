@@ -3,18 +3,26 @@
 #include "event.hpp"
 
 namespace zketch {
-	template <typename Derived>
+    template <typename Derived>
     class Widget {
     protected:
         std::unique_ptr<Canvas> canvas_ ;
         RectF bound_ ;
         bool needs_redraw_ = true ;
         bool visible_ = true ;
+        bool enabled_ = true ;
         
         bool ValidateCanvas(const char* context) const noexcept {
-            if (!canvas_ || !canvas_->IsValid()) {
+            if (!canvas_) {
+                logger::warning(context, " - Canvas is null") ;
                 return false ;
             }
+            
+            if (!canvas_->IsValid()) {
+                logger::warning(context, " - Canvas is invalid") ;
+                return false ;
+            }
+            
             return true ;
         }
         
@@ -23,12 +31,16 @@ namespace zketch {
         virtual ~Widget() noexcept = default ;
         
         const RectF& GetBound() const noexcept { 
-			return bound_ ; 
-		}
+            return bound_ ; 
+        }
 
         const Canvas* GetCanvas() const noexcept { 
-			return canvas_.get() ; 
-		}
+            return canvas_.get() ; 
+        }
+        
+        Canvas* GetCanvas() noexcept { 
+            return canvas_.get() ; 
+        }
         
         void Update() noexcept { 
             if (needs_redraw_ && visible_) {
@@ -44,34 +56,77 @@ namespace zketch {
         }
         
         void MarkDirty() noexcept { 
-			needs_redraw_ = true ; 
-		}
+            needs_redraw_ = true ; 
+        }
 
         bool NeedsRedraw() const noexcept { 
-			return needs_redraw_ ; 
-		}
+            return needs_redraw_ ; 
+        }
         
         void SetVisible(bool visible) noexcept { 
-            visible_ = visible ; 
-            if (visible) MarkDirty() ;
+            if (visible_ != visible) {
+                visible_ = visible ; 
+                if (visible) MarkDirty() ;
+            }
         }
 
         bool IsVisible() const noexcept { 
-			return visible_ ; 
-		}
+            return visible_ ; 
+        }
         
-        void SetPosition(const PointF& pos) noexcept {
-            bound_.x = pos.x ;
-            bound_.y = pos.y ;
-            MarkDirty() ;
+        void SetEnabled(bool enabled) noexcept {
+            enabled_ = enabled ;
         }
 
-		void SetClearColor(const Color& color) noexcept {
-			canvas_->SetClearColor(color) ;
-		}
-    } ;
+        bool IsEnabled() const noexcept {
+            return enabled_ ;
+        }
+        
+        void SetPosition(const PointF& pos) noexcept {
+            if (bound_.x != pos.x || bound_.y != pos.y) {
+                bound_.x = pos.x ;
+                bound_.y = pos.y ;
+                MarkDirty() ;
+            }
+        }
 
-	namespace Integration {
-	
-	}
+        void SetBound(const RectF& bound) noexcept {
+            if (bound_ != bound) {
+                bound_ = bound ;
+                
+                // Resize canvas jika ukuran berubah
+                if (canvas_ && canvas_->GetSize() != bound.GetSize()) {
+                    canvas_->Resize(bound.GetSize()) ;
+                }
+                
+                MarkDirty() ;
+            }
+        }
+
+        void SetClearColor(const Color& color) noexcept {
+            if (canvas_) {
+                canvas_->SetClearColor(color) ;
+                MarkDirty() ;
+            }
+        }
+
+        Color GetClearColor() const noexcept {
+            return canvas_ ? canvas_->GetClearColor() : Transparent ;
+        }
+
+        // Hit test - cek apakah point ada di dalam widget
+        bool HitTest(const PointF& point) const noexcept {
+            return bound_.Contain(point) ;
+        }
+
+        // Convert global coordinates ke local widget coordinates
+        PointF GlobalToLocal(const PointF& global_pos) const noexcept {
+            return {global_pos.x - bound_.x, global_pos.y - bound_.y} ;
+        }
+
+        // Convert local coordinates ke global
+        PointF LocalToGlobal(const PointF& local_pos) const noexcept {
+            return {local_pos.x + bound_.x, local_pos.y + bound_.y} ;
+        }
+    } ;
 }
