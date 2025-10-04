@@ -1,311 +1,318 @@
-#pragma once 
+#pragma once
+#include "bitmap_pool.hpp"
 #include "font.hpp"
 
 namespace zketch {
-    class Canvas {
-        friend class Renderer ;
 
-    private:
-        // STATIC: Shared buffer untuk SEMUA canvas (mencegah flickering)
-        static std::unique_ptr<Gdiplus::Bitmap> front_buffer_ ;
-        static std::unique_ptr<Gdiplus::Bitmap> back_buffer_ ;
-        static Size canvas_size_ ;
-        static std::mutex buffer_mutex_ ; // Thread safety
+class Canvas {
+    friend class Renderer;
 
-        // NON-STATIC: Setiap canvas punya bound sendiri
-        RectF bound_ = {} ;
-        Rect invalidate_bound_ = {} ;
-        bool invalidate_ = false ;
-        Color clear_color_ = rgba(0, 0, 0, 0) ;
+private:
+    // PER-CANVAS isolated bitmap dari pool
+    std::shared_ptr<BitmapPool::BitmapEntry> bitmap_;
+    
+    // Canvas-specific state
+    RectF bound_;
+    Rect dirty_rect_; // Tracking invalidation
+    bool is_dirty_ = true;
+    Color clear_color_ = rgba(0, 0, 0, 0);
+    
+    // Clipping region untuk partial updates
+    std::vector<Rect> clip_regions_;
+    
+    bool EnsureBitmap(const Size& required_size) {
+        if (bitmap_ && 
+            bitmap_->size.x >= required_size.x && 
+            bitmap_->size.y >= required_size.y) {
+            return true;
+        }
+        
+        // Release old bitmap
+        if (bitmap_) {
+            g_bitmap_pool.Release(bitmap_);
+        }
+        
+        // Acquire new bitmap from pool
+        bitmap_ = g_bitmap_pool.Acquire(required_size);
+        
+        if (!bitmap_ || !bitmap_->IsValid()) {
+            logger::error("Canvas: Failed to acquire bitmap from pool");
+            return false;
+        }
+        
+        // Mark entire canvas as dirty
+        is_dirty_ = true;
+        dirty_rect_ = Rect{0, 0, required_size.x, required_size.y};
+        
+        return true;
+    }
 
-        // Helper: Check if static buffer perlu expand
-        bool NeedsExpansion(const Size& required_size) const noexcept {
-            if (canvas_size_.x == 0 || canvas_size_.y == 0) {
-                return true ; // Belum diinisialisasi
+public:
+    Canvas() noexcept = default;
+    
+    Canvas(const Canvas&) = delete;
+    Canvas& operator=(const Canvas&) = delete;
+    
+    Canvas(Canvas&& o) noexcept 
+        : bitmap_(std::move(o.bitmap_))
+        , bound_(o.bound_)
+        , dirty_rect_(o.dirty_rect_)
+        , is_dirty_(o.is_dirty_)
+        , clear_color_(o.clear_color_)
+        , clip_regions_(std::move(o.clip_regions_)) 
+    {
+        o.bound_ = {};
+        o.is_dirty_ = false;
+    }
+    
+    Canvas& operator=(Canvas&& o) noexcept {
+        if (this != &o) {
+            if (bitmap_) {
+                g_bitmap_pool.Release(bitmap_);
             }
             
-            return required_size.x > canvas_size_.x || 
-                   required_size.y > canvas_size_.y ;
-        }
-
-        // Helper: Expand static buffer untuk accommodate all canvas
-        bool ExpandBuffer(const Size& new_size) noexcept {
-            std::lock_guard<std::mutex> lock(buffer_mutex_) ;
-
-            Size expanded = {
-                std::max(canvas_size_.x, new_size.x),
-                std::max(canvas_size_.y, new_size.y)
-            } ;
-
-            if (expanded.x == 0 || expanded.y == 0) {
-                logger::error("Canvas::ExpandBuffer - Invalid size") ;
-                return false ;
-            }
-
-            logger::info("Expanding buffer from ", canvas_size_.x, "x", canvas_size_.y, 
-                        " to ", expanded.x, "x", expanded.y) ;
-
-            try {
-                auto new_front = std::make_unique<Gdiplus::Bitmap>(
-                    expanded.x, expanded.y, PixelFormat32bppARGB
-                ) ;
-                auto new_back = std::make_unique<Gdiplus::Bitmap>(
-                    expanded.x, expanded.y, PixelFormat32bppARGB
-                ) ;
-
-                if (!new_front || !new_back) {
-                    logger::error("Canvas::ExpandBuffer - Allocation failed") ;
-                    return false ;
-                }
-
-                if (new_front->GetLastStatus() != Gdiplus::Ok || 
-                    new_back->GetLastStatus() != Gdiplus::Ok) {
-                    logger::error("Canvas::ExpandBuffer - Bitmap creation failed") ;
-                    return false ;
-                }
-
-                // Copy old content jika ada
-                if (front_buffer_ && back_buffer_) {
-                    Gdiplus::Graphics gfx_front(new_front.get()) ;
-                    Gdiplus::Graphics gfx_back(new_back.get()) ;
-                    
-                    gfx_front.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
-                    gfx_back.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
-                    
-                    gfx_front.DrawImage(front_buffer_.get(), 0, 0) ;
-                    gfx_back.DrawImage(back_buffer_.get(), 0, 0) ;
-                } else {
-                    Gdiplus::Graphics gfx_front(new_front.get()) ;
-                    Gdiplus::Graphics gfx_back(new_back.get()) ;
-                    gfx_front.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
-                    gfx_back.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
-                }
-
-                front_buffer_ = std::move(new_front) ;
-                back_buffer_ = std::move(new_back) ;
-                canvas_size_ = expanded ;
-
-                return true ;
-            } catch (const std::exception& e) {
-                logger::error("Canvas::ExpandBuffer - Exception: ", e.what()) ;
-                return false ;
-            } catch (...) {
-                logger::error("Canvas::ExpandBuffer - Unknown exception") ;
-                return false ;
-            }
-        }
-
-    public:
-        Canvas() noexcept = default ;
-        Canvas(const Canvas&) = delete ;
-        Canvas(Canvas&&) noexcept = default ;
-        Canvas& operator=(const Canvas&) = delete ;
-        Canvas& operator=(Canvas&&) noexcept = default ;
-        ~Canvas() noexcept = default ;
-
-        Canvas(const RectF& bound) noexcept : bound_(bound) {
-            Create(bound_.GetSize()) ;
-        }
-
-        bool Create(const Size& size) noexcept {
-            if (size.x == 0 || size.y == 0) {
-                logger::error("Canvas::Create - Invalid size: ", size.x, "x", size.y) ;
-                return false ;
-            }
-
-            // Set bound untuk canvas ini
-            bound_ = RectF{0, 0, static_cast<float>(size.x), static_cast<float>(size.y)} ;
-
-            // Check if static buffer perlu expand
-            if (NeedsExpansion(size)) {
-                if (!ExpandBuffer(size)) {
-                    return false ;
-                }
-            }
-
-            logger::info("Canvas created with bound: ", size.x, "x", size.y) ;
-            return true ;
-        }
-
-        void Clear() noexcept {
-            // Tidak clear static buffer, hanya reset bound
-            bound_ = {} ;
-            logger::info("Canvas bound cleared") ;
-        }
-
-        static void ClearStaticBuffers() noexcept {
-            std::lock_guard<std::mutex> lock(buffer_mutex_) ;
-            front_buffer_.reset() ;
-            back_buffer_.reset() ;
-            canvas_size_ = {} ;
-            logger::info("Static buffers cleared") ;
-        }
-
-        void SetClearColor(const Color& color) noexcept {
-            clear_color_ = color ;
-        }
-
-        Color GetClearColor() const noexcept {
-            return clear_color_ ;
-        }
-
-        void Present(HWND hwnd, const Point& offset = {0, 0}) noexcept {
-            std::lock_guard<std::mutex> lock(buffer_mutex_) ;
-
-            if (!IsValid()) {
-                logger::warning("Canvas::Present - Invalid canvas") ;
-                return ;
-            }
-
-            if (!hwnd) {
-                logger::warning("Canvas::Present - Invalid window handle") ;
-                return ;
-            }
-
-            HDC hdc = GetDC(hwnd) ;
-            if (!hdc) {
-                logger::warning("Canvas::Present - GetDC failed") ;
-                return ;
-            }
-
-            Gdiplus::Graphics screen(hdc) ;
-            screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
-            screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
-            screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
+            bitmap_ = std::move(o.bitmap_);
+            bound_ = o.bound_;
+            dirty_rect_ = o.dirty_rect_;
+            is_dirty_ = o.is_dirty_;
+            clear_color_ = o.clear_color_;
+            clip_regions_ = std::move(o.clip_regions_);
             
-            // Draw ONLY this canvas's region dari shared buffer
+            o.bound_ = {};
+            o.is_dirty_ = false;
+        }
+        return *this;
+    }
+    
+    ~Canvas() noexcept {
+        if (bitmap_) {
+            g_bitmap_pool.Release(bitmap_);
+        }
+    }
+    
+    Canvas(const RectF& bound) noexcept : bound_(bound) {
+        Create(bound_.GetSize());
+    }
+    
+    bool Create(const Size& size) {
+        if (size.x == 0 || size.y == 0) {
+            logger::error("Canvas::Create - Invalid size: ", size.x, "x", size.y);
+            return false;
+        }
+        
+        bound_ = RectF{0, 0, static_cast<float>(size.x), static_cast<float>(size.y)};
+        
+        if (!EnsureBitmap(size)) {
+            return false;
+        }
+        
+        logger::info("Canvas created: ", size.x, "x", size.y);
+        return true;
+    }
+    
+    bool Resize(const Size& new_size) {
+        if (new_size.x == 0 || new_size.y == 0) {
+            logger::error("Canvas::Resize - Invalid size");
+            return false;
+        }
+        
+        // Get old content
+        std::unique_ptr<Gdiplus::Bitmap> old_front;
+        Size old_size = bound_.GetSize();
+        
+        if (bitmap_ && bitmap_->front) {
+            old_front = std::make_unique<Gdiplus::Bitmap>(
+                old_size.x, old_size.y, PixelFormat32bppPARGB
+            );
+            
+            Gdiplus::Graphics gfx(old_front.get());
+            gfx.DrawImage(bitmap_->front.get(), 0, 0, old_size.x, old_size.y);
+        }
+        
+        bound_.w = static_cast<float>(new_size.x);
+        bound_.h = static_cast<float>(new_size.y);
+        
+        if (!EnsureBitmap(new_size)) {
+            return false;
+        }
+        
+        // Restore old content if possible
+        if (old_front && bitmap_) {
+            Gdiplus::Graphics gfx_front(bitmap_->front.get());
+            Gdiplus::Graphics gfx_back(bitmap_->back.get());
+            
+            gfx_front.Clear(clear_color_);
+            gfx_back.Clear(clear_color_);
+            
+            uint32_t copy_w = std::min(old_size.x, new_size.x);
+            uint32_t copy_h = std::min(old_size.y, new_size.y);
+            
+            gfx_front.DrawImage(old_front.get(), 0, 0, copy_w, copy_h);
+            gfx_back.DrawImage(old_front.get(), 0, 0, copy_w, copy_h);
+        }
+        
+        Invalidate();
+        logger::info("Canvas resized to ", new_size.x, "x", new_size.y);
+        return true;
+    }
+    
+    void Clear() {
+        bound_ = {};
+        is_dirty_ = false;
+        dirty_rect_ = {};
+        clip_regions_.clear();
+        
+        if (bitmap_) {
+            g_bitmap_pool.Release(bitmap_);
+            bitmap_.reset();
+        }
+        
+        logger::info("Canvas cleared");
+    }
+    
+    void SetClearColor(const Color& color) {
+        clear_color_ = color;
+    }
+    
+    Color GetClearColor() const {
+        return clear_color_;
+    }
+    
+    void Present(HWND hwnd, const Point& offset = {0, 0}) {
+        if (!IsValid()) {
+            logger::warning("Canvas::Present - Invalid canvas");
+            return;
+        }
+        
+        if (!hwnd) {
+            logger::warning("Canvas::Present - Invalid window handle");
+            return;
+        }
+        
+        HDC hdc = GetDC(hwnd);
+        if (!hdc) {
+            logger::warning("Canvas::Present - GetDC failed");
+            return;
+        }
+        
+        Gdiplus::Graphics screen(hdc);
+        screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+        screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed);
+        screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
+        
+        // Draw only this canvas's content
+        uint32_t w = static_cast<uint32_t>(bound_.w);
+        uint32_t h = static_cast<uint32_t>(bound_.h);
+        
+        if (clip_regions_.empty()) {
+            // Full blit
             screen.DrawImage(
-                front_buffer_.get(), 
-                offset.x, 
+                bitmap_->front.get(),
+                offset.x,
                 offset.y,
-                static_cast<int>(bound_.x),
-                static_cast<int>(bound_.y),
-                static_cast<int>(bound_.w),
-                static_cast<int>(bound_.h),
+                0, 0, w, h,
                 Gdiplus::UnitPixel
-            ) ;
-
-            ReleaseDC(hwnd, hdc) ;
-        }
-
-        void Validate() noexcept {
-            invalidate_bound_ = {} ;
-            invalidate_ = false ;
-        }
-
-        void Invalidate(const Rect& rect = {}) noexcept {
-            if (rect != Rect{}) {
-                invalidate_bound_ = rect ;
+            );
+        } else {
+            // Partial blit with clip regions
+            for (const auto& clip : clip_regions_) {
+                screen.DrawImage(
+                    bitmap_->front.get(),
+                    offset.x + clip.x,
+                    offset.y + clip.y,
+                    clip.x, clip.y,
+                    clip.w, clip.h,
+                    Gdiplus::UnitPixel
+                );
             }
-            invalidate_ = true ;
         }
-
-        bool IsValid() const noexcept { 
-            return front_buffer_ && back_buffer_ && 
-                   canvas_size_.x > 0 && canvas_size_.y > 0 &&
-                   bound_.w > 0 && bound_.h > 0 ; // FIX: Check bound juga
-        }
-
-        bool IsInvalidated() const noexcept {
-            return invalidate_ ;
-        }
-
-        Size GetSize() const noexcept {
-            return bound_.GetSize() ; // Return bound size, bukan static size
-        }
-
-        uint32_t GetWidth() const noexcept {
-            return static_cast<uint32_t>(bound_.w) ;
-        }
-
-        uint32_t GetHeight() const noexcept {
-            return static_cast<uint32_t>(bound_.h) ;
-        }
-
-        const RectF& GetBound() const noexcept {
-            return bound_ ;
-        }
-
-        void SetBound(const RectF& bound) noexcept {
-            bound_ = bound ;
+        
+        ReleaseDC(hwnd, hdc);
+    }
+    
+    void Validate() {
+        is_dirty_ = false;
+        dirty_rect_ = {};
+        clip_regions_.clear();
+    }
+    
+    void Invalidate(const Rect& rect = {}) {
+        is_dirty_ = true;
+        
+        if (rect.w > 0 && rect.h > 0) {
+            if (dirty_rect_.w == 0 || dirty_rect_.h == 0) {
+                dirty_rect_ = rect;
+            } else {
+                dirty_rect_ = dirty_rect_.Union(rect);
+            }
             
-            // Check if static buffer perlu expand
-            Size required = bound.GetSize() ;
-            if (NeedsExpansion(required)) {
-                ExpandBuffer(required) ;
-            }
+            // Add to clip regions for partial update
+            clip_regions_.push_back(rect);
+        } else {
+            // Invalidate entire canvas
+            dirty_rect_ = Rect{
+                0, 0,
+                static_cast<uint32_t>(bound_.w),
+                static_cast<uint32_t>(bound_.h)
+            };
+            clip_regions_.clear();
         }
-
-        Gdiplus::Bitmap* GetFrontBuffer() const noexcept {
-            return front_buffer_.get() ;
+    }
+    
+    bool IsValid() const {
+        return bitmap_ && bitmap_->IsValid() && 
+               bound_.w > 0 && bound_.h > 0;
+    }
+    
+    bool IsInvalidated() const {
+        return is_dirty_;
+    }
+    
+    Size GetSize() const {
+        return bound_.GetSize();
+    }
+    
+    uint32_t GetWidth() const {
+        return static_cast<uint32_t>(bound_.w);
+    }
+    
+    uint32_t GetHeight() const {
+        return static_cast<uint32_t>(bound_.h);
+    }
+    
+    const RectF& GetBound() const {
+        return bound_;
+    }
+    
+    void SetBound(const RectF& bound) {
+        if (bound_.w != bound.w || bound_.h != bound.h) {
+            Resize(bound.GetSize());
         }
-
-        Gdiplus::Bitmap* GetBackBuffer() const noexcept {
-            return back_buffer_.get() ;
+        bound_ = bound;
+    }
+    
+    Gdiplus::Bitmap* GetFrontBuffer() const {
+        return bitmap_ ? bitmap_->front.get() : nullptr;
+    }
+    
+    Gdiplus::Bitmap* GetBackBuffer() const {
+        return bitmap_ ? bitmap_->back.get() : nullptr;
+    }
+    
+    void SwapBuffers() {
+        if (bitmap_ && bitmap_->front && bitmap_->back) {
+            std::swap(bitmap_->front, bitmap_->back);
+            is_dirty_ = false;
         }
+    }
+    
+    const Rect& GetDirtyRect() const {
+        return dirty_rect_;
+    }
+    
+    operator bool() const {
+        return IsValid();
+    }
+};
 
-        void SwapBuffers() noexcept {
-            std::lock_guard<std::mutex> lock(buffer_mutex_) ;
-            if (front_buffer_ && back_buffer_) {
-                std::swap(front_buffer_, back_buffer_) ;
-                invalidate_ = false ;
-            }
-        }
-
-        // Get static buffer size
-        static Size GetStaticBufferSize() noexcept {
-            return canvas_size_ ;
-        }
-
-        // Expand canvas bound untuk fit new area
-        bool ExpandToFit(const RectF& new_bound) noexcept {
-            Rect current = {
-                Point{static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)},
-                Size{static_cast<uint32_t>(bound_.w), static_cast<uint32_t>(bound_.h)}
-            } ;
-            
-            Rect target = {
-                Point{static_cast<int32_t>(new_bound.x), static_cast<int32_t>(new_bound.y)},
-                Size{static_cast<uint32_t>(new_bound.w), static_cast<uint32_t>(new_bound.h)}
-            } ;
-
-            if (current.w == 0 || current.h == 0) {
-                // First initialization
-                bound_ = new_bound ;
-                return Create(new_bound.GetSize()) ;
-            }
-
-            Rect expanded = current.Union(target) ;
-            
-            if (expanded == current) {
-                // No expansion needed
-                return true ;
-            }
-
-            // Update bound
-            bound_ = RectF{
-                static_cast<float>(expanded.x),
-                static_cast<float>(expanded.y),
-                static_cast<float>(expanded.w),
-                static_cast<float>(expanded.h)
-            } ;
-
-            // Expand static buffer if needed
-            if (NeedsExpansion(expanded.GetSize())) {
-                return ExpandBuffer(expanded.GetSize()) ;
-            }
-
-            return true ;
-        }
-
-        operator bool() const noexcept {
-            return IsValid() ;
-        }
-    } ;
-
-    // Static member initialization
-    std::unique_ptr<Gdiplus::Bitmap> Canvas::front_buffer_ = nullptr ;
-    std::unique_ptr<Gdiplus::Bitmap> Canvas::back_buffer_ = nullptr ;
-    Size Canvas::canvas_size_ = {} ;
-    std::mutex Canvas::buffer_mutex_ ;
-}
+} // namespace zketch

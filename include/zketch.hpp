@@ -4,11 +4,11 @@
 #include "slider.hpp"
 #include "button.hpp"
 #include "textbox.hpp"
-#include "layer.hpp"
 
 namespace zketch {
 	void zketch_init() noexcept {
 		AppRegistry::RegisterWindowClass() ;
 		EventSystem::Initialize() ;
+		static GDISession__ gdi_session_init__ ;
 	}
 }
