@@ -1,7 +1,9 @@
 # ninja log v7
 4516	4769	7782421118675981	zketch_v12.exe	c90468a3c3f61eca
-25	57	7809847437709452	D:/Project/zketch-v12/build/CMakeFiles/cmake.verify_globs	42f8fe5e6804a024
-2650	2805	7809847463949968	D:/Project/zketch-v12/bin/Win32TestProject.exe	b8260d6e9de8cdd7
+16	48	7811703036689612	D:/Project/zketch-v12/build/CMakeFiles/cmake.verify_globs	42f8fe5e6804a024
+3112	3285	7811233266503046	D:/Project/zketch-v12/bin/Win32TestProject.exe	963f909d8a2f4c86
 58	4147	7809792624734929	CMakeFiles/Win32TestProject.dir/src/test10.cpp.obj	63739e0d3a16865
 91	3307	7809824114634588	CMakeFiles/Win32TestProject.dir/src/test1.cpp.obj	cb1bd49c0c91dd71
-62	2649	7809847438078932	CMakeFiles/Win32TestProject.dir/src/test2.cpp.obj	bb4d790165570c50
+48	2833	7810879327560125	CMakeFiles/Win32TestProject.dir/src/test2.cpp.obj	bb4d790165570c50
+67	2963	7810987783717483	CMakeFiles/Win32TestProject.dir/src/test3.cpp.obj	d72e547c85e797e4
+65	3111	7811233236047388	CMakeFiles/Win32TestProject.dir/src/test4.cpp.obj	441ba2f7e6e97a17

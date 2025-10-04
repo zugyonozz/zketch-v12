@@ -12,81 +12,6 @@ namespace zketch {
 		} ;
 	}
 
-	enum class EventType : uint8_t { 
-		None,
-		Quit,
-		Close,
-		Key,
-		Mouse,
-		Resize, 
-		Slider,
-		Button
-	} ;
-
-	enum class MouseState : uint8_t {
-		None,
-		Up,
-		Down,
-		Wheel
-	} ;
-
-	enum class MouseButton : uint8_t { 
-		None,
-		Left, 
-		Right, 
-		Middle, 
-	} ;
-
-	enum class KeyState : uint8_t {
-		None,
-		Up,
-		Down
-	} ;
-
-	enum class SliderState : uint8_t {
-		None,
-		Changed,
-		Start,
-		End,
-		Hover
-	} ;
-
-	enum class ButtonState : uint8_t {
-		None,
-		Hover,
-		Press,
-		Release
-	} ;
-
-	struct Key__ {
-		KeyState state_ ;
-		uint32_t key_code_ ;
-	} ;
-
-	struct Slider__ {
-		SliderState state_ ;
-		float value_ ;
-		void* slider_ptr_ ;
-	} ;
-
-	struct Button__ {
-		ButtonState state_ ;
-		void* button_ptr_ ;
-	} ;
-
-	struct Mouse__ {
-		MouseState state_ ;
-		MouseButton button_ ;
-		int32_t x_ ;
-		int32_t y_ ;
-		int32_t value_ ;
-	} ;
-
-	struct Resize__ {
-		uint32_t width_ ;
-		uint32_t height_ ;
-	} ;
-
 	class Event {
 	private :
 		EventType type_ = EventType::None ;
@@ -95,11 +20,30 @@ namespace zketch {
 
 		union data_ {
 			struct empty__ {} empty_ ;
-			Key__ key_ ;
-			Mouse__ mouse_ ;
-			Resize__ resize_ ;
-			Slider__ slider_ ;
-			Button__ button_ ;
+			struct Key__ {
+				KeyState state_ ;
+				uint32_t key_code_ ;
+			} key_ ;
+			struct Mouse__ {
+				MouseState state_ ;
+				MouseButton button_ ;
+				int32_t x_ ;
+				int32_t y_ ;
+				int32_t value_ ;
+			} mouse_ ;
+			struct Resize__ {
+				uint32_t width_ ;
+				uint32_t height_ ;
+			} resize_ ;
+			struct Slider__ {
+				SliderState state_ ;
+				float value_ ;
+				Slider* slider_ptr_ ;
+			} slider_ ;
+			struct Button__ {
+				ButtonState state_ ;
+				Button* button_ptr_ ;
+			} button_ ;
 		} data_ ;
 
 		// -------------- Construtor  --------------
@@ -155,7 +99,7 @@ namespace zketch {
 			hwnd_ = src ;
 		}
 
-		constexpr Event(SliderState state, float value, void* slider_ptr = nullptr) noexcept {
+		constexpr Event(SliderState state, float value, Slider* slider_ptr = nullptr) noexcept {
 			type_ = EventType::Slider ;
 			data_.slider_ = {
 				state, 
@@ -165,7 +109,7 @@ namespace zketch {
 			hwnd_ = nullptr ;
 		}
 
-		Event(ButtonState state, void* button_ptr = nullptr) noexcept {
+		Event(ButtonState state, Button* button_ptr = nullptr) noexcept {
 			type_ = EventType::Button ;
 			data_.button_ = {
 				state,
@@ -227,11 +171,11 @@ namespace zketch {
 			return Event(src, size) ;
 		}
 
-		static Event CreateSliderEvent(SliderState state, float value, void* slider_ptr = nullptr) {
+		static Event CreateSliderEvent(SliderState state, float value, Slider* slider_ptr = nullptr) {
 			return Event(state, value, slider_ptr) ;
 		}
 
-		static Event CreateButtonEvent(ButtonState state, void* button_ptr = nullptr) {
+		static Event CreateButtonEvent(ButtonState state, Button* button_ptr = nullptr) {
 			return Event(state, button_ptr) ;
 		}
 
@@ -301,7 +245,7 @@ namespace zketch {
 			return data_.slider_.value_ ;
 		}
 
-		constexpr void* GetSliderAddress() const noexcept {
+		constexpr Slider* GetSliderAddress() const noexcept {
 			return data_.slider_.slider_ptr_ ;
 		}
 
@@ -309,7 +253,7 @@ namespace zketch {
 			return data_.button_.state_ ;
 		}
 
-		constexpr void* GetButtonAddress() const noexcept {
+		constexpr Button* GetButtonAddress() const noexcept {
 			return data_.button_.button_ptr_ ;
 		}
 

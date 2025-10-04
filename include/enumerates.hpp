@@ -2,6 +2,7 @@
 
 #include "env.hpp"
 #include "win32init.hpp"
+#include "gdiplusinit.hpp"
 
 namespace zketch {
 
@@ -151,4 +152,59 @@ namespace zketch {
 		LeftBottom	= 1 << 7,
 		Center		= 0b11111111,
 	} ;
+
+	enum class EventType : uint8_t { 
+		None,
+		Quit,
+		Close,
+		Key,
+		Mouse,
+		Resize, 
+		Slider,
+		Button
+	} ;
+
+	enum class MouseState : uint8_t {
+		None,
+		Up,
+		Down,
+		Wheel
+	} ;
+
+	enum class MouseButton : uint8_t { 
+		None,
+		Left, 
+		Right, 
+		Middle, 
+	} ;
+
+	enum class KeyState : uint8_t {
+		None,
+		Up,
+		Down
+	} ;
+
+	enum class SliderState : uint8_t {
+		None,
+		Changed,
+		Start,
+		End,
+		Hover
+	} ;
+
+	enum class ButtonState : uint8_t {
+		None,
+		Hover,
+		Press,
+		Release
+	} ;
+
+	enum class FontStyle : uint32_t {
+        Regular     = Gdiplus::FontStyleRegular,
+        Bold        = Gdiplus::FontStyleBold,
+        Italic      = Gdiplus::FontStyleItalic,
+        BoldItalic  = Gdiplus::FontStyleBold | Gdiplus::FontStyleItalic,
+        Underline   = Gdiplus::FontStyleUnderline,
+        Strikeout   = Gdiplus::FontStyleStrikeout
+    } ;
 }

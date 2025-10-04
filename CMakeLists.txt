@@ -11,7 +11,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Cari semua file cpp di src setiap kali build (lebih aman)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-    "${PROJECT_SOURCE_DIR}/src/test2.cpp"
+    "${PROJECT_SOURCE_DIR}/src/test4.cpp"
 )
 
 # Buat executable

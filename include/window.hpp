@@ -1,7 +1,7 @@
 #pragma once
 
 #include "renderer.hpp"
-#include "inputsystem.hpp"
+#include "event.hpp"
 
 namespace zketch {
 
@@ -201,10 +201,6 @@ namespace zketch {
 			return *this ;
 		}
 
-		HWND GetHandle() const noexcept {
-			return hwnd_ ;
-		}
-
 		bool IsValid() const noexcept {
 			return hwnd_ != nullptr ;
 		}
@@ -255,6 +251,10 @@ namespace zketch {
 			tagRECT r ;
 			GetWindowRect(hwnd_, &r) ;
 			return static_cast<Rect>(r) ;
+		}
+
+		operator HWND() const noexcept {
+			return hwnd_ ;
 		}
 
 		void SetTitle(const char* title) noexcept {

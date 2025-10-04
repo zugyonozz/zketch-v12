@@ -1,21 +1,129 @@
-#include "window.hpp"
+#include "zketch.hpp"
+using namespace zketch ;
 
-int main() {
+RectF Client ;
+Drawer Draw ;
 
-	zketch::AppRegistry::RegisterWindowClass() ;
+void UpdateClient(const Window& window) noexcept {
+	Client = window.GetClientBound() ;
+}
 
-	zketch::Window win("Test 4", 800, 600) ;
-	win.Show() ;
+class Background {
+private :
+	std::unique_ptr<Canvas> canvas_ ;
+	bool update_ ;
 
-	zketch::Event e = zketch::Event::createEvent() ;
-	while(zketch::PollEvent(e)) {
-		if (e == zketch::EventType::KeyDown) {
-			if (e.keyCode() == 'Q')
-				PostQuitMessage(0) ;
-			else
-			 	zketch::logger::info(char(e.keyCode()), " Pressed") ;
+	void InvokeRedraw() noexcept {
+		if (update_) {
+			canvas_->Create(Client.GetSize() - Point{10, 0}) ;
+			if (!Draw.Begin(*canvas_)) {
+				return ;
+			}
+
+			Draw.End() ;
+			update_ = false ;
 		}
 	}
 
-	return 0;
+public :
+	Background(const Color& color = Black) noexcept : canvas_(std::make_unique<Canvas>()), update_(true) {
+		canvas_->Create(Client.GetSize() - Point{10, 0}) ;
+		canvas_->SetClearColor(color) ;
+	}
+
+	~Background() noexcept = default ;
+
+	void Update() noexcept {
+		update_ = true ;
+	}
+
+	void Present(HWND handle) noexcept {
+		InvokeRedraw() ;
+		canvas_->Present(handle) ;
+	}
+} ;
+
+void InvokeUpdateVSlider(Canvas* canvas, const Slider& slider) noexcept {
+	if (!Draw.Begin(*canvas)) {
+		return ;
+	}
+
+	if (slider.IsDragging()) {
+		Draw.FillRect(slider.GetRelativeThumbBound(), rgba(128, 128, 128, 1)) ;
+	} else if (slider.IsHovered()) {
+		Draw.FillRect(slider.GetRelativeThumbBound(), rgba(128, 128, 128, 1)) ;
+	} else if (slider.IsVisible()) {
+		Draw.FillRect(slider.GetRelativeThumbBound(), rgba(72, 72, 72, 1)) ;
+	}
+	Draw.End() ;
+}
+
+struct VSlider {
+	std::unique_ptr<Slider> slider_ ;
+
+	VSlider(const Color& color = Black) noexcept : 
+	slider_(std::make_unique<Slider>(Slider::Vertical, RectF{Client.Anchor(Anchor::RightTop) - Point{10, 0}, Size{10, Client.h}}, 
+	Size{10, 40})) {
+		slider_->SetClearColor(color) ;
+		slider_->SetDrawer(InvokeUpdateVSlider) ;
+	}
+
+	void SetPosition(const PointF& pos) noexcept {
+		slider_->SetPosition(pos) ;
+	}
+
+	void Update() noexcept {
+		slider_->MarkDirty() ;
+		slider_->SetPosition(Client.Anchor(Anchor::RightTop) - Point{10, 0}) ;
+	}
+
+	void Present(HWND handle) noexcept {
+		slider_->Present(handle) ;
+	}
+} ;
+
+int main() {
+	zketch_init() ;	
+
+	Window window("Slider Demo", 800, 600) ;
+	window.Show() ;
+
+	UpdateClient(window) ;
+	Background bg ;
+	VSlider vslide ;
+
+	Event e ;
+
+	while (Application) {
+		while (PollEvent(e)) {
+			switch (e) {
+				case EventType::Mouse :
+					if (e.GetMouseState() == MouseState::Down) {
+						if (e.GetMouseButton() == MouseButton::Left) {
+							vslide.slider_->OnPress(e.GetMousePosition()) ;
+						}
+					} else if (e.GetMouseState() == MouseState::Up) {
+						if (e.GetMouseButton() == MouseButton::Left) {
+							vslide.slider_->OnRelease() ;
+						}
+					} else if (e.GetMouseState() == MouseState::None) {
+						vslide.slider_->OnHover(e.GetMousePosition()) ;
+						if (vslide.slider_->IsDragging()) {
+							vslide.slider_->OnDrag(e.GetMousePosition()) ;
+						}
+					}
+				break ;
+
+				case EventType::Resize :
+					UpdateClient(window) ;
+					bg.Update() ;
+					vslide.Update() ;
+					break ;
+			}
+		}
+
+		bg.Present(window) ;
+		vslide.Present(window) ;
+		Sleep(16) ;
+	}
 }

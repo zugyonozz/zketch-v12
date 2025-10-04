@@ -12,7 +12,7 @@ namespace zketch {
 	private:
 		std::unique_ptr<Gdiplus::Bitmap> front_{} ;
 		std::unique_ptr<Gdiplus::Bitmap> back_{} ;
-		Point size_{} ;
+		Size size_{} ;
 		bool dirty_ = false ;
 		Color clear_color_ = rgba(0, 0, 0, 0); // Default transparent
 
@@ -24,13 +24,8 @@ namespace zketch {
 		Canvas& operator=(Canvas&&) = default ;
 		~Canvas() = default ;
 
-		bool Create(const Point& size) noexcept {
+		bool Create(const Size& size) noexcept {
 			Clear() ;
-
-			if (size.x <= 0 || size.y <= 0) {
-				logger::warning("Canvas size is invalid.") ;
-				return false ;
-			}
 
 			logger::info("Creating GDI+ bitmap: ", size.x, " x ", size.y) ;
 			try {
@@ -157,7 +152,7 @@ namespace zketch {
 			return size_.y ; 
 		}
 
-		const Point& GetSize() const noexcept { 
+		const Size& GetSize() const noexcept { 
 			return size_ ; 
 		}
 
@@ -413,8 +408,8 @@ namespace zketch {
 
 			to_->MarkDirty() ;
 			Gdiplus::SolidBrush brush(color) ;
-			Gdiplus::FontFamily family(font.family().c_str()) ;
-			Gdiplus::Font f(&family, font.size(), font.style(), Gdiplus::UnitPixel) ;
+			Gdiplus::FontFamily family(font.GetFamily().c_str()) ;
+			Gdiplus::Font f(&family, font.GetSize(), font.GetStyle(), Gdiplus::UnitPixel) ;
 
 			gfx_->SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAliasGridFit) ;
 

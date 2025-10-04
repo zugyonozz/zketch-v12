@@ -1,10 +1,10 @@
-#include "builtin.hpp"
+#include "zketch.hpp"
 using namespace zketch ;
 
 // this code is tutorial create window
 
 int main() {
-	AppRegistry::RegisterWindowClass() ;
+	zketch_init() ;
 
 	// create window with ctor with params
 	// paramater :

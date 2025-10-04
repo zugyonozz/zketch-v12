@@ -1,4 +1,4 @@
-#include "builtin.hpp"
+#include "zketch.hpp"
 using namespace zketch ;
 
 // this code is tutorial for Event
@@ -9,7 +9,8 @@ struct Input {
 } ;
 
 int main() {
-	AppRegistry::RegisterWindowClass() ;
+	
+	zketch_init() ;
 
 	Window window("Event Demo", 500, 400) ;
 	window.Show() ;
@@ -44,7 +45,7 @@ int main() {
 
 			if (in.input_.IsCtrlDown()) {
 				if (in.event_.IsMouseEvent() && in.input_.IsMousePressed(MouseButton::Left)) {
-					logger::info("CTRL + Mouse Up [LEFT]\t- {", in.event_.GetMousePosition().x, ", ", in.event_.GetMousePosition().y, '}') ;
+					logger::info("CTRL + Mouse Up\t- {", in.event_.GetMousePosition().x, ", ", in.event_.GetMousePosition().y, '}') ;
 				}
 				in.input_.Update() ;
 			} else {

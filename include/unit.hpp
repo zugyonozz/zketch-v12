@@ -1,7 +1,6 @@
 #pragma once
 
 #include "logger.hpp"
-#include "gdiplusinit.hpp"
 
 namespace math_ops {
 
@@ -247,25 +246,29 @@ struct Point_ {
 
 	template <typename U>
 	constexpr Point_& operator+=(const Point_<U>& o) noexcept {
-		*this = math_ops::add{}(*this, o) ;
+		x = math_ops::add{}(x, o.x) ;
+		y = math_ops::add{}(y, o.y) ;
 		return *this ;
 	}
 
 	template <typename U>
 	constexpr Point_& operator-=(const Point_<U>& o) noexcept {
-		*this = math_ops::sub{}(*this, o) ;
+		x = math_ops::sub{}(x, o.x) ;
+		y = math_ops::sub{}(y, o.y) ;
 		return *this ;
 	}
 
 	template <typename U>
 	constexpr Point_& operator*=(const Point_<U>& o) noexcept {
-		*this = math_ops::mul{}(*this, o) ;
+		x = math_ops::mul{}(x, o.x) ;
+		y = math_ops::mul{}(y, o.y) ;
 		return *this ;
 	}
 
 	template <typename U>
 	constexpr Point_& operator/=(const Point_<U>& o) noexcept {
-		*this = math_ops::div{}(*this, o) ;
+		x = math_ops::div{}(x, o.x) ;
+		y = math_ops::div{}(y, o.y) ;
 		return *this ;
 	}
 
@@ -279,25 +282,25 @@ struct Point_ {
 		return math_ops::not_equal_to{}(x, o.x) || math_ops::not_equal_to{}(y, o.y) ;
 	}
 
-	constexpr bool contain(T v) const noexcept {
+	constexpr bool Contain(T v) const noexcept {
 		return (x == v) ? true : ((y == v) ? true : false) ;
 	}
 
 	template <typename ... Fn, typename = std::enable_if_t<(std::invocable<Fn, T> && ...)>>
-	constexpr bool contains(Fn&& ... fn) const noexcept {
+	constexpr bool Contains(Fn&& ... fn) const noexcept {
 		return ((fn(x) || fn(y)) || ...) ;
 	}
 
-	constexpr T length() const noexcept {
+	constexpr T Length() const noexcept {
 		return sqrt(math_ops::power{}(x) + math_ops::power{}(y)) ;
 	}
 
-	constexpr Point_ normalized() const noexcept {
-		T l = length() ; 
+	constexpr Point_ Normalized() const noexcept {
+		T l = Length() ; 
 		return l > 0 ? *this / l : Point_{} ;
 	}
 
-	constexpr T dot(const Point_& p) const noexcept { 
+	constexpr T Dot(const Point_& p) const noexcept { 
 		return x * p.x + y * p.y ; 
 	}
 
@@ -540,25 +543,37 @@ struct Rect_ {
 
 	template <typename U>
 	constexpr Rect_& operator+=(const Rect_<U>& o) noexcept {
-		*this = math_ops::add{}(*this, o) ;
+		x = math_ops::add{}(x, o.x) ;
+		y = math_ops::add{}(y, o.y) ;
+		w = math_ops::add{}(w, o.w) ;
+		h = math_ops::add{}(h, o.h) ;
 		return *this ;
 	}
 
 	template <typename U>
 	constexpr Rect_& operator-=(const Rect_<U>& o) noexcept {
-		*this = math_ops::sub{}(*this, o) ;
+		x = math_ops::sub{}(x, o.x) ;
+		y = math_ops::sub{}(y, o.y) ;
+		w = math_ops::sub{}(w, o.w) ;
+		h = math_ops::sub{}(h, o.h) ;
 		return *this ;
 	}
 
 	template <typename U>
 	constexpr Rect_& operator*=(const Rect_<U>& o) noexcept {
-		*this = math_ops::mul{}(*this, o) ;
+		x = math_ops::mul{}(x, o.x) ;
+		y = math_ops::mul{}(y, o.y) ;
+		w = math_ops::mul{}(w, o.w) ;
+		h = math_ops::mul{}(h, o.h) ;
 		return *this ;
 	}
 
 	template <typename U>
 	constexpr Rect_& operator/=(const Rect_<U>& o) noexcept {
-		*this = math_ops::div{}(*this, o) ;
+		x = math_ops::div{}(x, o.x) ;
+		y = math_ops::div{}(y, o.y) ;
+		w = math_ops::div{}(w, o.w) ;
+		h = math_ops::div{}(h, o.h) ;
 		return *this ;
 	}
 
@@ -588,43 +603,68 @@ struct Rect_ {
 		}
 	}
 
-	constexpr T size() const noexcept {
+	constexpr T Size() const noexcept {
 		return math_ops::mul{}(w, h) ;
 	}
 
-	constexpr const Point_<T> getPos() const noexcept {
+	constexpr const Point_<T> GetPos() const noexcept {
 		return {x, y} ;
 	}
 
-	constexpr const Point_<math_ops::neightbor_type_t<T>> getSize() const noexcept {
+	constexpr Point_<T> GetPos() noexcept {
+		return {x, y} ;
+	}
+
+	constexpr const Point_<math_ops::neightbor_type_t<T>> GetSize() const noexcept {
 		return {w, h} ;
 	}
 
-	constexpr Point_<T> getPos() noexcept {
-		return {x, y} ;
-	}
-
-	constexpr Point_<math_ops::neightbor_type_t<T>> getSize() noexcept {
+	constexpr Point_<math_ops::neightbor_type_t<T>> GetSize() noexcept {
 		return {w, h} ;
 	}
 
 	template <typename U, typename V, typename = std::enable_if_t<std::is_arithmetic_v<U> && std::is_arithmetic_v<V>>>
-	constexpr Rect_& setPos(U x, V y) noexcept {
+	constexpr Rect_& SetPos(U x, V y) noexcept {
 		this->x = x ; 
 		this->y = y ;
 		return *this ;
 	}
 
+	template <typename U>
+	constexpr Rect_& SetPos(const Point_<U>& pos) noexcept {
+		x = math_ops::apply{}.operator()<T>(pos.x) ;
+		y = math_ops::apply{}.operator()<T>(pos.y) ;
+		return *this ;
+	}
+
 	template <typename U, typename V, typename = std::enable_if_t<std::is_arithmetic_v<U> && std::is_arithmetic_v<V>>>
-	constexpr Rect_& setSize(U w, V h) noexcept {
-		this->w = w ; 
-		this->h = h ;
+	constexpr Rect_& SetSize(U w, V h) noexcept {
+		this->w = math_ops::apply{}.operator()<math_ops::neightbor_type_t<U>>(w) ; 
+		this->h = math_ops::apply{}.operator()<math_ops::neightbor_type_t<U>>(h) ;
 		return *this ;
 	}
 
 	template <typename U>
-	constexpr bool intersect(const Rect_<U>& o) const noexcept {
+	constexpr Rect_& SetSize(const Point_<U>& size) noexcept {
+		x = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(w) ;
+		y = math_ops::apply{}.operator()<math_ops::neightbor_type_t<T>>(h) ;
+		return *this ;
+	}
+
+	template <typename U>
+	constexpr bool Intersect(const Rect_<U>& o) const noexcept {
         return !(x + w < o.x || o.x + o.w < x || y + h < o.y || o.y + o.h < y) ;
+	}
+
+	template <typename U>
+	constexpr auto Union(const Rect_<U>& o) noexcept {
+		using R = std::common_type_t<T, U> ;
+		auto left = std::min(static_cast<R>(x), static_cast<R>(o.x)) ;
+		auto top = std::min(static_cast<R>(y), static_cast<R>(o.y)) ;
+		auto right = std::max(static_cast<R>(x) + static_cast<R>(w), static_cast<R>(o.x) + static_cast<R>(o.w)) ;
+		auto bottom = std::max(static_cast<R>(y) + static_cast<R>(h), static_cast<R>(o.y) + static_cast<R>(o.h)) ;
+
+		return Rect_<R>{left, top, right - left, bottom - top} ;
 	}
 
 	constexpr const Point_<T> Anchor(Anchor anchor) const noexcept {
@@ -813,11 +853,12 @@ std::ostream& operator<<(std::ostream& os, const Rect_<T>& rc) noexcept {
 }
 
 struct Color {
+
 	uint32_t ABGR = ~0 ; // default white + 100% alpha
 
 	constexpr Color() noexcept = default ;
 
-	constexpr Color(unsigned v) noexcept : ABGR(v) {}
+	constexpr Color(uint32_t v) noexcept : ABGR(v) {}
 
 	template <typename R, typename G, typename B, typename A, typename = std::enable_if_t<std::is_integral_v<R> && std::is_integral_v<G> && std::is_integral_v<B> && std::is_integral_v<A>>>
 	constexpr Color(R r, G g, B b, A a) noexcept {
@@ -831,7 +872,7 @@ struct Color {
 
 	constexpr Color(const Color& o) noexcept : ABGR(o.ABGR) {}
 
-	constexpr Color& operator=(unsigned v) noexcept {
+	constexpr Color& operator=(uint32_t v) noexcept {
 		ABGR = v ;
 		return *this ;
 	}
@@ -847,47 +888,57 @@ struct Color {
         return (ABGR >> (i * 8)) & 0xFF ;
     }
 
-	constexpr uint32_t getR() const noexcept {
+	constexpr uint32_t GetR() const noexcept {
         return (ABGR >> (0 * 8)) & 0xFF ;
     }
 
-	constexpr uint32_t getG() const noexcept {
+	constexpr uint32_t GetG() const noexcept {
         return (ABGR >> (1 * 8)) & 0xFF ;
     }
 
-	constexpr uint32_t getB() const noexcept {
+	constexpr uint32_t GetB() const noexcept {
         return (ABGR >> (2 * 8)) & 0xFF ;
     }
 
-	constexpr uint32_t getA() const noexcept {
+	constexpr uint32_t GetA() const noexcept {
         return (ABGR >> (3 * 8)) & 0xFF ;
     }
 
-	constexpr void setR(uint8_t v) noexcept {
+	constexpr void SetR(uint8_t v) noexcept {
 		ABGR = (ABGR & 0xFFFFFF00) | static_cast<uint32_t>(v) ;
 	}
 
-	constexpr void setG(uint8_t v) noexcept {
+	constexpr void SetG(uint8_t v) noexcept {
 		ABGR = (ABGR & 0xFFFF00FF) | (static_cast<uint32_t>(v) << 8) ;
 	}
 
-	constexpr void setB(uint8_t v) noexcept {
+	constexpr void SetB(uint8_t v) noexcept {
 		ABGR = (ABGR & 0xFF00FFFF) | (static_cast<uint32_t>(v) << 16) ;
 	}
 
-	constexpr void setA(uint8_t v) noexcept {
+	constexpr void SetA(uint8_t v) noexcept {
 		ABGR = (ABGR & 0x00FFFFFF) | (static_cast<uint32_t>(v) << 24) ;
 	}
 
 	constexpr operator COLORREF() const noexcept {
-		return (getB() << 16) | (getR() << 8) | getR() ;
+		return (GetB() << 16) | (GetR() << 8) | GetR() ;
 	}
 
 	operator Gdiplus::Color() const noexcept {
-		return (getA() << 24) | (getR() << 16) | (getG() << 8) | getB() ;
+		return (GetA() << 24) | (GetR() << 16) | (GetG() << 8) | GetB() ;
 	}
 } ;
 
 using Vertex = std::vector<PointF> ;
+
+static constexpr inline Color Transparent = rgba(0, 0, 0, 0) ;
+static constexpr inline Color Black = rgba(0, 0, 0, 1) ;
+static constexpr inline Color White = rgba(255, 255, 255, 1) ;
+static constexpr inline Color Red = rgba(255, 0, 0, 1) ;
+static constexpr inline Color Green = rgba(0, 255, 0, 1) ;
+static constexpr inline Color Blue = rgba(0, 0, 255, 1) ;
+static constexpr inline Color Yellow = rgba(255, 255, 0, 1) ;
+static constexpr inline Color Purple = rgba(255, 0, 255, 1) ;
+static constexpr inline Color Cyan = rgba(0, 255, 255, 1) ;
 
 }

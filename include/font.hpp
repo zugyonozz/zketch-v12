@@ -4,15 +4,6 @@
 
 namespace zketch {
 
-    enum class FontStyle : uint32_t {
-        Regular     = Gdiplus::FontStyleRegular,
-        Bold        = Gdiplus::FontStyleBold,
-        Italic      = Gdiplus::FontStyleItalic,
-        BoldItalic  = Gdiplus::FontStyleBold | Gdiplus::FontStyleItalic,
-        Underline   = Gdiplus::FontStyleUnderline,
-        Strikeout   = Gdiplus::FontStyleStrikeout
-    } ;
-
     class Font {
     private:
         std::wstring family_ = L"Arial" ;
@@ -27,9 +18,9 @@ namespace zketch {
         Font& operator=(const Font& o) noexcept = default ;
         Font& operator=(Font&&) noexcept = default ;
 
-        const std::wstring& family() const noexcept { return family_ ; }
-        float size() const noexcept { return size_ ; }
-        uint32_t style() const noexcept { return style_ ; }
+        const std::wstring& GetFamily() const noexcept { return family_ ; }
+        float GetSize() const noexcept { return size_ ; }
+        uint32_t GetStyle() const noexcept { return style_ ; }
     } ;
 
 }

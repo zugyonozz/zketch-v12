@@ -1,36 +1,24 @@
 #pragma once
-#include "window.hpp"
+#include "renderer_test.hpp"
 
 namespace zketch {
 
 	class Layer {
 	private :
-		std::unordered_map<std::string, std::shared_ptr<Canvas>> canvas_map_ ;
+		std::vector<z_order__> sequences_ops_ ;
 
 	public :
-		Layer() noexcept = default ;
+		Layer() = default ;
+		Layer(const Layer&) = delete ;
+		Layer& operator=(const Layer&) = delete ;
+		Layer(Layer&&) = default ;
+		Layer& operator=(Layer&&) = default ;
 
-		std::optional<const Canvas*> operator[](const std::string& key) const noexcept {
-			auto found = canvas_map_.find(key) ;
-			if (found == canvas_map_.end()) {
-				return std::nullopt ;
-			}
-
-			return found->second.get() ;
+		void Push(z_order__&& ops) noexcept {
+			sequences_ops_.emplace_back(ops) ;
 		}
 
-		std::optional<Canvas*> operator[](const std::string& key) noexcept {
-			auto found = canvas_map_.find(key) ;
-			if (found == canvas_map_.end()) {
-				return std::nullopt ;
-			}
-
-			return found->second.get() ;
-		}
-
-		void CreateLayer(const std::string& key) noexcept {
-			canvas_map_.emplace(key, std::make_shared<Canvas>()) ;
-		}
+		void Erase()
 	} ;
 
 }
