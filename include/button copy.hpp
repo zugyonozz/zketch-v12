@@ -1,5 +1,5 @@
 #pragma once
-#include "widget.hpp"
+#include "widget copy.hpp"
 
 namespace zketch {
 	class Button : public Widget<Button> {
@@ -35,8 +35,6 @@ namespace zketch {
             SetDrawer([](Canvas* canvas, const Button& button) {
                 Drawer drawer ;
                 if (!drawer.Begin(*canvas)) return ;
-
-                // No need to call Clear() - already done by Begin()
 
                 Color button_color ;
                 Color border_color ;
@@ -100,9 +98,12 @@ namespace zketch {
             return false ;
         }
 
-        void PresentImpl(HWND hwnd) noexcept {
-            if (!ValidateCanvas("Button::PresentImpl()")) return ;
-            canvas_->Present(hwnd, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
+        void PresentImpl(Window& window) noexcept {
+            if (!ValidateCanvas("Button::PresentImpl()")) {
+				return ;
+			}
+			
+			window.Present(*canvas_, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
         }
 
         void SetDrawer(std::function<void(Canvas*, const Button&)> drawer) noexcept {

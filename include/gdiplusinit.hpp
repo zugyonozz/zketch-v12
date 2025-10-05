@@ -19,4 +19,6 @@ namespace zketch {
 			Gdiplus::GdiplusShutdown(token_) ;
 		}
 	} ;
+
+	static GDISession__ gdi_session_init__ ;
 }

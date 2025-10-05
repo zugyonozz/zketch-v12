@@ -1,6 +1,6 @@
 #pragma once
 
-#include "canvas.hpp"
+#include "canvas copy.hpp"
 
 namespace zketch {
 

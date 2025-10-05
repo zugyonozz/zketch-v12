@@ -1,5 +1,5 @@
 #pragma once
-#include "widget.hpp"
+#include "widget copy.hpp"
 
 namespace zketch {
 	class Slider : public Widget<Slider> {
@@ -88,15 +88,11 @@ namespace zketch {
             
             canvas_ = std::make_unique<Canvas>() ;
             canvas_->Create(bound_.GetSize()) ;
-            
-            // FIX: Set transparent clear color
             canvas_->SetClearColor(rgba(0, 0, 0, 0)) ;
 
             SetDrawer([](Canvas* canvas, const Slider& slider) {
                 Drawer drawer ;
                 if (!drawer.Begin(*canvas)) return ;
-
-                // No need to call Clear() - already done by Begin()
 
                 Color track_color = rgba(220, 220, 220, 255) ;
                 Color thumb_color = slider.IsHovered() || slider.IsDragging() 
@@ -105,7 +101,6 @@ namespace zketch {
 
                 drawer.FillRect(slider.GetRelativeTrackBound(), track_color) ;
                 
-                // Rounded thumb
                 RectF thumb = slider.GetRelativeThumbBound() ;
                 float radius = std::min(thumb.w, thumb.h) / 2.0f ;
                 drawer.FillRectRounded(thumb, thumb_color, radius) ;
@@ -137,7 +132,6 @@ namespace zketch {
                 return true ;
             }
             
-            // Click on track to jump
             if (track_bound_.Contain(mouse_pos)) {
                 if (orientation_ == Horizontal) {
                     thumb_bound_.x = std::clamp(
@@ -201,9 +195,12 @@ namespace zketch {
             return true ;
         }
 
-        void PresentImpl(HWND hwnd) noexcept {
-            if (!ValidateCanvas("Slider::PresentImpl()")) return ;
-            canvas_->Present(hwnd, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
+        void PresentImpl(Window& window) noexcept {
+            if (!ValidateCanvas("Slider::PresentImpl()")) {
+				return ;
+			}
+
+			window.Present(*canvas_, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
         }
 
         void SetDrawer(std::function<void(Canvas*, const Slider&)> drawer) noexcept {

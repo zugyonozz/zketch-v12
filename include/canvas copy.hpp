@@ -4,13 +4,14 @@
 namespace zketch {
 	class Canvas {
 		friend class Drawer ;
+		friend class Window ;
 
 	private:
 		std::unique_ptr<Gdiplus::Bitmap> front_{} ;
 		std::unique_ptr<Gdiplus::Bitmap> back_{} ;
 		Size size_{} ;
 		bool dirty_ = false ;
-		Color clear_color_ = rgba(0, 0, 0, 0); // Default transparent
+		Color clear_color_ = rgba(0, 0, 0, 0);
 
 	public:
 		Canvas(const Canvas&) = delete ;
@@ -51,7 +52,6 @@ namespace zketch {
 				return false ;
 			}
 
-			// Clear both buffers initially
 			{
 				Gdiplus::Graphics gfx_front(front_.get()) ;
 				Gdiplus::Graphics gfx_back(back_.get()) ;
@@ -78,58 +78,6 @@ namespace zketch {
 
 		const Color& GetClearColor() const noexcept {
 			return clear_color_;
-		}
-
-		void Present(HWND hwnd) noexcept {
-			if (!front_) {
-				logger::warning("Canvas::Present - No bitmap.") ;
-				return ;
-			}
-
-			if (!hwnd) {
-				logger::warning("Canvas::Present - hwnd is null.") ;
-				return ;
-			}
-
-			HDC hdc = GetDC(hwnd) ;
-			if (!hdc) {
-				logger::warning("Canvas::Present - GetDC failed.") ;
-				return ;
-			}
-
-			Gdiplus::Graphics screen(hdc) ;
-			screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
-			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
-			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
-			screen.DrawImage(front_.get(), 0, 0) ;
-
-			ReleaseDC(hwnd, hdc) ;
-		}
-
-		void Present(HWND hwnd, const Point& pos) const noexcept {
-			if (!front_) {
-				logger::warning("Canvas::Present - No bitmap.") ;
-				return ;
-			}
-
-			if (!hwnd) {
-				logger::warning("Canvas::Present - hwnd is null.") ;
-				return ;
-			}
-
-			HDC hdc = GetDC(hwnd) ;
-			if (!hdc) {
-				logger::warning("Canvas::Present - invalid HDC.") ;
-				return ;
-			}
-
-			Gdiplus::Graphics screen(hdc) ;
-			screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
-			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
-			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
-			screen.DrawImage(front_.get(), pos.x, pos.y) ;
-
-			ReleaseDC(hwnd, hdc) ;
 		}
 
 		Gdiplus::Bitmap* GetBitmap() const noexcept { 

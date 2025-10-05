@@ -1,6 +1,5 @@
 #pragma once
-#include "renderer.hpp"
-#include "event.hpp"
+#include "window copy.hpp"
 
 namespace zketch {
 	template <typename Derived>
@@ -36,11 +35,19 @@ namespace zketch {
                 needs_redraw_ = false ;
             }
         }
+
+		Canvas* GetCanvas() noexcept {
+			if (!visible_) {
+				return nullptr ;
+			}
+            Update() ;
+			return canvas_.get() ;
+		}
         
-        void Present(HWND hwnd) noexcept { 
+        void Present(Window& window) noexcept { 
             if (!visible_) return ;
             Update() ;
-            static_cast<Derived*>(this)->PresentImpl(hwnd) ;
+            static_cast<Derived*>(this)->PresentImpl(window) ;
         }
         
         void MarkDirty() noexcept { 
@@ -67,11 +74,10 @@ namespace zketch {
         }
 
 		void SetClearColor(const Color& color) noexcept {
-			canvas_->SetClearColor(color) ;
+			if (canvas_) {
+				canvas_->SetClearColor(color) ;
+				MarkDirty() ;
+			}
 		}
     } ;
-
-	namespace Integration {
-	
-	}
 }

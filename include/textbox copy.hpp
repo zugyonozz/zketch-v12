@@ -1,5 +1,5 @@
 #pragma once 
-#include "widget.hpp"
+#include "widget copy.hpp"
 
 namespace zketch {
 	class TextBox : public Widget<TextBox> {
@@ -34,8 +34,6 @@ namespace zketch {
                 Drawer drawer ;
                 if (!drawer.Begin(*canvas)) return ;
 
-                // No need to call Clear() - already done by Begin() with bg_color_
-
                 drawer.DrawString(
                     textbox.GetText(), 
                     {5, 5}, 
@@ -61,16 +59,18 @@ namespace zketch {
         
         void SetBackgroundColor(const Color& color) noexcept {
             bg_color_ = color ;
-            canvas_->SetClearColor(color) ; // Update canvas clear color
+            if (canvas_) {
+                canvas_->SetClearColor(color) ;
+            }
             MarkDirty() ;
         }
 
-        void PresentImpl(HWND hwnd) noexcept {
+        void PresentImpl(Window& window) noexcept {
             if (!ValidateCanvas("TextBox::PresentImpl()")) {
 				return ;
 			}
 
-            canvas_->Present(hwnd, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
+            window.Present(*canvas_, {static_cast<int32_t>(bound_.x), static_cast<int32_t>(bound_.y)}) ;
         }
         
         void SetDrawer(std::function<void(Canvas*, const TextBox&)> drawer) noexcept {
