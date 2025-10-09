@@ -1,129 +1,96 @@
 #include "zketch.hpp"
+
 using namespace zketch ;
 
-RectF Client ;
-Drawer Draw ;
-
-void UpdateClient(const Window& window) noexcept {
-	Client = window.GetClientBound() ;
-}
-
-class Background {
-private :
-	std::unique_ptr<Canvas> canvas_ ;
-	bool update_ ;
-
-	void InvokeRedraw() noexcept {
-		if (update_) {
-			canvas_->Create(Client.GetSize() - Point{10, 0}) ;
-			if (!Draw.Begin(*canvas_)) {
-				return ;
-			}
-
-			Draw.End() ;
-			update_ = false ;
-		}
-	}
-
-public :
-	Background(const Color& color = Black) noexcept : canvas_(std::make_unique<Canvas>()), update_(true) {
-		canvas_->Create(Client.GetSize() - Point{10, 0}) ;
-		canvas_->SetClearColor(color) ;
-	}
-
-	~Background() noexcept = default ;
-
-	void Update() noexcept {
-		update_ = true ;
-	}
-
-	void Present(HWND handle) noexcept {
-		InvokeRedraw() ;
-		canvas_->Present(handle) ;
-	}
-} ;
-
-void InvokeUpdateVSlider(Canvas* canvas, const Slider& slider) noexcept {
-	if (!Draw.Begin(*canvas)) {
-		return ;
-	}
-
-	if (slider.IsDragging()) {
-		Draw.FillRect(slider.GetRelativeThumbBound(), rgba(128, 128, 128, 1)) ;
-	} else if (slider.IsHovered()) {
-		Draw.FillRect(slider.GetRelativeThumbBound(), rgba(128, 128, 128, 1)) ;
-	} else if (slider.IsVisible()) {
-		Draw.FillRect(slider.GetRelativeThumbBound(), rgba(72, 72, 72, 1)) ;
-	}
-	Draw.End() ;
-}
-
-struct VSlider {
-	std::unique_ptr<Slider> slider_ ;
-
-	VSlider(const Color& color = Black) noexcept : 
-	slider_(std::make_unique<Slider>(Slider::Vertical, RectF{Client.Anchor(Anchor::RightTop) - Point{10, 0}, Size{10, Client.h}}, 
-	Size{10, 40})) {
-		slider_->SetClearColor(color) ;
-		slider_->SetDrawer(InvokeUpdateVSlider) ;
-	}
-
-	void SetPosition(const PointF& pos) noexcept {
-		slider_->SetPosition(pos) ;
-	}
-
-	void Update() noexcept {
-		slider_->MarkDirty() ;
-		slider_->SetPosition(Client.Anchor(Anchor::RightTop) - Point{10, 0}) ;
-	}
-
-	void Present(HWND handle) noexcept {
-		slider_->Present(handle) ;
-	}
-} ;
-
 int main() {
-	zketch_init() ;	
+    zketch_init() ;
 
-	Window window("Slider Demo", 800, 600) ;
+	Renderer render ;
+    
+    Window window("Test Window", 800, 600) ;
 	window.Show() ;
 
-	UpdateClient(window) ;
-	Background bg ;
-	VSlider vslide ;
+    Button button({100, 100, 200, 50}, Font("Arial", 20), L"Click Me") ;
+    Slider slider(Slider::Horizontal, {100, 200, 300, 20}, {20, 30}) ;
+    TextBox textbox({100, 300, 400, 100}, L"Hello World", Font("Arial", 20)) ;
+	InputBox textinput({400, 100, 200, 50}, Font("Arial", 20), 500) ;
+    
+    button.SetCallback([]() {
+        logger::info("Button clicked!") ;
+    }) ;
 
+	textinput.SetCallback([](){
+		logger::info("textinput Submited!") ;
+	}) ;
+    
 	Event e ;
+    InputSystem input ;
+    
+    while (Application::IsRunning()) {
+        while (PollEvent(e)) {
+            if (e == EventType::Close) {
+                window.Close() ;
+            }
+            
+            if (e.IsMouseEvent()) {
+                button.OnHover(e.GetMousePosition()) ;
+                slider.OnHover(e.GetMousePosition()) ;
+				textinput.OnHover(e.GetMousePosition()) ;
+                
+                if (e.GetMouseState() == MouseState::Down) {
+                    button.OnPress(e.GetMousePosition()) ;
+                    slider.OnPress(e.GetMousePosition()) ;
+					textinput.OnPress(e.GetMousePosition()) ;
+					if (textinput.OnRelease(e.GetMousePosition()) && textinput.IsActive()) {
+						textinput.Deactivate() ;
+					}
+                }
+                
+                if (e.GetMouseState() == MouseState::Up) {
+                    button.OnRelease(e.GetMousePosition()) ;
+                    slider.OnRelease() ;
+                }
+                
+                slider.OnDrag(e.GetMousePosition()) ;
+            }
 
-	while (Application) {
-		while (PollEvent(e)) {
-			switch (e) {
-				case EventType::Mouse :
-					if (e.GetMouseState() == MouseState::Down) {
-						if (e.GetMouseButton() == MouseButton::Left) {
-							vslide.slider_->OnPress(e.GetMousePosition()) ;
-						}
-					} else if (e.GetMouseState() == MouseState::Up) {
-						if (e.GetMouseButton() == MouseButton::Left) {
-							vslide.slider_->OnRelease() ;
-						}
-					} else if (e.GetMouseState() == MouseState::None) {
-						vslide.slider_->OnHover(e.GetMousePosition()) ;
-						if (vslide.slider_->IsDragging()) {
-							vslide.slider_->OnDrag(e.GetMousePosition()) ;
+			if (e == EventType::Key) {
+				if (e.GetKeyState() == KeyState::Down) {
+					if (textinput.IsActive()) {
+						if ((e.GetKeyCode() >= '0' && e.GetKeyCode() <= 'Z') || e.GetKeyCode() == ' ') {
+							textinput.Insert(static_cast<wchar_t>(e.GetKeyCode())) ;
+						} else if (e.GetKeyCode() == static_cast<uint32_t>(KeyCode::ArrowLeft)) {
+							textinput.MoveCursorPrev() ;
+						} else if (e.GetKeyCode() == static_cast<uint32_t>(KeyCode::ArrowRight)) {
+							textinput.MoveCursorNext() ;
+						} else if (e.GetKeyCode() == static_cast<uint32_t>(KeyCode::Enter)) {
+							textinput.Submit() ;
+						} else if (e.GetKeyCode() == static_cast<uint32_t>(KeyCode::Backspace)) {
+							textinput.Backspace() ;
 						}
 					}
-				break ;
-
-				case EventType::Resize :
-					UpdateClient(window) ;
-					bg.Update() ;
-					vslide.Update() ;
-					break ;
+				}
 			}
+        }
+        
+		textinput.UpdateCursor() ;
+		button.InvokeUpdate() ;
+		slider.InvokeUpdate() ;
+		textbox.InvokeUpdate() ;
+		textinput.InvokeUpdate() ;
+
+        if (render.Begin(window)) {
+			render.Clear(White) ;
+			render.DrawCanvas(button.GetCanvas(), button.GetPosition()) ;
+			render.DrawCanvas(slider.GetCanvas(), slider.GetPosition()) ;
+			render.DrawCanvas(textbox.GetCanvas(), textbox.GetPosition()) ;
+			render.DrawCanvas(textinput.GetCanvas(), textinput.GetPosition()) ;
+			render.End() ;
 		}
 
-		bg.Present(window) ;
-		vslide.Present(window) ;
-		Sleep(16) ;
-	}
+		window.Present() ;
+        input.Update() ;
+    }
+    
+    return 0;
 }

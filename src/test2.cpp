@@ -16,9 +16,13 @@ int main() {
 	window.Show() ;
 
 	Input in ;
-	while (Application) {
+	while (Application::IsRunning()) {
 		while (PollEvent(in.event_)) {
 			switch (in.event_) {
+				case EventType::Close :
+					if (in.event_.GetHandle() == window.GetHandle()) {
+						window.Close() ;
+					}
 				case EventType::Mouse :
 					if (in.event_.GetMouseState() == MouseState::Up) {
 						logger::info("Mouse Up [", DescMouseButton(in.event_.GetMouseButton()),"]\t- {", in.event_.GetMousePosition().x, ", ", in.event_.GetMousePosition().y, '}') ;

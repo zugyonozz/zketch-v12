@@ -1,5 +1,4 @@
 #pragma once
-
 #include "unit.hpp"
 
 namespace zketch {
@@ -13,6 +12,8 @@ namespace zketch {
 	}
 
 	class Event {
+		friend inline bool PollEvent(Event&) ;
+
 	private :
 		EventType type_ = EventType::None ;
 		HWND hwnd_ = nullptr ;
@@ -20,10 +21,12 @@ namespace zketch {
 
 		union data_ {
 			struct empty__ {} empty_ ;
+
 			struct Key__ {
 				KeyState state_ ;
 				uint32_t key_code_ ;
 			} key_ ;
+
 			struct Mouse__ {
 				MouseState state_ ;
 				MouseButton button_ ;
@@ -31,15 +34,18 @@ namespace zketch {
 				int32_t y_ ;
 				int32_t value_ ;
 			} mouse_ ;
+
 			struct Resize__ {
 				uint32_t width_ ;
 				uint32_t height_ ;
 			} resize_ ;
+
 			struct Slider__ {
 				SliderState state_ ;
 				float value_ ;
 				Slider* slider_ptr_ ;
 			} slider_ ;
+
 			struct Button__ {
 				ButtonState state_ ;
 				Button* button_ptr_ ;
@@ -47,6 +53,21 @@ namespace zketch {
 		} data_ ;
 
 		// -------------- Construtor  --------------
+
+		constexpr Event(HWND src_, EventType type_) {
+			this->type_ = type_ ;
+			if ((IsMouseEvent() || IsKeyEvent() || IsResizeEvent() || IsSliderEvent())) {
+				throw error_handler::invalid_event_type() ;
+			}
+			data_.empty_ = {} ;
+			hwnd_ = src_ ;
+		}
+
+		constexpr Event(HWND src, const Size& size) noexcept {
+			type_ = EventType::Resize ;
+			data_.resize_ = {size.x, size.y} ;
+			hwnd_ = src ;
+		}
 
 		constexpr Event(HWND src, KeyState state, uint32_t key_code) {
 			type_ = EventType::Key ;
@@ -59,12 +80,6 @@ namespace zketch {
 			hwnd_ = src ;
 		}
 
-		constexpr Event(HWND src, const Size& size) noexcept {
-			type_ = EventType::Resize ;
-			data_.resize_ = {size.x, size.y} ;
-			hwnd_ = src ;
-		}
-
 		constexpr Event(HWND src, MouseButton button, MouseState state, const Point& pos, int32_t value = 0) {
 			type_ = EventType::Mouse ;
 			if (!IsMouseEvent()) {
@@ -74,7 +89,7 @@ namespace zketch {
 			if (state == MouseState::None) {
 				data_.mouse_ = {
 					state, 
-					MouseButton::None, // ignore to MouseButton::None
+					MouseButton::None,
 					pos.x, 
 					pos.y, 
 					0
@@ -82,7 +97,7 @@ namespace zketch {
 			} else if (state == MouseState::Wheel) {
 				data_.mouse_ = {
 					state, 
-					MouseButton::None, // ignore to MouseButton::None
+					MouseButton::None,
 					pos.x, 
 					pos.y, 
 					value
@@ -109,7 +124,7 @@ namespace zketch {
 			hwnd_ = nullptr ;
 		}
 
-		Event(ButtonState state, Button* button_ptr = nullptr) noexcept {
+		constexpr Event(ButtonState state, Button* button_ptr = nullptr) noexcept {
 			type_ = EventType::Button ;
 			data_.button_ = {
 				state,
@@ -117,69 +132,7 @@ namespace zketch {
 			} ;
 		}
 
-		constexpr Event(HWND src_, EventType type_) {
-			this->type_ = type_ ;
-			if ((IsMouseEvent() || IsKeyEvent() || IsResizeEvent() || IsSliderEvent())) {
-				throw error_handler::invalid_event_type() ;
-			}
-			data_.empty_ = {} ;
-			hwnd_ = src_ ;
-		}
-
-	public :
-		constexpr Event() noexcept : type_(EventType::None), hwnd_(nullptr) {
-			data_.empty_ = {} ;
-		}
-
-		constexpr bool IsKeyEvent() const noexcept {
-			return (type_ == EventType::Key) ;
-		}
-
-		constexpr bool IsMouseEvent() const noexcept {
-			return (type_ == EventType::Mouse) ;
-		}
-
-		constexpr bool IsResizeEvent() const noexcept {
-			return (type_ == EventType::Resize) ;
-		}
-
-		constexpr bool IsSliderEvent() const noexcept {
-			return (type_ == EventType::Slider) ;
-		}
-
-		constexpr bool IsButtonEvent() const noexcept {
-			return (type_ == EventType::Button) ;
-		}
-
-		static Event CreateNormalEvent() noexcept {
-			return Event(nullptr, EventType::None) ;
-		}
-
-		static Event CreateNormalEvent(HWND src, EventType type) noexcept {
-			return Event(src, type) ;
-		}
-
-		static Event CreateKeyEvent(HWND src, KeyState state, uint32_t key_code) noexcept {
-			return Event(src, state, key_code) ;
-		}
-
-		static Event CreateMouseEvent(HWND src, MouseButton button, MouseState state, const Point& pos, int32_t value = 0) noexcept {
-			return Event(src, button, state, pos, value) ;
-		}
-
-		static Event CreateResizeEvent(HWND src, const Point& size) noexcept {
-			return Event(src, size) ;
-		}
-
-		static Event CreateSliderEvent(SliderState state, float value, Slider* slider_ptr = nullptr) {
-			return Event(state, value, slider_ptr) ;
-		}
-
-		static Event CreateButtonEvent(ButtonState state, Button* button_ptr = nullptr) {
-			return Event(state, button_ptr) ;
-		}
-
-		static Event FromMSG(const MSG& msg) noexcept {
+		static constexpr Event CreateEventFromMSG(const MSG& msg) noexcept {
 			switch (msg.message) {
 				case WM_KEYDOWN : 
 					return Event::CreateKeyEvent(msg.hwnd, KeyState::Down, msg.wParam) ; 
@@ -202,12 +155,47 @@ namespace zketch {
 				case WM_MBUTTONUP :
 					return Event::CreateMouseEvent(msg.hwnd, MouseButton::Middle, MouseState::Up, {GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam)}) ; 
 				case WM_QUIT : 
-					return Event::CreateNormalEvent(nullptr, EventType::Quit) ;
+					return Event::CreateCommonEvent(nullptr, EventType::Quit) ;
 				case WM_CLOSE : 
-					return Event::CreateNormalEvent(msg.hwnd, EventType::Close) ;
+					return Event::CreateCommonEvent(msg.hwnd, EventType::Close) ;
 			}
-			return Event::CreateNormalEvent(msg.hwnd, EventType::None) ;
+			return Event::CreateCommonEvent(msg.hwnd, EventType::None) ;
 		}
+
+	public :
+		constexpr Event() noexcept : type_(EventType::None), hwnd_(nullptr) {
+			data_.empty_ = {} ;
+		}
+
+		static constexpr Event CreateCommonEvent() noexcept {
+			return Event(nullptr, EventType::None) ;
+		}
+
+		static constexpr Event CreateCommonEvent(HWND src, EventType type) noexcept {
+			return Event(src, type) ;
+		}
+
+		static constexpr Event CreateKeyEvent(HWND src, KeyState state, uint32_t key_code) noexcept {
+			return Event(src, state, key_code) ;
+		}
+
+		static constexpr Event CreateMouseEvent(HWND src, MouseButton button, MouseState state, const Point& pos, int32_t value = 0) noexcept {
+			return Event(src, button, state, pos, value) ;
+		}
+
+		static constexpr Event CreateResizeEvent(HWND src, const Point& size) noexcept {
+			return Event(src, size) ;
+		}
+
+		static constexpr Event CreateSliderEvent(SliderState state, float value, Slider* slider_ptr = nullptr) {
+			return Event(state, value, slider_ptr) ;
+		}
+
+		static constexpr Event CreateButtonEvent(ButtonState state, Button* button_ptr = nullptr) {
+			return Event(state, button_ptr) ;
+		}
+
+		// --------------------------- Getter ---------------------------
 
 		constexpr uint32_t GetKeyCode() const noexcept { 
 			return data_.key_.key_code_ ; 
@@ -272,6 +260,28 @@ namespace zketch {
 		HWND GetHandle() const noexcept {
 			return hwnd_ ;
 		}
+
+		// --------------------------- State queries ---------------------------
+
+		constexpr bool IsKeyEvent() const noexcept {
+			return (type_ == EventType::Key) ;
+		}
+
+		constexpr bool IsMouseEvent() const noexcept {
+			return (type_ == EventType::Mouse) ;
+		}
+
+		constexpr bool IsResizeEvent() const noexcept {
+			return (type_ == EventType::Resize) ;
+		}
+
+		constexpr bool IsSliderEvent() const noexcept {
+			return (type_ == EventType::Slider) ;
+		}
+
+		constexpr bool IsButtonEvent() const noexcept {
+			return (type_ == EventType::Button) ;
+		}
 	} ;
 
 	class EventSystem {
@@ -280,21 +290,36 @@ namespace zketch {
 		static inline bool event_was_initialized_ = false ;
 
 	public :
-		static void Initialize() noexcept {
+		EventSystem() = delete ;
+		EventSystem(const EventSystem&) = delete ;
+		EventSystem& operator=(const EventSystem&) = delete ;
+		EventSystem(EventSystem&&) = delete ;
+		EventSystem& operator=(EventSystem&&) = delete ;
+
+		static void Init() noexcept {
 			if (!event_was_initialized_) {
 				event_was_initialized_ = true ;
-				logger::info("EventSystem initialized!.") ;
+
+				#ifdef EVENTSYSTEM_DEBUG
+					logger::info("EventSystem::Initialize - Initialized!.") ;
+				#endif
+
 				return ;
 			}
-			logger::info("EventSystem was initialized.") ;
+			logger::info("EventSystem::Initialize - Event system was initialized.") ;
 		}
 
 		static void PushEvent(const Event& e) noexcept {
 			g_events_.push(e) ;
 		}
 
-		static bool PoolEvent(Event& e) noexcept {
+		static bool PollEvent(Event& e) noexcept {
 			if (g_events_.empty()) { 
+
+				#ifdef EVENTSYSTEM_DEBUG
+					logger::info("EventSystem::PollEvent - Event is empty.") ;
+				#endif
+
 				return false ; 
 			}
 
@@ -316,53 +341,87 @@ namespace zketch {
 			while (!g_events_.empty()) {
 				g_events_.pop() ;
 			}
+
+			#ifdef EVENTSYSTEM_DEBUG
+				logger::info("EventSystem::Clear - Event cleared!") ;
+			#endif
+
 		}
 	} ;
 
-	static constexpr std::string DescMouseState(MouseState state) noexcept {
+	constexpr std::string DescribeKeyState(KeyState state) noexcept {
 		switch (state) {
-			case MouseState::Up : return "UP" ;
-			case MouseState::Down : return "DOWN" ;
-			case MouseState::Wheel : return "WHEEL" ;
-			case MouseState::None : return "NONE" ;
+			case KeyState::None : return "None" ;
+			case KeyState::Up : return "Up" ;
+			case KeyState::Down : return "Down" ;
 			default : return "Undefined" ;
 		}
 		return "Undefined" ;
 	}
 
-	static constexpr std::string DescMouseButton(MouseButton button) noexcept {
+	constexpr std::string DescribeMouseState(MouseState state) noexcept {
+		switch (state) {
+			case MouseState::None : return "None" ;
+			case MouseState::Up : return "Up" ;
+			case MouseState::Down : return "Down" ;
+			case MouseState::Wheel : return "Wheel" ;
+			default : return "Undefined" ;
+		}
+		return "Undefined" ;
+	}
+
+	constexpr std::string DescribeMouseButton(MouseButton button) noexcept {
 		switch (button) {
-			case MouseButton::Left : return "LEFT" ;
+			case MouseButton::None : return "None" ;
+			case MouseButton::Left : return "Left" ;
 			case MouseButton::Right : return "Right" ;
-			case MouseButton::Middle : return "MIDDLE" ;
-			case MouseButton::None : return "NONE" ;
+			case MouseButton::Middle : return "Middle" ;
 			default : return "Undefined" ;
 		}
 		return "Undefined" ;
 	}
 
-	constexpr bool operator==(uint32_t a, KeyCode b) noexcept {
-		return a == static_cast<uint32_t>(b) ;
+	constexpr std::string DescribeSliderState(SliderState state) noexcept {
+		switch (state) {
+			case SliderState::None : return "None" ;
+			case SliderState::Start : return "Start" ;
+			case SliderState::End : return "End" ;
+			case SliderState::Changed : return "Changed" ;
+			case SliderState::Hover : return "Hover" ;
+			default : return "Undefined" ;
+		}
+		return "Undefined" ;
 	}
 
-	constexpr bool operator!=(uint32_t a, KeyCode b) noexcept {
-		return a != static_cast<uint32_t>(b) ;
+	constexpr std::string DescribeButtonState(ButtonState state) noexcept {
+		switch (state) {
+			case ButtonState::None : return "None" ;
+			case ButtonState::Press : return "Press" ;
+			case ButtonState::Release : return "Release" ;
+			case ButtonState::Hover : return "Hover" ;
+			default : return "Undefined" ;
+		}
+		return "Undefined" ;
 	}
 
-	static inline bool PollEvent(Event& e) {
-		if (EventSystem::PoolEvent(e)) {
+	inline bool PollEvent(Event& e) {
+		if (EventSystem::PollEvent(e)) {
 			return true ;
 		}
 
 		MSG msg{};
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			if (msg.message == WM_QUIT) {
-				logger::info("PollEvent: WM_QUIT received via PeekMessage.") ;
-				e = Event::CreateNormalEvent(nullptr, EventType::Quit) ;
+				
+				#ifdef POLLEVENT_DEBUG
+					logger::info("PollEvent - WM_QUIT received via PeekMessage.") ;
+				#endif
+
+				e = Event::CreateCommonEvent(nullptr, EventType::Quit) ;
 				return true ;
 			}
 
-			Event ecvt = Event::FromMSG(msg) ;
+			Event ecvt = Event::CreateEventFromMSG(msg) ;
 
 			if (ecvt != EventType::None) {
 				EventSystem::PushEvent(ecvt) ;
@@ -372,7 +431,7 @@ namespace zketch {
 			DispatchMessage(&msg) ;
 		}
 
-		return EventSystem::PoolEvent(e) ;
+		return EventSystem::PollEvent(e) ;
 	}
 
 }

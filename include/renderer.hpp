@@ -1,308 +1,226 @@
 #pragma once
-
-#include "font.hpp"
+#include "window.hpp"
 
 namespace zketch {
 
-	class Drawer ; // forward
-
-	class Canvas {
-		friend class Drawer ;
-
-	private:
-		std::unique_ptr<Gdiplus::Bitmap> front_{} ;
-		std::unique_ptr<Gdiplus::Bitmap> back_{} ;
-		Size size_{} ;
-		bool dirty_ = false ;
-		Color clear_color_ = rgba(0, 0, 0, 0); // Default transparent
-
-	public:
-		Canvas(const Canvas&) = delete ;
-		Canvas& operator=(const Canvas&) = delete ;
-		Canvas() = default ;
-		Canvas(Canvas&&) = default ;
-		Canvas& operator=(Canvas&&) = default ;
-		~Canvas() = default ;
-
-		bool Create(const Size& size) noexcept {
-			Clear() ;
-
-			logger::info("Creating GDI+ bitmap: ", size.x, " x ", size.y) ;
-			try {
-				front_ = std::make_unique<Gdiplus::Bitmap>(size.x, size.y, PixelFormat32bppARGB) ;
-				back_ = std::make_unique<Gdiplus::Bitmap>(size.x, size.y, PixelFormat32bppARGB) ;
-			} catch (...) {
-				front_.reset() ;
-				back_.reset() ;
-				logger::error("Exception while creating bitmap.") ;
-				return false ;
-			}
-
-			if (!front_ || !back_) {
-				logger::error("Failed to allocate bitmap.") ;
-				return false ;
-			}
-
-			Gdiplus::Status fst = front_->GetLastStatus() ;
-			Gdiplus::Status bst = back_->GetLastStatus() ;
-			logger::info("front buffer status: ", static_cast<int32_t>(fst)) ;
-			logger::info("back buffer status: ", static_cast<int32_t>(bst)) ;
-			if (fst != Gdiplus::Ok || bst != Gdiplus::Ok) {
-				front_.reset() ;
-				back_.reset() ;
-				logger::error("Failed to create front buffer, status: ", static_cast<int32_t>(fst)) ;
-				logger::error("Failed to create back buffer, status: ", static_cast<int32_t>(bst)) ;
-				return false ;
-			}
-
-			// Clear both buffers initially
-			{
-				Gdiplus::Graphics gfx_front(front_.get()) ;
-				Gdiplus::Graphics gfx_back(back_.get()) ;
-				gfx_front.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
-				gfx_back.Clear(Gdiplus::Color(0, 0, 0, 0)) ;
-			}
-
-			size_ = size ;
-			dirty_ = true ;
-			return true ;
-		}
-
-		void Clear() noexcept {
-			front_.reset() ;
-			back_.reset() ;
-			size_ = {} ;
-			dirty_ = false ;
-			logger::info("Canvas cleared.") ;
-		}
-
-		void SetClearColor(const Color& color) noexcept {
-			clear_color_ = color;
-		}
-
-		const Color& GetClearColor() const noexcept {
-			return clear_color_;
-		}
-
-		void Present(HWND hwnd) noexcept {
-			if (!front_) {
-				logger::warning("Canvas::Present - No bitmap.") ;
-				return ;
-			}
-
-			if (!hwnd) {
-				logger::warning("Canvas::Present - hwnd is null.") ;
-				return ;
-			}
-
-			HDC hdc = GetDC(hwnd) ;
-			if (!hdc) {
-				logger::warning("Canvas::Present - GetDC failed.") ;
-				return ;
-			}
-
-			Gdiplus::Graphics screen(hdc) ;
-			screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
-			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
-			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
-			screen.DrawImage(front_.get(), 0, 0) ;
-
-			ReleaseDC(hwnd, hdc) ;
-		}
-
-		void Present(HWND hwnd, const Point& pos) const noexcept {
-			if (!front_) {
-				logger::warning("Canvas::Present - No bitmap.") ;
-				return ;
-			}
-
-			if (!hwnd) {
-				logger::warning("Canvas::Present - hwnd is null.") ;
-				return ;
-			}
-
-			HDC hdc = GetDC(hwnd) ;
-			if (!hdc) {
-				logger::warning("Canvas::Present - invalid HDC.") ;
-				return ;
-			}
-
-			Gdiplus::Graphics screen(hdc) ;
-			screen.SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
-			screen.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
-			screen.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor) ;
-			screen.DrawImage(front_.get(), pos.x, pos.y) ;
-
-			ReleaseDC(hwnd, hdc) ;
-		}
-
-		Gdiplus::Bitmap* GetBitmap() const noexcept { 
-			return front_.get() ; 
-		}
-
-		Gdiplus::Bitmap* GetBackBuffer() const noexcept { 
-			return back_.get() ; 
-		}
-
-		int32_t GetWidth() const noexcept { 
-			return size_.x ; 
-		}
-
-		int32_t GetHeight() const noexcept { 
-			return size_.y ; 
-		}
-
-		const Size& GetSize() const noexcept { 
-			return size_ ; 
-		}
-
-		bool IsValid() const noexcept { 
-			return front_ != nullptr && back_ != nullptr ; 
-		}
-
-		bool NeedRedraw() const noexcept { 
-			return dirty_ ; 
-		}
-
-		void SwapBuffers() noexcept {
-			if (front_ && back_) {
-				std::swap(front_, back_) ;
-				dirty_ = false ;
-			}
-		}
-
-		void MarkDirty() noexcept { 
-			dirty_ = true ; 
-		}
-
-		void MarkClean() noexcept {
-			dirty_ = false ;
-		}
-	} ;
-
-	class Drawer {
-	private:
-		std::unique_ptr<Gdiplus::Graphics> gfx_ = nullptr ;
-		Canvas* to_ = nullptr ;
+	class Renderer {
+	private :
+		std::unique_ptr<Gdiplus::Graphics> gfx_ {} ;
+		Canvas* canvas_target_ = nullptr ;
+		Window* window_target_ = nullptr ;
 		bool is_drawing_ = false ;
 
 		bool IsValid() const noexcept {
-			if (!to_) {
-				logger::warning("Renderer - target canvas is null!") ;
+			if (!canvas_target_) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::IsValid - Target canvas is null!") ;
+				#endif
+
 				return false ;
 			}
 
 			if (!gfx_ || !is_drawing_) {
 				if (!gfx_) {
-					logger::warning("Renderer - gfx is nullptr!") ;
+
+					#ifdef RENDERER_DEBUG
+						logger::warning("Renderer::IsValid - gfx is null!") ;
+					#endif
+
 				}
+
 				if (!is_drawing_) {
-					logger::warning("Renderer - not in drawing state!") ;
+
+					#ifdef RENDERER_DEBUG
+						logger::warning("Renderer::IsValid - Not in drawing state!") ;
+					#endif
 				}
+
 				return false ;
 			}
+
 			return true ;
 		}
 
-	public:
-		Drawer() = default ;
-		~Drawer() noexcept {
+	public :
+		Renderer(const Renderer&) = delete ;
+		Renderer& operator=(const Renderer&) = delete ;
+		Renderer() = default ;
+
+		Renderer(Renderer&& o) noexcept : 
+		gfx_(std::move(o.gfx_)), canvas_target_(std::exchange(o.canvas_target_, nullptr)), 
+		is_drawing_(std::exchange(o.is_drawing_, false)) {}
+
+		Renderer& operator=(Renderer&& o) noexcept {
+			if (this != &o) {
+				if (is_drawing_) {
+					End() ;
+				} 
+
+				gfx_ = std::move(o.gfx_) ;
+				canvas_target_ = std::exchange(o.canvas_target_, nullptr) ;
+				is_drawing_ = std::exchange(o.is_drawing_, false) ;
+			}
+
+			return *this ;
+		}
+
+		~Renderer() noexcept {
 			if (is_drawing_) {
-				logger::warning("Renderer destroyed while drawing - calling End().") ;
+				
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::~Renderer - Destroyed while drawing, calling End().") ;
+				#endif
+
 				End() ;
 			}
 		}
 
-		Drawer(const Drawer&) = delete ;
-		Drawer& operator=(const Drawer&) = delete ;
-
-		Drawer(Drawer&& o) noexcept
-			: gfx_(std::move(o.gfx_)), to_(std::exchange(o.to_, nullptr))
-			, is_drawing_(std::exchange(o.is_drawing_, false)) {}
-
-		Drawer& operator=(Drawer&& o) noexcept {
-			if (this != &o) {
-				if (is_drawing_) End() ;
-				gfx_ = std::move(o.gfx_) ;
-				to_ = std::exchange(o.to_, nullptr) ;
-				is_drawing_ = std::exchange(o.is_drawing_, false) ;
-			}
-			return *this ;
-		}
-
-		bool Begin(Canvas& src, bool auto_clear = true) noexcept {
+		bool Begin(Canvas& src) noexcept {
 			if (is_drawing_) {
-				logger::error("Renderer Begin() already in drawing state.") ;
+
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - Already in drawing state!") ;
+				#endif
+
 				return false ;
 			}
 
 			if (!src.IsValid()) {
-				logger::error("Renderer Begin() invalid canvas.") ;
+
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - Invalid canvas!") ;
+				#endif
+
 				return false ;
 			}
 
-			auto* back = src.GetBackBuffer() ;
-			if (!back) {
-				logger::error("Renderer Begin() - back buffer is null.") ;
+			auto* bmp = src.GetBitmap() ;
+			if (!bmp) {
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - source bitmap is null!") ;
+				#endif
+
 				return false ;
 			}
 
-			gfx_ = std::make_unique<Gdiplus::Graphics>(back) ;
+			gfx_ = std::make_unique<Gdiplus::Graphics>(bmp) ;
 			if (!gfx_) {
-				logger::error("Renderer Begin() failed to create graphics object.") ;
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - Failed to create graphics object!") ;
+				#endif
+
 				return false ;
 			}
 
 			if (gfx_->GetLastStatus() != Gdiplus::Ok) {
-				logger::error("Renderer Begin() graphics status not OK: ", static_cast<int32_t>(gfx_ ? gfx_->GetLastStatus() : Gdiplus::GenericError)) ;
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - graphics status not OK : [", static_cast<int32_t>(gfx_ ? gfx_->GetLastStatus() : Gdiplus::GenericError), "] .") ;
+				#endif
+
 				gfx_.reset() ;
 				return false ;
 			}
 
-			to_ = &src ;
+			canvas_target_ = &src ;
 			is_drawing_ = true ;
 
-			// Quality settings BEFORE any drawing
 			gfx_->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality) ;
 			gfx_->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic) ;
 			gfx_->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality) ;
 			gfx_->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
+			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
 
-			// FIX: Use SourceCopy mode for clearing to completely replace pixels
-			// This prevents artifacts when using transparent backgrounds
-			if (auto_clear) {
-				gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceCopy) ;
-				gfx_->Clear(static_cast<Gdiplus::Color>(src.GetClearColor())) ;
+			return true ;
+		}
+
+		bool Begin(Window& window) noexcept {
+			if (is_drawing_) {
+
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - Already in drawing state!") ;
+				#endif
+
+				return false ;
 			}
-			
-			// Set to SourceOver for normal drawing operations
+
+			if (!window.IsCanvasValid()) {
+
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - Invalid canvas!") ;
+				#endif
+
+				return false ;
+			}
+
+			auto* bmp = window.back_buffer_->GetBitmap() ;
+			if (!bmp) {
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - source bitmap is null!") ;
+				#endif
+
+				return false ;
+			}
+
+			gfx_ = std::make_unique<Gdiplus::Graphics>(bmp) ;
+			if (!gfx_) {
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - Failed to create graphics object!") ;
+				#endif
+
+				return false ;
+			}
+
+			if (gfx_->GetLastStatus() != Gdiplus::Ok) {
+				#ifdef RENDERER_DEBUG
+					logger::error("Renderer::Begin - graphics status not OK : [", static_cast<int32_t>(gfx_ ? gfx_->GetLastStatus() : Gdiplus::GenericError), "] .") ;
+				#endif
+
+				gfx_.reset() ;
+				return false ;
+			}
+
+			canvas_target_ = window.back_buffer_.get() ;
+			window_target_ = &window ;
+			is_drawing_ = true ;
+
+			gfx_->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality) ;
+			gfx_->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic) ;
+			gfx_->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality) ;
+			gfx_->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed) ;
 			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceOver) ;
 
 			return true ;
 		}
 
 		void End() noexcept {
-			if (to_ && is_drawing_) {
-				to_->SwapBuffers() ;
+			if (window_target_) {
+				if (canvas_target_ && is_drawing_) {
+					if (window_target_->front_buffer_ && window_target_->back_buffer_) {
+						std::swap(window_target_->front_buffer_, window_target_->back_buffer_) ;
+						canvas_target_->MarkValidate() ;
+					}
+				}
 			}
-
 			gfx_.reset() ;
-			to_ = nullptr ;
+			canvas_target_ = nullptr ;
+			window_target_ = nullptr ;
 			is_drawing_ = false ;
 		}
 
 		void Clear(const Color& color) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
 			
-			// FIX: Use SourceCopy to completely replace pixels (not blend)
-			// This ensures transparent clear actually clears everything
 			auto prevMode = gfx_->GetCompositingMode() ;
 			gfx_->SetCompositingMode(Gdiplus::CompositingModeSourceCopy) ;
 			gfx_->Clear(color) ;
 			gfx_->SetCompositingMode(prevMode) ;
 			
-			if (to_) to_->MarkDirty() ;
+			if (canvas_target_) {
+				canvas_target_->MarkInvalidate() ;
+			}
 		}
 
 		void DrawRect(const RectF& rect, const Color& color, float thickness = 1.0f) noexcept {
@@ -310,21 +228,26 @@ namespace zketch {
 				return ;
 			}
 
-			if (thickness < 0.1f) {
-				logger::warning("DrawRect - thickness lower than 0.1") ;
+			if (thickness < 0.0f) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawRect - Thickness lower than 0.0") ;
+				#endif
+
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawRectangle(&p, static_cast<Gdiplus::RectF>(rect)) ;
 		}
 
 		void FillRect(const Rect& rect, const Color& color) noexcept {
-			if (!IsValid()) 
+			if (!IsValid()) {
 				return ;
+			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::SolidBrush b(color) ;
 			gfx_->FillRectangle(&b, static_cast<Gdiplus::RectF>(rect)) ;
 		}
@@ -334,10 +257,25 @@ namespace zketch {
 				return ;
 			}
 
-			if (thickness < 0.1f || radius < 0.0f) 
-				return ;
+			if (thickness < 0.0f) {
 
-			to_->MarkDirty() ;
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawRectRounded - Thickness lower than 0.0") ;
+				#endif
+
+				return ;
+			}
+
+			if (radius < 0.0f) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawRectRounded - Radius lower than 0.0") ;
+				#endif
+				
+				return ;
+			}
+
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::GraphicsPath path ;
 			float diameter = radius * 2.0f ;
 			path.AddArc(rect.x, rect.y, diameter, diameter, 180, 90) ;
@@ -345,7 +283,6 @@ namespace zketch {
 			path.AddArc(rect.x + rect.w - diameter, rect.y + rect.h - diameter, diameter, diameter, 0, 90) ;
 			path.AddArc(rect.x, rect.y + rect.h - diameter, diameter, diameter, 90, 90) ;
 			path.CloseFigure() ;
-
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawPath(&p, &path) ;
 		}
@@ -356,10 +293,15 @@ namespace zketch {
 			}
 
 			if (radius < 0.0f) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::FillRectRounded - Radius lower than 0.0") ;
+				#endif
+
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 
 			Gdiplus::GraphicsPath path ;
 			float diameter = radius * 2.0f ;
@@ -368,7 +310,6 @@ namespace zketch {
 			path.AddArc(rect.x + rect.w - diameter, rect.y + rect.h - diameter, diameter, diameter, 0, 90) ;
 			path.AddArc(rect.x, rect.y + rect.h - diameter, diameter, diameter, 90, 90) ;
 			path.CloseFigure() ;
-
 			Gdiplus::SolidBrush b(color) ;
 			gfx_->FillPath(&b, &path) ;
 		}
@@ -378,11 +319,16 @@ namespace zketch {
 				return ;
 			}
 
-			if (thickness < 0.1f) {
+			if (thickness < 0.0f) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawEllipse - Thickness lower than 0.0") ;
+				#endif
+
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawEllipse(&p, static_cast<Gdiplus::RectF>(rect)) ;
 		}
@@ -392,7 +338,7 @@ namespace zketch {
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::SolidBrush b(color) ;
 			gfx_->FillEllipse(&b, rect.x, rect.y, rect.w, rect.h) ;
 		}
@@ -403,35 +349,53 @@ namespace zketch {
 			}
 
 			if (text.empty()) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawString - Text is empty") ;
+				#endif
+
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::SolidBrush brush(color) ;
-			Gdiplus::FontFamily family(font.GetFamily().c_str()) ;
-			Gdiplus::Font f(&family, font.GetSize(), font.GetStyle(), Gdiplus::UnitPixel) ;
-
+			Gdiplus::Font used_font = font ;
 			gfx_->SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAliasGridFit) ;
-
-			Gdiplus::RectF layout(static_cast<Gdiplus::REAL>(pos.x), static_cast<Gdiplus::REAL>(pos.y), static_cast<Gdiplus::REAL>(to_ ? to_->GetWidth() - pos.x : 0), static_cast<Gdiplus::REAL>(to_ ? to_->GetHeight() - pos.y : 0));
-
+			Gdiplus::RectF layout(static_cast<Gdiplus::REAL>(pos.x), static_cast<Gdiplus::REAL>(pos.y), static_cast<Gdiplus::REAL>(canvas_target_ ? canvas_target_->GetWidth() - pos.x : 0), static_cast<Gdiplus::REAL>(canvas_target_ ? canvas_target_->GetHeight() - pos.y : 0));
 			Gdiplus::StringFormat fmt ;
 			fmt.SetAlignment(Gdiplus::StringAlignmentNear) ;
 			fmt.SetLineAlignment(Gdiplus::StringAlignmentNear) ;
+			gfx_->DrawString(text.c_str(), -1, &used_font, layout, &fmt, &brush) ;
+		}
 
-			gfx_->DrawString(text.c_str(), -1, &f, layout, &fmt, &brush) ;
+		void DrawString(const std::string& text, const Point& pos, const Color& color, const Font& font) noexcept {
+			DrawString(StringToWideString(text), pos, color, font) ;
 		}
 
 		void DrawPolygon(const Vertex& vertices, const Color& color, float thickness = 1.0f) noexcept {
-			if (!IsValid() || vertices.empty()) {
+			if (!IsValid()) {
 				return ;
 			}
 
-			if (thickness < 0.1f) {
+			if (vertices.empty()) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawPolygon - Vertices is Empty") ;
+				#endif
+
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			if (thickness < 0.0f) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawPolygon - Thickness lower than 0.0") ;
+				#endif
+
+				return ;
+			}
+
+			canvas_target_->MarkInvalidate() ;
 			std::vector<Gdiplus::PointF> points ;
 			points.reserve(vertices.size()) ;
 
@@ -444,11 +408,20 @@ namespace zketch {
 		}
 
 		void FillPolygon(const Vertex& vertices, const Color& color) noexcept {
-			if (!IsValid() || vertices.empty()) {
+			if (!IsValid()) {
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			if (vertices.empty()) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::FillPolygon - Vertices is Empty") ;
+				#endif
+
+				return ;
+			}
+
+			canvas_target_->MarkInvalidate() ;
 			std::vector<Gdiplus::PointF> points ;
 			points.reserve(vertices.size()) ;
 			
@@ -465,11 +438,16 @@ namespace zketch {
 				return ;
 			}
 
-			if (thickness < 0.1f) {
+			if (thickness < 0.0f) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawLine - Thickness lower than 0.0") ;
+				#endif
+
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			Gdiplus::Pen p(color, thickness) ;
 			gfx_->DrawLine(&p, start.x, start.y, end.x, end.y) ;
 		}
@@ -479,7 +457,7 @@ namespace zketch {
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			DrawEllipse(RectF{static_cast<float>(center.x - radius), static_cast<float>(center.y - radius), radius * 2.0f, radius * 2.0f}, color, thickness) ;
 		}
 
@@ -488,26 +466,39 @@ namespace zketch {
 				return ;
 			}
 
-			to_->MarkDirty() ;
+			canvas_target_->MarkInvalidate() ;
 			FillEllipse(RectF{static_cast<float>(center.x - radius), static_cast<float>(center.y - radius), radius * 2.0f, radius * 2.0f}, color) ;
 		}
 
-		bool IsDrawing() const noexcept { 
-			return is_drawing_ ; 
-		}
-
-		Canvas* GetTarget() const noexcept { 
-			return to_ ; 
-		}
-
-		// Helper to composite another canvas onto current target
-		void DrawCanvas(const Canvas* src, float x, float y) noexcept {
-			if (!IsValid() || !src || !src->IsValid()) return;
-			auto* bitmap = src->GetBitmap();
-			if (bitmap) {
-				gfx_->DrawImage(bitmap, x, y);
-				if (to_) to_->MarkDirty();
+		void DrawCanvas(const Canvas* src, const Point& pos) noexcept {
+			if (!IsValid() || !src->IsValid()) { 
+				return ; 
 			}
+
+			if (!src) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawCanvas - Canvas source is null!") ;
+				#endif
+
+				return ;
+			}
+
+			auto* bitmap = src->GetBitmap() ;
+			if (!bitmap) {
+
+				#ifdef RENDERER_DEBUG
+					logger::warning("Renderer::DrawCanvas - Bitmap is null!") ;
+				#endif
+
+				return ;
+			}
+
+			gfx_->DrawImage(bitmap, pos.x, pos.y ) ;
+			canvas_target_->MarkInvalidate() ;
 		}
+
+		bool IsDrawing() const noexcept { return is_drawing_ ; }
+		Canvas* GetTarget() const noexcept { return canvas_target_ ; }
 	} ;
 }

@@ -667,20 +667,37 @@ struct Rect_ {
 		return Rect_<R>{left, top, right - left, bottom - top} ;
 	}
 
-	constexpr const Point_<T> Anchor(Anchor anchor) const noexcept {
-		switch (anchor) {
-			case Anchor::Left			: return {x , y + (h / 2)} ;			// LEFT
-			case Anchor::LeftTop		: return {x, y} ;						// LEFT TOP 
-			case Anchor::Top			: return {x + (w / 2), y} ;				// TOP
-			case Anchor::RightTop		: return {x + w, y} ;					// RIGHT TOP 
-			case Anchor::Right			: return {x + w , y + (h / 2)} ;		// RIGHT
-			case Anchor::RightBottom	: return {x + w , y + h} ;				// BOTTOM RIGHT
-			case Anchor::Bottom			: return {x + (w / 2) , y + h} ;		// BOTTOM
-			case Anchor::LeftBottom		: return {x , y + h} ;					// BOTTOM LEFT
-			case Anchor::Center			: return {x + (w / 2) , y + (h / 2)} ;	// CENTER
-			default : break ;
+	constexpr Point_<T> Origin(Pivot origin) const noexcept {
+		switch (origin) {
+			case Pivot::Center					: return {x + (w / 2) , y + (h / 2)} ;
+			case Pivot::Left					: return {x , y + (h / 2)} ;
+			case Pivot::Top						: return {x + (w / 2), y} ;
+			case Pivot::Right					: return {x + w , y + (h / 2)} ;
+			case Pivot::Bottom					: return {x + (w / 2) , y + h} ;
+			case Pivot::Left | Pivot::Top		: return {x, y} ;
+			case Pivot::Right | Pivot::Top		: return {x + w, y} ;
+			case Pivot::Right | Pivot::Bottom	: return {x + w , y + h} ;
+			case Pivot::Left | Pivot::Bottom	: return {x , y + h} ;
+			default : ;
 		}
 		return {x, y} ;
+	}
+
+	template <typename U>
+	constexpr Point_<T> AnchorTo(const Rect_<U>& to, Pivot anchor) const noexcept {
+		switch (anchor) {
+			case Pivot::Center					: return {to.x + ((to.w - w) / 2), to.y + ((to.h - h) / 2)} ;
+			case Pivot::Left					: return {to.x, to.y + ((to.h - h) / 2)} ;
+			case Pivot::Right					: return {to.x + to.w - w , to.y + ((to.h - h) / 2)} ;
+			case Pivot::Top						: return {to.x + ((to.w - w) / 2), y} ;
+			case Pivot::Bottom					: return {to.x + ((to.w - w) / 2), to.y + to.h - h} ;
+			case Pivot::Left | Pivot::Top		: return {to.x, to.y} ;
+			case Pivot::Left | Pivot::Bottom	: return {to.x , to.y + to.h - h} ;
+			case Pivot::Right | Pivot::Top		: return {to.x + to.w - w, to.y} ;
+			case Pivot::Right | Pivot::Bottom	: return {to.x + to.w - w, to.y + to.h - h} ;
+			default : ;
+		}
+		return {to.x, to.y} ;
 	}
 
 	operator Gdiplus::Rect() const noexcept {
@@ -940,5 +957,41 @@ static constexpr inline Color Blue = rgba(0, 0, 255, 1) ;
 static constexpr inline Color Yellow = rgba(255, 255, 0, 1) ;
 static constexpr inline Color Purple = rgba(255, 0, 255, 1) ;
 static constexpr inline Color Cyan = rgba(0, 255, 255, 1) ;
+
+inline std::wstring StringToWideString(const std::string& str) noexcept {
+	if (str.empty()) {
+		return L"" ;
+	}
+
+	int len = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0) ;
+	std::wstring wstr(len, L'\0') ;
+	MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, &wstr[0], len) ;
+
+	if (!wstr.empty() && wstr.back() == L'\0') {
+		wstr.pop_back() ;
+	}
+
+	return wstr ;
+}
+
+inline std::wstring StringToWideString(const std::string_view& str) noexcept {
+	return StringToWideString(static_cast<std::string>(str)) ;
+}
+
+inline std::string WideStringToString(const std::wstring& wstr) noexcept {
+    if (wstr.empty()) {
+        return "" ;
+    }
+
+    int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr) ;
+    if (len == 0) {
+        return "" ;
+    }
+
+    std::string result(len - 1, '\0') ;
+    WideCharToMultiByte( CP_UTF8, 0, wstr.c_str(), -1, result.data(), len, nullptr, nullptr) ;
+
+    return result;
+}
 
 }

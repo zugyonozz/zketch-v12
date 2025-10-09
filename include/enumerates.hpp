@@ -141,16 +141,12 @@ namespace zketch {
 		#endif
 	} ;
 
-	enum class Anchor : uint8_t {
+	enum class Pivot : uint8_t {
+		Center		= 0,
 		Left		= 1 << 0,
-		LeftTop		= 1 << 1,
+		Right		= 1 << 1,
 		Top			= 1 << 2,
-		RightTop	= 1 << 3,
-		Right		= 1 << 4,
-		RightBottom	= 1 << 5,
-		Bottom		= 1 << 6,
-		LeftBottom	= 1 << 7,
-		Center		= 0b11111111,
+		Bottom		= 1 << 3,
 	} ;
 
 	enum class EventType : uint8_t { 
@@ -164,6 +160,24 @@ namespace zketch {
 		Button
 	} ;
 
+	enum class WindowState : uint8_t {
+		None		= 0,
+		Active 		= 1 << 0,
+		NonActive	= 1 << 1,
+		Close		= 1 << 2,
+		Destroyed	= 1 << 3,
+		UnRegister	= 1 << 4,
+		Register	= 1 << 5,
+		Resize		= 1 << 6,
+		Move		= 1 << 7,
+	} ;
+
+	enum class KeyState : uint8_t {
+		None,
+		Up,
+		Down
+	} ;
+
 	enum class MouseState : uint8_t {
 		None,
 		Up,
@@ -175,36 +189,72 @@ namespace zketch {
 		None,
 		Left, 
 		Right, 
-		Middle, 
-	} ;
-
-	enum class KeyState : uint8_t {
-		None,
-		Up,
-		Down
+		Middle
 	} ;
 
 	enum class SliderState : uint8_t {
 		None,
-		Changed,
 		Start,
 		End,
+		Changed,
 		Hover
 	} ;
 
 	enum class ButtonState : uint8_t {
 		None,
-		Hover,
 		Press,
-		Release
+		Release,
+		Hover
 	} ;
 
-	enum class FontStyle : uint32_t {
-        Regular     = Gdiplus::FontStyleRegular,
-        Bold        = Gdiplus::FontStyleBold,
-        Italic      = Gdiplus::FontStyleItalic,
-        BoldItalic  = Gdiplus::FontStyleBold | Gdiplus::FontStyleItalic,
-        Underline   = Gdiplus::FontStyleUnderline,
-        Strikeout   = Gdiplus::FontStyleStrikeout
+	enum class FontStyle : uint8_t {
+        Regular,
+        Bold,
+        Italic,
+		BoldItalic = Bold | Regular,
     } ;
+
+	constexpr Pivot operator|(Pivot a, Pivot b) noexcept {
+		uint8_t n = static_cast<uint8_t>(a) | static_cast<uint8_t>(b) ;
+		if (n == 0b00001111) {
+			n = 0 ;
+		}
+		return static_cast<Pivot>(n) ;
+	}
+
+	constexpr Pivot operator&(Pivot a, Pivot b) noexcept {
+		return static_cast<Pivot>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) ;
+	}
+
+	constexpr Pivot operator|=(Pivot& a, Pivot b) noexcept {
+		a = a | b ;
+		return a ;
+	}
+
+	constexpr Pivot operator&=(Pivot& a, Pivot b) noexcept {
+		a = a & b ;
+		return a ;
+	}
+
+	inline WindowState operator|(WindowState a, WindowState b) noexcept {
+		return static_cast<WindowState>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b)) ;
+	}
+
+	inline WindowState operator&(WindowState a, WindowState b) noexcept {
+		return static_cast<WindowState>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) ;
+	}
+
+	inline WindowState operator~(WindowState a) noexcept {
+		return static_cast<WindowState>(~static_cast<uint8_t>(a)) ;
+	}
+
+	inline WindowState operator|=(WindowState& a, WindowState b) noexcept {
+		a = a | b ;
+		return a ;
+	}
+
+	inline WindowState operator&=(WindowState& a, WindowState b) noexcept {
+		a = a & b ;
+		return a ;
+	}
 }
